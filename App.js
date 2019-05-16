@@ -2,24 +2,35 @@ import React from 'react';
 import {StyleSheet, Button, Text, View} from 'react-native';
 
 
-class Blink extends React.Component {
+class Chord extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {isShowingText: true};
+    this.state = {
+      playing: true,
+      chordName: props.chordName
+    };
   }
 
   selectChordBaseNote = () => {
     this.setState(previousState => {
-      return {isShowingText: !previousState.isShowingText};
+      return {playing: !previousState.playing};
     });
+
+    console.log("paying",this.state.chordName);
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+    var context = new AudioContext()
+    var o = context.createOscillator()
+    o.type = "sine"
+    o.connect(context.destination)
+    o.start()
   };
 
   render() {
-    let display = this.state.isShowingText ? this.props.text : ' ';
     return (
-      <Button type="solid" title={display} onPress={this.selectChordBaseNote}>
-        <Text >{display}</Text>
-      </Button>
+      <View style={styles.chordBaseNote}>
+        <Button type="solid" title={this.state.chordName} onPress={this.selectChordBaseNote} color={styles.chordBaseNote.color}/>
+      </View>
     );
   }
 }
@@ -28,10 +39,13 @@ export default class ChordComposer extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Blink text='I love to blink'/>
-        <Blink text='Yes blinking is so great'/>
-        <Blink text='Why did they ever take this out of HTML'/>
-        <Blink text='Look at me look at me look at me'/>
+        <Chord chordName='A'/>
+        <Chord chordName='Cmaj7'/>
+        <Chord chordName='Dm7'/>
+        <Chord chordName='G6'/>
+        <Chord chordName='G7'/>
+        <Chord chordName='Gadd9'/>
+        <Chord chordName='C#maj7'/>
       </View>
     );
   }
@@ -41,14 +55,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 
   chordBaseNote: {
     flex: 1,
-    backgroundColor: '#a01355',
+    backgroundColor: '#b2052d',
     color: '#fff',
     display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 100,
+    height: 100,
   },
 });
