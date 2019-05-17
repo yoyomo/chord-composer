@@ -12,14 +12,8 @@ code {
     monospace;
 }
 
-.white {color: white;}
-
-.bg-red {
-  background-color: red;
-}
 
 .w-100px {width: 100px;}
 .h-100px {height: 100px;}
 
-.tc {text-align: center;}
-
+.ma {margin: auto;}
