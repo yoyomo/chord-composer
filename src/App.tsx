@@ -1,6 +1,6 @@
 import React from 'react';
-import {CHORD_RULES} from "./constants/all-chords";
-import * as fs from "fs";
+import {CHORD_RULES_WITH_VARIATIONS} from "./constants/chord-rules-with-variations";
+import {CHORDS} from "./constants/chords";
 
 export interface ClassAndChildren {
   className?: string,
@@ -22,6 +22,7 @@ class ChordElement extends React.Component<ChordElementProps & ClassAndChildren>
              onClick={this.playChord}>
           <div className="">
             {this.props.chord.baseKey + this.props.chord.symbol}
+            {this.props.chord.variation}
           </div>
         </div>
     );
@@ -58,18 +59,6 @@ class ChordElement extends React.Component<ChordElementProps & ClassAndChildren>
   }
 }
 
-
-const recalculateAllNotes = (baseFrequency = 440): number[] => {
-  const NUMBER_OF_NOTES = 88;
-  let notes = [];
-
-  for (let n = 0; n < NUMBER_OF_NOTES; n++) {
-    notes[n] = Math.pow(2, ((n + 1) - 49) / 12) * baseFrequency;
-  }
-
-  return notes;
-};
-
 export interface ChordType extends ChordRuleVariationType {
   baseKey: string,
 }
@@ -85,75 +74,20 @@ export interface ChordRuleType {
   quality: string,
 }
 
-const recalculateChordRules = (): ChordRuleVariationType[] => {
-  let chordRules: ChordRuleVariationType[] = [];
+export const NUMBER_OF_NOTES = 88;
 
-  CHORD_RULES.map(chordRule => {
-    let pitchClass = chordRule.pitchClass;
+const recalculateAllNotes = (baseFrequency = 440): number[] => {
+  let notes = [];
 
-    for (let p = 0; p < pitchClass.length; p++) {
-      while (p > 0 && pitchClass[p] < pitchClass[p - 1]) {
-        pitchClass[p] += 12;
-      }
-    }
-
-    for (let v = 0; v < chordRule.pitchClass.length; v++) {
-      if (v > 0) {
-        let firstPitch = pitchClass.shift();
-        if (firstPitch) {
-          pitchClass.push(firstPitch)
-        }
-      }
-      chordRules.push({...chordRule, pitchClass: pitchClass, variation: v});
-    }
-  });
-  console.log(fs);
-
-  fs.writeFile('constants/chord-rules.ts', "export const CHORD_RULES_WITH_VARIATIONS = " + JSON.stringify(chordRules),
-      (err) => {
-        console.error("Failed to write File", err);
-      });
-
-  return chordRules;
-};
-
-const recalculateAllChords = (): ChordType[] => {
-  let chords: ChordType[] = [];
-
-  let keys = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
-
-  for (let n = 0; n < notes.length; n++) {
-    let baseKey = keys[n % keys.length];
-    for (let c = 0; c < chordRules.length; c++) {
-      let chordRule = chordRules[c];
-      let pitchClass = chordRule.pitchClass;
-
-      for (let p = 0; p < pitchClass.length; p++) {
-        pitchClass[p] += n;
-      }
-
-      chords.push({
-        ...chordRule,
-        pitchClass: pitchClass,
-        baseKey: baseKey,
-      });
-    }
-
+  for (let n = 0; n < NUMBER_OF_NOTES; n++) {
+    notes[n] = Math.pow(2, ((n + 1) - 49) / 12) * baseFrequency;
   }
 
-  fs.writeFile('constants/chords.ts', "export const CHORDS = " + JSON.stringify(chords),
-      (err) => {
-        console.error("Failed to write File", err);
-      });
-
-  return chords;
+  return notes;
 };
 
 let notes = recalculateAllNotes();
-// const chordRules = CHORD_RULES_WITH_VARIATIONS || recalculateChordRules();
-const chordRules: ChordRuleVariationType[] = recalculateChordRules();
-// const chords: ChordType[] = CHORDS || recalculateAllChords();
-const chords: ChordType[] = recalculateAllChords();
+const chords: ChordType[] = CHORDS;
 
 const App: React.FC = () => {
 
