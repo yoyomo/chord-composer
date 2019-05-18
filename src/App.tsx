@@ -1,5 +1,5 @@
 import React from 'react';
-import './css/tachyons.css';
+import {CHORD_RULES} from "./constants/all-chords";
 
 export interface ClassAndChildren {
   className?: string,
@@ -10,70 +10,155 @@ interface ChordElementProps extends ClassAndChildren {
   chord: ChordType
 }
 
+let audioContext: AudioContext;
+
 class ChordElement extends React.Component<ChordElementProps & ClassAndChildren> {
 
-  audioContext: AudioContext;
 
   render() {
     return (
-      <div className={"bg-light-red w-100px h-100px white dib tc v-mid pointer ma2 br3"}
-           onClick={this.playChord}>
-        <div className="fixed ">
-          {this.props.chord.name}
+        <div className={"bg-light-red w-100px h-100px white dib tc v-mid pointer ma2 br3"}
+             onClick={this.playChord}>
+          <div className="">
+            {this.props.chord.baseKey + this.props.chord.symbol}
+          </div>
         </div>
-      </div>
     );
   }
 
   constructor(props: ChordElementProps) {
     super(props);
-    this.audioContext = new AudioContext();
+    audioContext = new AudioContext();
   }
 
   playChord = () => {
 
-    this.props.chord.noteValues.map(noteValue => {
+    this.props.chord.pitchClass.map(noteIndex => {
+      if (noteIndex < 0 || noteIndex >= notes.length) {
+        return null;
+      }
+      let noteValue = notes[noteIndex];
 
-      let osc1 = this.audioContext.createOscillator();
+      let osc1 = audioContext.createOscillator();
       osc1.type = 'sine';
       osc1.frequency.value = noteValue;
 
-      let gain = this.audioContext.createGain();
+      let gain = audioContext.createGain();
       osc1.connect(gain);
-      gain.connect(this.audioContext.destination);
+      gain.connect(audioContext.destination);
 
-      var now = this.audioContext.currentTime;
-      gain.gain.setValueAtTime(1, now);
+      let now = audioContext.currentTime;
+      gain.gain.setValueAtTime(0.2, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
       osc1.start(now);
       osc1.stop(now + 0.5);
+      return osc1;
     });
   }
 }
 
-interface ChordType {
+
+const recalculateAllNotes = (baseFrequency = 440): number[] => {
+  const NUMBER_OF_NOTES = 88;
+  let notes = [];
+
+  for (let n = 0; n < NUMBER_OF_NOTES; n++) {
+    notes[n] = Math.pow(2, ((n + 1) - 49) / 12) * baseFrequency;
+  }
+
+  return notes;
+};
+
+export interface ChordType {
   name: string,
-  noteValues: number[],
+  baseKey: string,
+  symbol: string,
+  pitchClass: number[],
+  quality: string,
+  inversion: number,
 }
 
-const getAllNotes = () => {
-  
+export interface ChordRuleType {
+  name: string,
+  symbol: string,
+  pitchClass: number[],
+  quality: string,
+  inversion: number,
+}
+
+let fs = require('fs');
+const recalculateChordRules = (): ChordRuleType[] => {
+  let chordRules: ChordRuleType[] = [];
+
+  CHORD_RULES.map(chordRule => {
+    let pitchClass = chordRule.pitchClass;
+
+    for (let i = 0; i < pitchClass.length; i++) {
+      while (i > 0 && pitchClass[i] < pitchClass[i - 1]) {
+        pitchClass[i] += 12;
+      }
+    }
+
+    for (let i = 0; i < chordRule.pitchClass.length; i++) {
+      if (i > 0) {
+        let firstPitch = pitchClass.shift();
+        if (firstPitch) {
+          pitchClass.push(firstPitch)
+        }
+      }
+      chordRules.push({...chordRule, pitchClass: pitchClass, inversion: i});
+    }
+  });
+  console.log(fs);
+
+  fs.writeFile('data/chord-rules.ts', "export const CHORD_RULES_WITH_VARIATIONS = "+JSON.stringify(chordRules));
+
+  return chordRules;
 };
+
+const recalculateAllChords = (): ChordType[] => {
+  let chords: ChordType[] = [];
+
+  let keys = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+
+  for (let n = 0; n < notes.length; n++) {
+    let baseKey = keys[n % keys.length];
+    for (let c = 0; c < chordRules.length; c++) {
+      let chordRule = chordRules[c];
+      let pitchClass = chordRule.pitchClass;
+
+      for (let i = 0; i < pitchClass.length; i++) {
+        pitchClass[i] += n;
+      }
+
+      chords.push({
+        ...chordRule,
+        pitchClass: pitchClass,
+        baseKey: baseKey,
+      });
+    }
+
+  }
+
+  fs.writeFile('data/chords.ts', "export const CHORDS = "+JSON.stringify(chords));
+
+  return chords;
+};
+
+let notes = recalculateAllNotes();
+// const chordRules = CHORD_RULES_WITH_VARIATIONS || recalculateChordRules();
+const chordRules = recalculateChordRules();
+// const chords: ChordType[] = CHORDS || recalculateAllChords();
+const chords: ChordType[] = recalculateAllChords();
 
 const App: React.FC = () => {
 
-  let chords: ChordType[] = [
-    {name: "A", noteValues: [440, 554.37, 659.25]},
-    {name: "Bm7", noteValues: [493.88]},
-    {name: "C#maj7", noteValues: [554.37]},
-  ];
-
   return (
-    <div className={"flex flex-row"}>
-      {chords.map(chord => {
-        return <ChordElement chord={chord}/>
-      })}
-    </div>
+      <div className={""}>
+        {chords.map((chord, c) => {
+          return <ChordElement chord={chord} key={"chord-" + c}/>
+        })}
+      </div>
   );
 };
 
