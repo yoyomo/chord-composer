@@ -74,7 +74,7 @@ export interface ChordType extends ChordRuleVariationType {
 }
 
 export interface ChordRuleVariationType extends ChordRuleType {
-  inversion: number,
+  variation: number,
 }
 
 export interface ChordRuleType {
@@ -91,20 +91,20 @@ const recalculateChordRules = (): ChordRuleVariationType[] => {
   CHORD_RULES.map(chordRule => {
     let pitchClass = chordRule.pitchClass;
 
-    for (let i = 0; i < pitchClass.length; i++) {
-      while (i > 0 && pitchClass[i] < pitchClass[i - 1]) {
-        pitchClass[i] += 12;
+    for (let p = 0; p < pitchClass.length; p++) {
+      while (p > 0 && pitchClass[p] < pitchClass[p - 1]) {
+        pitchClass[p] += 12;
       }
     }
 
-    for (let i = 0; i < chordRule.pitchClass.length; i++) {
-      if (i > 0) {
+    for (let v = 0; v < chordRule.pitchClass.length; v++) {
+      if (v > 0) {
         let firstPitch = pitchClass.shift();
         if (firstPitch) {
           pitchClass.push(firstPitch)
         }
       }
-      chordRules.push({...chordRule, pitchClass: pitchClass, inversion: i});
+      chordRules.push({...chordRule, pitchClass: pitchClass, variation: v});
     }
   });
   console.log(fs);
@@ -125,8 +125,8 @@ const recalculateAllChords = (): ChordType[] => {
       let chordRule = chordRules[c];
       let pitchClass = chordRule.pitchClass;
 
-      for (let i = 0; i < pitchClass.length; i++) {
-        pitchClass[i] += n;
+      for (let p = 0; p < pitchClass.length; p++) {
+        pitchClass[p] += n;
       }
 
       chords.push({
