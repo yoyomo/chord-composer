@@ -1,5 +1,6 @@
 import React from 'react';
 import {CHORD_RULES} from "./constants/all-chords";
+import * as fs from "fs";
 
 export interface ClassAndChildren {
   className?: string,
@@ -84,7 +85,6 @@ export interface ChordRuleType {
   quality: string,
 }
 
-let fs = require('fs');
 const recalculateChordRules = (): ChordRuleVariationType[] => {
   let chordRules: ChordRuleVariationType[] = [];
 
@@ -109,7 +109,10 @@ const recalculateChordRules = (): ChordRuleVariationType[] => {
   });
   console.log(fs);
 
-  fs.writeFile('data/chord-rules.ts', "export const CHORD_RULES_WITH_VARIATIONS = "+JSON.stringify(chordRules));
+  fs.writeFile('constants/chord-rules.ts', "export const CHORD_RULES_WITH_VARIATIONS = " + JSON.stringify(chordRules),
+      (err) => {
+        console.error("Failed to write File", err);
+      });
 
   return chordRules;
 };
@@ -138,7 +141,10 @@ const recalculateAllChords = (): ChordType[] => {
 
   }
 
-  fs.writeFile('data/chords.ts', "export const CHORDS = "+JSON.stringify(chords));
+  fs.writeFile('constants/chords.ts', "export const CHORDS = " + JSON.stringify(chords),
+      (err) => {
+        console.error("Failed to write File", err);
+      });
 
   return chords;
 };
