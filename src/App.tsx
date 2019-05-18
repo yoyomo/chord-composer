@@ -69,12 +69,11 @@ const recalculateAllNotes = (baseFrequency = 440): number[] => {
   return notes;
 };
 
-export interface ChordType {
-  name: string,
+export interface ChordType extends ChordRuleVariationType {
   baseKey: string,
-  symbol: string,
-  pitchClass: number[],
-  quality: string,
+}
+
+export interface ChordRuleVariationType extends ChordRuleType {
   inversion: number,
 }
 
@@ -83,12 +82,11 @@ export interface ChordRuleType {
   symbol: string,
   pitchClass: number[],
   quality: string,
-  inversion: number,
 }
 
 let fs = require('fs');
-const recalculateChordRules = (): ChordRuleType[] => {
-  let chordRules: ChordRuleType[] = [];
+const recalculateChordRules = (): ChordRuleVariationType[] => {
+  let chordRules: ChordRuleVariationType[] = [];
 
   CHORD_RULES.map(chordRule => {
     let pitchClass = chordRule.pitchClass;
@@ -147,7 +145,7 @@ const recalculateAllChords = (): ChordType[] => {
 
 let notes = recalculateAllNotes();
 // const chordRules = CHORD_RULES_WITH_VARIATIONS || recalculateChordRules();
-const chordRules = recalculateChordRules();
+const chordRules: ChordRuleVariationType[] = recalculateChordRules();
 // const chords: ChordType[] = CHORDS || recalculateAllChords();
 const chords: ChordType[] = recalculateAllChords();
 
