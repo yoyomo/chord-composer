@@ -1,4 +1,4 @@
-[
+export const BASE_CHORD_RULES = [
   {"name": "Augmented ", "pitchClass": [0, 4, 8], "quality": "Augmented", "symbol": "aug"},
   {"name": "Augmented eleventh ", "pitchClass": [0, 4, 7, 10, 2, 6], "quality": "Major", "symbol": "aug11"},
   {"name": "Augmented major seventh ", "pitchClass": [0, 4, 8, 11], "quality": "Augmented", "symbol": "augM7"},

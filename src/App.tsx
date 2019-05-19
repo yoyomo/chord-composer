@@ -1,5 +1,4 @@
 import React from 'react';
-import {CHORD_RULES_WITH_VARIATIONS} from "./constants/chord-rules-with-variations";
 import {CHORDS} from "./constants/chords";
 
 export interface ClassAndChildren {
@@ -10,8 +9,6 @@ export interface ClassAndChildren {
 interface ChordElementProps extends ClassAndChildren {
   chord: ChordType
 }
-
-let audioContext: AudioContext;
 
 class ChordElement extends React.Component<ChordElementProps & ClassAndChildren> {
 
@@ -86,6 +83,8 @@ const recalculateAllNotes = (baseFrequency = 440): number[] => {
   return notes;
 };
 
+//state
+let audioContext: AudioContext;
 let notes = recalculateAllNotes();
 const chords: ChordType[] = CHORDS;
 
