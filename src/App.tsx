@@ -1,5 +1,5 @@
-import React from 'react';
-import {CHORDS} from "./constants/chords";
+import React, {SyntheticEvent} from 'react';
+import {initialState, State} from "./state";
 
 export interface ClassAndChildren {
   className?: string,
@@ -8,45 +8,60 @@ export interface ClassAndChildren {
 
 interface ChordElementProps extends ClassAndChildren {
   chord: ChordType
+  notes: number[]
+  audioContext: AudioContext
+  selectChordType: () => void
 }
 
-class ChordElement extends React.Component<ChordElementProps & ClassAndChildren> {
-
+class ChordElement extends React.Component<ChordElementProps> {
+  touchHandled = false;
 
   render() {
     return (
-        <div className={"bg-light-red w-100px h-100px white dib tc v-mid pointer ma2 br3"}
-             onClick={this.playChord}>
+        <div
+            className={`${this.props.chord.variation === 0 ? "bg-light-red" : "bg-light-blue"} w3 h3 white dib tc v-mid pointer ma2 br3`}
+            onMouseDown={this.handleClick}
+            onTouchStart={this.handleClick}>
           <div className="">
             {this.props.chord.baseKey + this.props.chord.symbol}
+          </div>
+          <div>
             {this.props.chord.variation}
           </div>
         </div>
     );
   }
 
-  constructor(props: ChordElementProps) {
-    super(props);
-    audioContext = new AudioContext();
-  }
+  handleClick = (e: SyntheticEvent<any>) => {
+    e.preventDefault();
+
+    if (e.type === "touchstart") {
+      this.touchHandled = true;
+    } else if (e.type === "mousedown" && this.touchHandled) {
+      return;
+    }
+
+    this.playChord();
+    this.props.selectChordType();
+  };
 
   playChord = () => {
 
     this.props.chord.pitchClass.map(noteIndex => {
-      if (noteIndex < 0 || noteIndex >= notes.length) {
+      if (noteIndex < 0 || noteIndex >= this.props.notes.length) {
         return null;
       }
-      let noteValue = notes[noteIndex];
+      let noteValue = this.props.notes[noteIndex];
 
-      let osc1 = audioContext.createOscillator();
-      osc1.type = 'sine';
+      let osc1 = this.props.audioContext.createOscillator();
+      osc1.type = 'sawtooth';
       osc1.frequency.value = noteValue;
 
-      let gain = audioContext.createGain();
+      let gain = this.props.audioContext.createGain();
       osc1.connect(gain);
-      gain.connect(audioContext.destination);
+      gain.connect(this.props.audioContext.destination);
 
-      let now = audioContext.currentTime;
+      let now = this.props.audioContext.currentTime;
       gain.gain.setValueAtTime(0.2, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
       osc1.start(now);
@@ -56,11 +71,8 @@ class ChordElement extends React.Component<ChordElementProps & ClassAndChildren>
   }
 }
 
-export interface ChordType extends ChordRuleVariationType {
+export interface ChordType extends ChordRuleType {
   baseKey: string,
-}
-
-export interface ChordRuleVariationType extends ChordRuleType {
   variation: number,
 }
 
@@ -71,32 +83,178 @@ export interface ChordRuleType {
   quality: string,
 }
 
-export const NUMBER_OF_NOTES = 88;
+export const KEYS = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 
-const recalculateAllNotes = (baseFrequency = 440): number[] => {
-  let notes = [];
+interface NoteKeyProps extends ClassAndChildren {
+  keyIndex: number
+  baseKey: string
+  selectKey: (keyIndex: number) => void
+}
 
-  for (let n = 0; n < NUMBER_OF_NOTES; n++) {
-    notes[n] = Math.pow(2, ((n + 1) - 49) / 12) * baseFrequency;
+const NoteKey = (props: NoteKeyProps) => {
+  return <div className={"bg-light-red w3 h3 white dib tc v-mid pointer ma2 br3"}
+              onClick={() => props.selectKey(props.keyIndex)}>
+    {props.baseKey}
+  </div>
+};
+
+interface BottomButtonProps extends ClassAndChildren {
+  text: string
+  onClick: () => void
+}
+
+const BottomButton = (props: BottomButtonProps) => {
+  return <div className={"absolute w-100 white bg-light-blue bottom-0 pointer h3"}
+              onClick={props.onClick}>
+    {props.text}
+  </div>
+};
+
+
+export class ReactRoot extends React.Component<{}, typeof initialState> {
+
+  constructor(props: ClassAndChildren) {
+    super(props);
+    this.state = {...initialState};
   }
 
-  return notes;
-};
+  removeVariations = () => {
+    let baseChord = this.state.chordGrid[this.state.selectedChordTypeIndex];
 
-//state
-let audioContext: AudioContext;
-let notes = recalculateAllNotes();
-const chords: ChordType[] = CHORDS;
+    let chordGrid = this.state.chordGrid.slice();
 
-const App: React.FC = () => {
+    chordGrid = chordGrid.slice(0,this.state.selectedChordTypeIndex+1).
+        concat(chordGrid.slice(this.state.selectedChordTypeIndex + baseChord.pitchClass.length));
 
-  return (
-      <div className={""}>
-        {chords.map((chord, c) => {
-          return <ChordElement chord={chord} key={"chord-" + c}/>
-        })}
-      </div>
-  );
-};
+    this.setState({
+      chordGrid: chordGrid,
+      showingVariations: false
+    });
 
-export default App;
+  };
+
+  recomputeVariations = () => {
+    let baseChord = this.state.chordGrid[this.state.selectedChordTypeIndex];
+
+    let pitchClass = baseChord.pitchClass.slice();
+    let chordGrid = this.state.chordGrid.slice();
+
+    for (let v = 1; v < pitchClass.length; v++) {
+      let firstPitch = pitchClass.shift();
+
+      if (firstPitch) {
+        while (firstPitch < pitchClass[pitchClass.length - 1]) {
+          firstPitch += 12;
+        }
+        pitchClass.push(firstPitch);
+      }
+
+      let chordVariation: ChordType = {
+        ...baseChord,
+        pitchClass: pitchClass.slice(),
+        variation: v,
+      };
+
+      chordGrid.splice(this.state.selectedChordTypeIndex + v, 0, chordVariation);
+    }
+
+    this.setState({
+      chordGrid: chordGrid,
+      showingVariations: true
+    });
+
+  };
+
+  selectChordType = (chordGridIndex: number) => {
+    let selectedChord = this.state.chordGrid[chordGridIndex];
+
+    while (selectedChord.variation > 0){
+      selectedChord = this.state.chordGrid[--chordGridIndex];
+    }
+
+    let nextChord = this.state.chordGrid[chordGridIndex + 1];
+
+    this.setState({
+      selectedChordTypeIndex: chordGridIndex,
+      showingVariations: nextChord && nextChord.variation > 0
+    });
+  };
+
+  recomputeChords = (keyIndex: number) => {
+    let chordGrid: ChordType[] = [];
+    this.state.chordRules.map(chordRule => {
+      let pitchClass = chordRule.pitchClass.slice();
+
+      // add key and octave
+      for (let p = 0; p < pitchClass.length; p++) {
+        pitchClass[p] += this.state.selectedKeyIndex + this.state.octave * 12;
+      }
+
+      // make sure pitchClass is incrementing array
+      for (let p = 0; p < pitchClass.length; p++) {
+        while (p > 0 && pitchClass[p] < pitchClass[p - 1]) {
+          pitchClass[p] += 12;
+        }
+      }
+
+      let chord: ChordType = {
+        ...chordRule,
+        pitchClass: pitchClass.slice(),
+        variation: 0,
+        baseKey: KEYS[keyIndex]
+      };
+
+      chordGrid.push(chord);
+    });
+
+    this.setState({
+      chordGrid: chordGrid,
+      selectedKeyIndex: keyIndex
+    })
+  };
+
+  selectKey = (keyIndex: number) => {
+    this.recomputeChords(keyIndex);
+  };
+
+  showVariations = () => {
+    this.recomputeVariations();
+  };
+
+  hideVariations = () => {
+    this.removeVariations();
+  };
+
+  render() {
+    return (
+        <div>
+          {this.state.selectedKeyIndex == null ?
+              KEYS.map((key, i) => {
+                return <NoteKey baseKey={key} keyIndex={i} selectKey={this.selectKey}/>
+              })
+              :
+              this.state.chordGrid.map((chord, i) => {
+                return <ChordElement chord={chord}
+                                     notes={this.state.notes}
+                                     audioContext={this.state.audioContext}
+                                     selectChordType={() => this.selectChordType(i)}
+                />
+              })
+          }
+
+
+          {this.state.selectedChordTypeIndex !== null ?
+              this.state.showingVariations ?
+                  <BottomButton text={"Hide Variations"} onClick={this.hideVariations}/>
+                  :
+                  <BottomButton text={"Show Variations"} onClick={this.showVariations}/>
+
+              :
+              null
+          }
+
+        </div>
+    );
+  }
+}
+
