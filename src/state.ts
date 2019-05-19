@@ -1,5 +1,5 @@
-import {ChordRuleType, ChordType} from "./App";
 import {BASE_CHORD_RULES} from "./constants/base-chord-rules";
+import {ChordRuleType, ChordType} from "./components/chord";
 
 export const NUMBER_OF_NOTES = 88;
 
