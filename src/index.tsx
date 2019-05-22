@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './css/extensions.css';
 import './css/tachyons.css';
 import * as serviceWorker from './serviceWorker';
-import {ReactRoot} from "./App";
+import {ReactRoot} from "./react-root";
 
 ReactDOM.render(<ReactRoot />, document.getElementById('root'));
 

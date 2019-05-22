@@ -1,5 +1,5 @@
 import React from "react";
-import {ClassAndChildren} from "../App";
+import {ClassAndChildren} from "../react-root";
 
 export const KEYS = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 

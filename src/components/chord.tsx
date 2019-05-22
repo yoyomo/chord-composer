@@ -1,5 +1,5 @@
 import React, {SyntheticEvent} from "react";
-import {ClassAndChildren} from "../App";
+import {ClassAndChildren} from "../react-root";
 
 interface ChordElementProps extends ClassAndChildren {
   chord: ChordType
