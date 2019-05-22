@@ -7,8 +7,7 @@ export const removeVariations = (state: State): State => {
 
   let chordGrid = state.chordGrid.slice();
 
-  chordGrid = chordGrid.slice(0,state.selectedChordTypeIndex+1).
-  concat(chordGrid.slice(state.selectedChordTypeIndex + baseChord.pitchClass.length));
+  chordGrid = chordGrid.slice(0,state.selectedChordTypeIndex+1).concat(chordGrid.slice(state.selectedChordTypeIndex + baseChord.pitchClass.length));
 
   state = {...state};
   state.chordGrid = chordGrid;
@@ -93,6 +92,7 @@ export const recomputeChords = (state: State, keyIndex: number): State => {
     };
 
     chordGrid.push(chord);
+    return chord;
   });
 
   state.chordGrid = chordGrid;
