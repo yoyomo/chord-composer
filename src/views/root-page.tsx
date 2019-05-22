@@ -6,20 +6,19 @@ import React from "react";
 import {State} from "../state";
 import {Action} from "../react-root";
 
-export module RootPage {
 
-  export function render(dispatch: (action: Action) => void) {
+export function RootPage(dispatch: (action: Action) => void) {
 
-    let dispatcher = {
-      selectKey: (keyIndex: number) => dispatch(selectKey(keyIndex)),
-      selectChordType: (chordTypeIndex: number) => dispatch(selectChordType(chordTypeIndex)),
-      showVariations: () => dispatch(showVariations()),
-      hideVariations: () => dispatch(hideVariations()),
-    };
+  let dispatcher = {
+    selectKey: (keyIndex: number) => dispatch(selectKey(keyIndex)),
+    selectChordType: (chordTypeIndex: number) => dispatch(selectChordType(chordTypeIndex)),
+    showVariations: () => dispatch(showVariations()),
+    hideVariations: () => dispatch(hideVariations()),
+  };
 
-    return (state: State) => {
-      return (
-        <div className={"w-100 h-100"}>
+  return (state: State) => {
+    return (
+      <div className={"w-100 h-100"}>
         <div className={"absolute top-0"}>
           {KEYS.map((key, i) => {
             return <NoteKey baseKey={key} keyIndex={i}
@@ -46,7 +45,6 @@ export module RootPage {
         </div>
 
       </div>
-      );
-    }
+    );
   }
 }
