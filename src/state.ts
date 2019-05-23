@@ -3,11 +3,11 @@ import {ChordRuleType, ChordType} from "./components/chord";
 
 export const NUMBER_OF_NOTES = 88;
 
-export const recomputeAllNotes = (baseFrequency = 440): number[] => {
+export const recomputeAllNotes = (state: State): number[] => {
   let notes = [];
 
   for (let n = 0; n < NUMBER_OF_NOTES; n++) {
-    notes[n] = Math.pow(2, ((n + 1) - 49) / 12) * baseFrequency;
+    notes[n] = Math.pow(2, ((n + 1) - 49) / 12) * state.baseFrequency;
   }
 
   return notes;
@@ -20,9 +20,10 @@ const AudioContext = (window as any).AudioContext // Default
 
 export let initialState = {
   audioContext: new AudioContext(),
-  notes: recomputeAllNotes(),
+  notes: [] as number[],
+  baseFrequency: 440,
   selectedKeyIndex: null as unknown as number,
-  octave: 3,
+  octave: 2,
   chordRules: BASE_CHORD_RULES as ChordRuleType[],
   chordGrid: [] as ChordType[],
   showingVariations: false,

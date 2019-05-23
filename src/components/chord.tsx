@@ -26,7 +26,8 @@ export class ChordElement extends React.Component<ChordElementProps> {
   render() {
     return (
         <div
-            className={`${this.props.chord.variation === 0 ? "bg-light-red" : "bg-light-blue"} w3 h3 white dib tc v-mid pointer ma2 br3`}
+            className={`${this.props.chord.variation === 0 ? "bg-light-red" : "bg-light-blue"}
+             w3 h3 white dib tc v-mid pointer ma2 pt3 br3`}
             onMouseDown={this.handleClick}
             onTouchStart={this.handleClick}
             onTouchEnd={this.handleClickEnd}

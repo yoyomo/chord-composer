@@ -10,7 +10,9 @@ interface NoteKeyProps extends ClassAndChildren {
 }
 
 export const NoteKey = (props: NoteKeyProps) => {
-  return <div className={"bg-light-red w3 h3 white dib tc v-mid pointer ma2 br3"}
+  return <div
+      className={`${props.baseKey.includes('#') ? 'bg-gray light-gray' : 'bg-light-gray black'}
+       w3 h3 dib tc v-mid pointer ma2 pa3 br3`}
               onClick={() => props.selectKey(props.keyIndex)}>
     {props.baseKey}
   </div>

@@ -55,4 +55,4 @@ export const BASE_CHORD_RULES = [
   {"name": "Thirteenth flat ninth flat fifth ", "pitchClass": [0, 4, 6, 10, 1, 9], "quality": "M3+d5", "symbol": "13b9b5"},
   {"name": "Viennese tri v1", "pitchClass": [0, 1, 6], "quality": "Atonal", "symbol": "vienesse tri1"},
   {"name": "Viennese tri v2", "pitchClass": [0, 6, 7], "quality": "Atonal", "symbol": "vienesse tri2"}
-]
+];
