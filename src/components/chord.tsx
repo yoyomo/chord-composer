@@ -21,51 +21,40 @@ export interface ChordRuleType {
 }
 
 export class ChordElement extends React.Component<ChordElementProps> {
-  touchHandled = false;
+  clickHandled = false;
 
   render() {
     return (
-        <div
-            className={`${this.props.chord.variation === 0 ? "bg-light-red" : "bg-light-blue"}
+      <div
+        className={`${this.props.chord.variation === 0 ? "bg-light-red" : "bg-light-blue"}
              w3 h3 white dib tc v-mid pointer ma2 pt3 br3`}
-            onMouseDown={this.handleClick}
-            onTouchStart={this.handleClick}
-            onTouchEnd={this.handleClickEnd}
-            onTouchMoveCapture={this.noClick}
-            onWheelCapture={this.noClick}
-        >
-          <div className="">
-            {this.props.chord.baseKey + this.props.chord.symbol}
-          </div>
-          {this.props.chord.variation > 0 &&
-          <div>
-            {this.props.chord.variation}
-          </div>
-          }
+        onMouseDown={this.handleClick}
+        onMouseUp={this.handleClickEnd}
+        onTouchStart={this.handleClick}
+      >
+        <div className="">
+          {this.props.chord.baseKey + this.props.chord.symbol}
         </div>
+        {this.props.chord.variation > 0 &&
+        <div>
+          {this.props.chord.variation}
+        </div>
+        }
+      </div>
     );
   }
 
-
-  noClick = (e: SyntheticEvent<any>) => {
-    e.preventDefault();
-    this.touchHandled = true;
-  };
-
   handleClickEnd = (e: SyntheticEvent<any>) => {
-    e.preventDefault();
-    this.touchHandled = false;
+    this.clickHandled = false;
   };
 
   handleClick = (e: SyntheticEvent<any>) => {
-    e.preventDefault();
-
-    if (this.touchHandled) {
-      return
+    if (this.clickHandled) {
+      return;
     }
 
-    if (e.type === "touchstart") {
-      this.touchHandled = true;
+    if(e.type === "touchstart") {
+      this.clickHandled = true;
     }
 
     this.playChord();

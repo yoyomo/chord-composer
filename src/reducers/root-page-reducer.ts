@@ -107,7 +107,10 @@ export const recomputeChordGrid = memoizeBySomeProperties({
   chordRules: initialState.chordRules,
   selectedKeyIndex: initialState.selectedKeyIndex,
   octave: initialState.octave,
+  selectedChordTypeIndex: initialState.selectedChordTypeIndex,
+  chordGrid: initialState.chordGrid,
 }, (state) => {
+  console.log("????", state.chordGrid);
 
   let chordGrid: ChordType[] = [];
   state.chordRules.map(chordRule => {
@@ -136,6 +139,31 @@ export const recomputeChordGrid = memoizeBySomeProperties({
     return chord;
   });
 
+  let baseChord = state.chordGrid[state.selectedChordTypeIndex];
+
+  let pitchClass = baseChord.pitchClass.slice();
+  let chordGrid = state.chordGrid.slice();
+  console.log("pre", state.chordGrid);
+
+  for (let v = 1; v < pitchClass.length; v++) {
+    let firstPitch = pitchClass.shift();
+
+    if (firstPitch) {
+      while (firstPitch < pitchClass[pitchClass.length - 1]) {
+        firstPitch += 12;
+      }
+      pitchClass.push(firstPitch);
+    }
+
+    let chordVariation: ChordType = {
+      ...baseChord,
+      pitchClass: pitchClass.slice(),
+      variation: v,
+    };
+
+    chordGrid.splice(state.selectedChordTypeIndex + v, 0, chordVariation);
+  }
+
   return chordGrid
 });
 
@@ -149,7 +177,7 @@ export const reduceRootPage = (state: State, action: Action): State => {
       break;
     }
 
-    case "select-chord-type":
+    case "select-chord-type": {
       let chordGridIndex = action.chordTypeIndex;
       let selectedChord = state.chordGrid[chordGridIndex];
 
@@ -162,36 +190,11 @@ export const reduceRootPage = (state: State, action: Action): State => {
       state = {...state};
       state.selectedChordTypeIndex = chordGridIndex;
       state.showingVariations = nextChord && nextChord.variation > 0;
-
       break;
+    }
 
     case "show-variations": {
-      let baseChord = state.chordGrid[state.selectedChordTypeIndex];
-
-      let pitchClass = baseChord.pitchClass.slice();
-      let chordGrid = state.chordGrid.slice();
-
-      for (let v = 1; v < pitchClass.length; v++) {
-        let firstPitch = pitchClass.shift();
-
-        if (firstPitch) {
-          while (firstPitch < pitchClass[pitchClass.length - 1]) {
-            firstPitch += 12;
-          }
-          pitchClass.push(firstPitch);
-        }
-
-        let chordVariation: ChordType = {
-          ...baseChord,
-          pitchClass: pitchClass.slice(),
-          variation: v,
-        };
-
-        chordGrid.splice(state.selectedChordTypeIndex + v, 0, chordVariation);
-      }
-
       state = {...state};
-      state.chordGrid = chordGrid;
       state.showingVariations = true;
       break;
     }
@@ -236,5 +239,6 @@ export const reduceRootPage = (state: State, action: Action): State => {
 
 
   }
+
   return state;
 };
