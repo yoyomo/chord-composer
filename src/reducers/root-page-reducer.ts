@@ -36,15 +36,15 @@ export const hideVariations = (): HideVariationsAction => {
   };
 };
 
-export interface SelectChordTypeAction {
+export interface SelectChordRuleAction {
   type: "select-chord-type"
-  chordTypeIndex: number
+  chordRuleIndex: number
 }
 
-export const selectChordType = (chordTypeIndex: number): SelectChordTypeAction => {
+export const selectChordRule = (chordRuleIndex: number): SelectChordRuleAction => {
   return {
     type: "select-chord-type",
-    chordTypeIndex
+    chordRuleIndex: chordRuleIndex
   };
 };
 
@@ -84,7 +84,7 @@ export type RootPageAction =
     SelectKeyAction
     | ShowVariationsAction
     | HideVariationsAction
-    | SelectChordTypeAction
+    | SelectChordRuleAction
     | DecreaseOctaveAction
     | IncreaseOctaveAction
     | ChangeBaseFrequencyAction;
@@ -107,13 +107,13 @@ export const recomputeChordGrid = memoizeBySomeProperties({
   chordRules: initialState.chordRules,
   selectedKeyIndex: initialState.selectedKeyIndex,
   octave: initialState.octave,
-  selectedChordTypeIndex: initialState.selectedChordTypeIndex,
+  selectedChordRuleIndex: initialState.selectedChordRuleIndex,
   chordGrid: initialState.chordGrid,
+  showingVariations: initialState.showingVariations,
 }, (state) => {
-  console.log("????", state.chordGrid);
 
   let chordGrid: ChordType[] = [];
-  state.chordRules.map(chordRule => {
+  state.chordRules.map((chordRule, i) => {
     let pitchClass = chordRule.pitchClass.slice();
 
     // add key and octave
@@ -128,41 +128,43 @@ export const recomputeChordGrid = memoizeBySomeProperties({
       }
     }
 
-    let chord: ChordType = {
+    let baseChord: ChordType = {
       ...chordRule,
       pitchClass: pitchClass.slice(),
       variation: 0,
-      baseKey: KEYS[state.selectedKeyIndex]
+      baseKey: KEYS[state.selectedKeyIndex],
+      chordRuleIndex: i,
     };
 
-    chordGrid.push(chord);
-    return chord;
-  });
+    chordGrid.push(baseChord);
 
-  let baseChord = state.chordGrid[state.selectedChordTypeIndex];
+    if (state.showingVariations[i]) {
 
-  let pitchClass = baseChord.pitchClass.slice();
-  let chordGrid = state.chordGrid.slice();
-  console.log("pre", state.chordGrid);
+      let pitchClass = baseChord.pitchClass.slice();
 
-  for (let v = 1; v < pitchClass.length; v++) {
-    let firstPitch = pitchClass.shift();
+      for (let v = 1; v < pitchClass.length; v++) {
+        let firstPitch = pitchClass.shift();
 
-    if (firstPitch) {
-      while (firstPitch < pitchClass[pitchClass.length - 1]) {
-        firstPitch += 12;
+        if (firstPitch) {
+          while (firstPitch < pitchClass[pitchClass.length - 1]) {
+            firstPitch += 12;
+          }
+          pitchClass.push(firstPitch);
+        }
+
+        let chordVariation: ChordType = {
+          ...baseChord,
+          pitchClass: pitchClass.slice(),
+          variation: v,
+        };
+
+        chordGrid.push(chordVariation);
       }
-      pitchClass.push(firstPitch);
     }
 
-    let chordVariation: ChordType = {
-      ...baseChord,
-      pitchClass: pitchClass.slice(),
-      variation: v,
-    };
+    return baseChord;
+  });
 
-    chordGrid.splice(state.selectedChordTypeIndex + v, 0, chordVariation);
-  }
 
   return chordGrid
 });
@@ -178,38 +180,22 @@ export const reduceRootPage = (state: State, action: Action): State => {
     }
 
     case "select-chord-type": {
-      let chordGridIndex = action.chordTypeIndex;
-      let selectedChord = state.chordGrid[chordGridIndex];
-
-      while (selectedChord.variation > 0) {
-        selectedChord = state.chordGrid[--chordGridIndex];
-      }
-
-      let nextChord = state.chordGrid[chordGridIndex + 1];
-
       state = {...state};
-      state.selectedChordTypeIndex = chordGridIndex;
-      state.showingVariations = nextChord && nextChord.variation > 0;
+      state.selectedChordRuleIndex = action.chordRuleIndex;
       break;
     }
 
     case "show-variations": {
       state = {...state};
-      state.showingVariations = true;
+      state.showingVariations = {...state.showingVariations};
+      state.showingVariations[state.selectedChordRuleIndex] = true;
       break;
     }
 
     case "hide-variations": {
-      let baseChord = state.chordGrid[state.selectedChordTypeIndex];
-
-      let chordGrid = state.chordGrid.slice();
-
-      chordGrid = chordGrid.slice(0, state.selectedChordTypeIndex + 1).concat(chordGrid.slice(state.selectedChordTypeIndex + baseChord.pitchClass.length));
-
       state = {...state};
-      state.chordGrid = chordGrid;
-      state.showingVariations = false;
-
+      state.showingVariations = {...state.showingVariations};
+      state.showingVariations[state.selectedChordRuleIndex] = false;
       break;
     }
 

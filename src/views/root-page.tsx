@@ -3,7 +3,7 @@ import {
   changeBaseFrequency,
   decreaseOctave,
   hideVariations, increaseOctave,
-  selectChordType,
+  selectChordRule,
   selectKey,
   showVariations
 } from "../reducers/root-page-reducer";
@@ -18,7 +18,7 @@ export function RootPage(dispatch: (action: Action) => void) {
 
   let dispatcher = {
     selectKey: (keyIndex: number) => dispatch(selectKey(keyIndex)),
-    selectChordType: (chordTypeIndex: number) => dispatch(selectChordType(chordTypeIndex)),
+    selectChordRule: (chordRuleIndex: number) => dispatch(selectChordRule(chordRuleIndex)),
     showVariations: () => dispatch(showVariations()),
     hideVariations: () => dispatch(hideVariations()),
     decreaseOctave: () => dispatch(decreaseOctave()),
@@ -65,7 +65,7 @@ export function RootPage(dispatch: (action: Action) => void) {
                                      chord={chord}
                                      notes={state.notes}
                                      audioContext={state.audioContext}
-                                     selectChordType={() => dispatcher.selectChordType(i)}
+                                     selectChordRule={() => dispatcher.selectChordRule(chord.chordRuleIndex)}
                 />
               })
               }
@@ -73,8 +73,8 @@ export function RootPage(dispatch: (action: Action) => void) {
           </div>
 
           <div>
-            {state.selectedChordTypeIndex !== null && <VariationsButton
-                showingVariations={state.showingVariations}
+            {state.selectedChordRuleIndex !== null && <VariationsButton
+                showingVariations={state.showingVariations[state.selectedChordRuleIndex]}
                 onShow={dispatcher.showVariations}
                 onHide={dispatcher.hideVariations}/>}
           </div>

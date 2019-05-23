@@ -5,12 +5,13 @@ interface ChordElementProps extends ClassAndChildren {
   chord: ChordType
   notes: number[]
   audioContext: AudioContext
-  selectChordType: () => void
+  selectChordRule: () => void
 }
 
 export interface ChordType extends ChordRuleType {
   baseKey: string,
   variation: number,
+  chordRuleIndex: number,
 }
 
 export interface ChordRuleType {
@@ -58,7 +59,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
     }
 
     this.playChord();
-    this.props.selectChordType();
+    this.props.selectChordRule();
   };
 
   playChord = () => {
