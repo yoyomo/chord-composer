@@ -1,5 +1,5 @@
 import React from "react";
-import {ClassAndChildren} from "../react-root";
+import {ClassAndChildren} from "../core/reducers";
 
 interface BottomButtonProps extends ClassAndChildren {
   text: string

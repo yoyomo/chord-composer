@@ -1,22 +1,9 @@
 import {BASE_CHORD_RULES} from "./constants/base-chord-rules";
 import {ChordRuleType, ChordType} from "./components/chord";
 
-export const NUMBER_OF_NOTES = 88;
-
-export const recomputeAllNotes = (state: State): number[] => {
-  let notes = [];
-
-  for (let n = 0; n < NUMBER_OF_NOTES; n++) {
-    notes[n] = Math.pow(2, ((n + 1) - 49) / 12) * state.baseFrequency;
-  }
-
-  return notes;
-};
-
 const AudioContext = (window as any).AudioContext // Default
-    || (window as any).webkitAudioContext // Safari and old versions of Chrome
-    || false;
-
+  || (window as any).webkitAudioContext // Safari and old versions of Chrome
+  || false;
 
 export let initialState = {
   audioContext: new AudioContext(),

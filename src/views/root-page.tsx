@@ -1,5 +1,6 @@
 import {KEYS, NoteKey} from "../components/note-key";
 import {
+  changeBaseFrequency,
   decreaseOctave,
   hideVariations, increaseOctave,
   selectChordType,
@@ -22,7 +23,7 @@ export function RootPage(dispatch: (action: Action) => void) {
     hideVariations: () => dispatch(hideVariations()),
     decreaseOctave: () => dispatch(decreaseOctave()),
     increaseOctave: () => dispatch(increaseOctave()),
-    changeBaseFrequency: (freq: number) => dispatch(increaseOctave()),
+    changeBaseFrequency: (freq: number) => dispatch(changeBaseFrequency(freq)),
   };
 
   return (state: State) => {
@@ -45,7 +46,7 @@ export function RootPage(dispatch: (action: Action) => void) {
                 <div className={"db"}>Base Frequency</div>
                 <input type={"number"} className={"db"}
                        value={state.baseFrequency}
-                       onChange={dispatcher.changeBaseFrequency}/>
+                       onChange={(e) => dispatcher.changeBaseFrequency(parseInt(e.target.value))}/>
               </div>
             </div>
           </div>

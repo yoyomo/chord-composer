@@ -1,7 +1,6 @@
 import {BottomButton} from "./bottom-button";
 import React from "react";
-import {ClassAndChildren} from "../react-root";
-
+import {ClassAndChildren} from "../core/reducers";
 
 interface VariationsButtonProps extends ClassAndChildren {
   showingVariations: boolean

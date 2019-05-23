@@ -1,7 +1,8 @@
-import {State} from "../state";
+import {initialState, State} from "../state";
 import {ChordType} from "../components/chord";
 import {KEYS} from "../components/note-key";
 import {Action} from "../react-root";
+import {memoizeBySomeProperties} from "../utils/memoizers";
 
 export interface SelectKeyAction {
   type: "select-key"
@@ -67,15 +68,46 @@ export const increaseOctave = (): IncreaseOctaveAction => {
   };
 };
 
+export interface ChangeBaseFrequencyAction {
+  type: "change-base-frequency"
+  frequency: number
+}
+
+export const changeBaseFrequency = (frequency: number): ChangeBaseFrequencyAction => {
+  return {
+    type: "change-base-frequency",
+    frequency
+  };
+};
+
 export type RootPageAction =
     SelectKeyAction
     | ShowVariationsAction
     | HideVariationsAction
     | SelectChordTypeAction
     | DecreaseOctaveAction
-    | IncreaseOctaveAction;
+    | IncreaseOctaveAction
+    | ChangeBaseFrequencyAction;
 
-export const recomputeChordGrid = (state: State) => {
+export const NUMBER_OF_NOTES = 88;
+
+export const recomputeAllNotes = memoizeBySomeProperties({
+  baseFrequency: initialState.baseFrequency,
+}, (state) => {
+  let notes = [];
+
+  for (let n = 0; n < NUMBER_OF_NOTES; n++) {
+    notes[n] = Math.pow(2, ((n + 1) - 49) / 12) * state.baseFrequency;
+  }
+
+  return notes;
+});
+
+export const recomputeChordGrid = memoizeBySomeProperties({
+  chordRules: initialState.chordRules,
+  selectedKeyIndex: initialState.selectedKeyIndex,
+  octave: initialState.octave,
+}, (state) => {
 
   let chordGrid: ChordType[] = [];
   state.chordRules.map(chordRule => {
@@ -105,7 +137,7 @@ export const recomputeChordGrid = (state: State) => {
   });
 
   return chordGrid
-};
+});
 
 export const reduceRootPage = (state: State, action: Action): State => {
   switch (action.type) {
@@ -193,6 +225,12 @@ export const reduceRootPage = (state: State, action: Action): State => {
       if (state.octave > 6) {
         state.octave = 6;
       }
+      break;
+    }
+
+    case "change-base-frequency": {
+      state = {...state};
+      state.baseFrequency = action.frequency;
       break;
     }
 
