@@ -33,14 +33,7 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
 
   dispatch = (state: State, action: Action) => {
     let oldState = {...state};
-    console.log("pre", oldState.chordGrid);
-
     let newState = this.reduce(oldState, action);
-    console.log("post", newState.chordGrid);
-
-    if(JSON.stringify(state) === JSON.stringify(newState)){
-      console.error("STATE MUTATION on action", action, newState);
-    }
     this.setState(newState);
   };
 

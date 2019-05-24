@@ -224,8 +224,8 @@ export const reduceRootPage = (state: State, action: Action): State => {
     case "increase-octave": {
       state = {...state};
       state.octave++;
-      if (state.octave > 6) {
-        state.octave = 6;
+      if (state.octave > 5) {
+        state.octave = 5;
       }
       break;
     }
