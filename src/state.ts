@@ -17,6 +17,7 @@ export let initialState = {
   chordGrid: [] as ChordType[],
   showingVariations: {} as ToggleMap,
   selectedChordRuleIndex: null as unknown as number,
+  waveType: "triangle" as OscillatorType,
 
 };
 

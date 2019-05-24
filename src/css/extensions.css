@@ -17,3 +17,11 @@ code {
 .h-100px {height: 100px;}
 
 .ma {margin: auto;}
+
+.bg-transparent {
+  background: transparent;
+}
+
+.border-less{
+  border: none;
+}

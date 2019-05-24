@@ -80,6 +80,18 @@ export const changeBaseFrequency = (frequency: number): ChangeBaseFrequencyActio
   };
 };
 
+export interface SelectWaveTypeAction {
+  type: "select-wave-type"
+  waveType: OscillatorType
+}
+
+export const selectWaveType = (waveType: OscillatorType): SelectWaveTypeAction => {
+  return {
+    type: "select-wave-type",
+    waveType
+  };
+};
+
 export type RootPageAction =
     SelectKeyAction
     | ShowVariationsAction
@@ -87,7 +99,8 @@ export type RootPageAction =
     | SelectChordRuleAction
     | DecreaseOctaveAction
     | IncreaseOctaveAction
-    | ChangeBaseFrequencyAction;
+    | ChangeBaseFrequencyAction
+    | SelectWaveTypeAction;
 
 export const NUMBER_OF_NOTES = 88;
 
@@ -220,6 +233,12 @@ export const reduceRootPage = (state: State, action: Action): State => {
     case "change-base-frequency": {
       state = {...state};
       state.baseFrequency = action.frequency;
+      break;
+    }
+
+    case "select-wave-type": {
+      state = {...state};
+      state.waveType = action.waveType;
       break;
     }
 

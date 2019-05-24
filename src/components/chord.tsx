@@ -6,6 +6,7 @@ interface ChordElementProps extends ClassAndChildren {
   notes: number[]
   audioContext: AudioContext
   selectChordRule: () => void
+  waveType: OscillatorType
 }
 
 export interface ChordType extends ChordRuleType {
@@ -27,7 +28,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
   render() {
     return (
       <div
-        className={`${this.props.chord.variation === 0 ? "bg-light-red" : "bg-light-blue"}
+        className={`${this.props.chord.variation === 0 ? "bg-gray light-gray" : "bg-light-gray dark-gray"}
              w3 h3 white dib tc v-mid pointer ma2 pt3 br3`}
         onMouseDown={this.handleClick}
         onMouseUp={this.handleClickEnd}
@@ -71,7 +72,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
       let noteValue = this.props.notes[noteIndex];
 
       let osc1 = this.props.audioContext.createOscillator();
-      osc1.type = 'sawtooth';
+      osc1.type = this.props.waveType;
       osc1.frequency.value = noteValue;
 
       let gain = this.props.audioContext.createGain();
@@ -80,9 +81,9 @@ export class ChordElement extends React.Component<ChordElementProps> {
 
       let now = this.props.audioContext.currentTime;
       gain.gain.setValueAtTime(0.2, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
       osc1.start(now);
-      osc1.stop(now + 0.5);
+      osc1.stop(now + 1.5);
       return osc1;
     });
   }
