@@ -1,15 +1,17 @@
 import React from 'react';
 import {initialState, State} from "./state";
-import {
-  recomputeAllNotes,
-  recomputeChordGrid,
-  reduceRootPage, RootPageAction,
-} from "./reducers/root-page-reducer";
 import {RootPage} from "./views/root-page";
 import {ClassAndChildren, computedFor, IgnoredAction, reducerChain} from "./core/reducers";
+import {recomputeAllNotes} from "./reducers/recompute-all-notes";
+import {recomputeChordGrid} from "./reducers/recompute-chord-grid";
+import {HeaderActions, reduceHeader} from "./reducers/header-reducer";
+import {ChordCanvasActions, reduceChordCanvas} from "./reducers/chord-canvas-reducer";
+import {FooterActions, reduceFooter} from "./reducers/footer-reducer";
 
 export type Action =
-  RootPageAction
+  HeaderActions
+    | ChordCanvasActions
+    | FooterActions
   | IgnoredAction
   ;
 
@@ -25,7 +27,9 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
 
   reduce = (state: State, action: Action) => {
     return reducerChain(state, action)
-      .apply(reduceRootPage)
+      .apply(reduceHeader)
+      .apply(reduceFooter)
+      .apply(reduceChordCanvas)
       .apply(computed("notes", recomputeAllNotes))
       .apply(computed("chordGrid", recomputeChordGrid))
       .result();

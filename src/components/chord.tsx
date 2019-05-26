@@ -1,5 +1,6 @@
 import React, {SyntheticEvent} from "react";
 import {ClassAndChildren} from "../core/reducers";
+import {ChordType} from "../reducers/recompute-chord-grid";
 
 interface ChordElementProps extends ClassAndChildren {
   chord: ChordType
@@ -7,45 +8,33 @@ interface ChordElementProps extends ClassAndChildren {
   audioContext: AudioContext
   selectChordRule: () => void
   waveType: OscillatorType
-}
-
-export interface ChordType extends ChordRuleType {
-  baseKey: string,
-  variation: number,
-  chordRuleIndex: number,
-}
-
-export interface ChordRuleType {
-  name: string,
-  symbol: string,
-  pitchClass: number[],
-  quality: string,
+  soundOn: boolean
+  isSelected: boolean
 }
 
 export class ChordElement extends React.Component<ChordElementProps> {
   clickHandled = false;
-  backgroundColor: string = "";
 
   render() {
-    this.setColor();
     return (
-      <div
-        className={`${this.props.chord.variation === 0 ? "bg-gray light-gray" : "bg-light-gray dark-gray"}
-             w3 h3 white dib tc v-mid pointer ma2 pt3 br3`}
-        style={{backgroundColor: this.backgroundColor}}
-        onMouseDown={this.handleClick}
-        onMouseUp={this.handleClickEnd}
-        onTouchStart={this.handleClick}
-      >
-        <div className="">
-          {this.props.chord.baseKey + this.props.chord.symbol}
+        <div
+            className={`${this.props.chord.variation === 0 ? "bg-gray light-gray" : "bg-light-gray dark-gray"}
+            ${this.props.isSelected ? 'shadow-2' : ''}
+             w3 h3 white dib tc v-mid pointer ma2 pt3 br3 `}
+            style={{backgroundColor: this.getColor()}}
+            onMouseDown={this.handleClick}
+            onMouseUp={this.handleClickEnd}
+            onTouchStart={this.handleClick}
+        >
+          <div className="">
+            {this.props.chord.baseKey + this.props.chord.symbol}
+          </div>
+          {this.props.chord.variation > 0 &&
+          <div>
+            {this.props.chord.variation}
+          </div>
+          }
         </div>
-        {this.props.chord.variation > 0 &&
-        <div>
-          {this.props.chord.variation}
-        </div>
-        }
-      </div>
     );
   }
 
@@ -58,7 +47,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
       return;
     }
 
-    if(e.type === "touchstart") {
+    if (e.type === "touchstart") {
       this.clickHandled = true;
     }
 
@@ -67,6 +56,9 @@ export class ChordElement extends React.Component<ChordElementProps> {
   };
 
   playChord = () => {
+    if (!this.props.soundOn) {
+      return;
+    }
 
     this.props.chord.pitchClass.map(noteIndex => {
       if (noteIndex < 0 || noteIndex >= this.props.notes.length) {
@@ -95,28 +87,22 @@ export class ChordElement extends React.Component<ChordElementProps> {
     return ((x - minX) / (maxX - minX)) * (maxY - minY) + minY;
   };
 
-  setColor = () => {
+  getColor = () => {
     let totalFrequency = 0;
     this.props.chord.pitchClass.map(pitch => {
       let noteFrequency = this.props.notes[pitch];
-      if (totalFrequency === 0 ){
+      if (totalFrequency === 0) {
         totalFrequency = noteFrequency
       }
       else {
         totalFrequency = 2 * Math.sin((totalFrequency + noteFrequency) / 2) * Math.cos((totalFrequency - noteFrequency) / 2);
       }
+      return noteFrequency;
     });
 
-    let normalizedFreq = this.normalize(totalFrequency,-1, 2, 0, 16777215);
+    let normalizedFreq = this.normalize(totalFrequency, -1, 2, 0, 16777215);
     normalizedFreq = Math.floor(normalizedFreq);
-    this.backgroundColor = `#${normalizedFreq.toString(16)}`;
+    return `#${normalizedFreq.toString(16)}`;
   };
 
-  componentDidMount(): void {
-    this.setColor();
-  }
-
-  componentDidUpdate(prevProps: Readonly<ChordElementProps>, prevState: Readonly<{}>, snapshot?: any): void {
-    this.setColor();
-  }
 }
