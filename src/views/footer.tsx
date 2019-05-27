@@ -18,7 +18,7 @@ export function Footer(dispatch: (action: Action) => void) {
     return (
         <div className={"w-100 bg-light-gray dark-gray h3"}>
           <Parameter title={"Variations"}>
-            {state.selectedChord ?
+            {Object.keys(state.selectedChord).length > 0 ?
                 <div className={"pointer"}>
                   {state.showingVariations[state.selectedChord.chordRuleIndex] ?
                       <div onClick={dispatcher.hideVariations}>

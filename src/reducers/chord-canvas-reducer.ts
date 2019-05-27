@@ -27,8 +27,8 @@ export const selectChord = (chord: ChordType): SelectChordAction => {
 };
 
 export type ChordCanvasActions =
-    SelectKeyAction
-    | SelectChordAction;
+  SelectKeyAction
+  | SelectChordAction;
 
 
 export const reduceChordCanvas = (state: State, action: Action): State => {
@@ -48,11 +48,9 @@ export const reduceChordCanvas = (state: State, action: Action): State => {
     }
 
     case "show-variations": {
-      if (state.selectedChord !== null) {
-        state = {...state};
-        state.showingVariations = {...state.showingVariations};
-        state.showingVariations[state.selectedChord && state.selectedChord.chordRuleIndex] = true;
-      }
+      state = {...state};
+      state.showingVariations = {...state.showingVariations};
+      state.showingVariations[state.selectedChord.chordRuleIndex] = true;
       break;
     }
 

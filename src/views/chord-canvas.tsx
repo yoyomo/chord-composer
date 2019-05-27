@@ -31,7 +31,7 @@ export function ChordCanvas(dispatch: (action: Action) => void) {
                                    chord={chord}
                                    notes={state.notes}
                                    audioContext={state.audioContext}
-                                   isSelected={!!state.selectedChord && state.selectedChord.id === chord.id}
+                                   isSelected={state.selectedChord.id === chord.id}
                                    selectChordRule={() => dispatcher.selectChord(chord)}
                                    waveType={state.waveType}
                                    soundOn={state.soundOn}

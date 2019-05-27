@@ -7,16 +7,16 @@ const AudioContext = (window as any).AudioContext // Default
 
 export type ToggleMap = {[k: number]: boolean}
 
-export let initialState = {
+export const initialState = {
   audioContext: new AudioContext(),
   notes: [] as number[],
   baseFrequency: 440,
-  selectedKeyIndex: null as number | null,
+  selectedKeyIndex: null as unknown as number,
   octave: 2,
   chordRules: BASE_CHORD_RULES as ChordRuleType[],
   chordGrid: [] as ChordType[],
   showingVariations: {} as ToggleMap,
-  selectedChord: null as (ChordType | null),
+  selectedChord: {} as ChordType,
   waveType: "triangle" as OscillatorType,
   soundOn: true,
   savedChords: [] as ChordType[]
