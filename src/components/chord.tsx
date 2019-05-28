@@ -6,7 +6,7 @@ interface ChordElementProps extends ClassAndChildren {
   chord: ChordType
   notes: number[]
   audioContext: AudioContext
-  selectChordRule: () => void
+  onSelect: () => void
   waveType: OscillatorType
   soundOn: boolean
   isSelected: boolean
@@ -52,7 +52,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
     }
 
     this.playChord();
-    this.props.selectChordRule();
+    this.props.onSelect();
   };
 
   playChord = () => {

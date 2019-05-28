@@ -16,10 +16,11 @@ export const initialState = {
   chordRules: BASE_CHORD_RULES as ChordRuleType[],
   chordGrid: [] as ChordType[],
   showingVariations: {} as ToggleMap,
-  selectedChord: {} as ChordType,
+  selectedGridChord: {} as ChordType,
   waveType: "triangle" as OscillatorType,
   soundOn: true,
-  savedChords: [] as ChordType[]
+  savedChords: [] as ChordType[],
+  selectedSavedChord: null as unknown as number,
 
 };
 

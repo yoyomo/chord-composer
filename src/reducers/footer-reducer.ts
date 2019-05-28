@@ -31,10 +31,34 @@ export const saveChord = (): SaveChordAction => {
   };
 };
 
+export interface RemoveSavedChordAction {
+  type: "remove-saved-chord"
+}
+
+export const removeSavedChord = (): RemoveSavedChordAction => {
+  return {
+    type: "remove-saved-chord",
+  };
+};
+
+export interface SelectSavedChordAction {
+  type: "select-saved-chord"
+  savedChordIndex: number
+}
+
+export const selectSavedChord = (savedChordIndex: number): SelectSavedChordAction => {
+  return {
+    type: "select-saved-chord",
+    savedChordIndex
+  };
+};
+
 export type FooterActions =
     ShowVariationsAction
     | HideVariationsAction
-    | SaveChordAction;
+    | SaveChordAction
+    | RemoveSavedChordAction
+    | SelectSavedChordAction;
 
 export const reduceFooter = (state: State, action: Action): State => {
   switch (action.type) {
@@ -42,21 +66,35 @@ export const reduceFooter = (state: State, action: Action): State => {
     case "show-variations": {
       state = {...state};
       state.showingVariations = {...state.showingVariations};
-      state.showingVariations[state.selectedChord.chordRuleIndex] = true;
+      state.showingVariations[state.selectedGridChord.chordRuleIndex] = true;
       break;
     }
 
     case "hide-variations": {
       state = {...state};
       state.showingVariations = {...state.showingVariations};
-      state.showingVariations[state.selectedChord.chordRuleIndex] = false;
+      state.showingVariations[state.selectedGridChord.chordRuleIndex] = false;
       break;
     }
 
     case "save-chord": {
       state = {...state};
       state.savedChords = state.savedChords.slice();
-      state.savedChords.push(state.chordGrid[state.selectedChord.chordRuleIndex]);
+      state.savedChords.push(state.selectedGridChord);
+      break;
+    }
+
+    case "remove-saved-chord": {
+      state = {...state};
+      state.savedChords = state.savedChords.slice();
+      state.savedChords.splice(state.selectedSavedChord || state.savedChords.length - 1, 1);
+      state.selectedSavedChord = null as unknown as number;
+      break;
+    }
+
+    case "select-saved-chord": {
+      state = {...state};
+      state.selectedSavedChord = action.savedChordIndex;
       break;
     }
 

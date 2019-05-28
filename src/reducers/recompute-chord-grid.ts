@@ -2,11 +2,14 @@ import {memoizeBySomeProperties} from "../utils/memoizers";
 import {initialState} from "../state";
 import {KEYS} from "../components/note-key";
 
+export const chordIdentifier = (chord: ChordType): string => {
+  return `k${chord.baseKey}c${chord.chordRuleIndex}v${chord.variation}p${chord.pitchClass}`
+};
+
 export interface ChordType extends ChordRuleType {
   baseKey: string,
   variation: number,
   chordRuleIndex: number,
-  id: string,
 }
 
 export interface ChordRuleType {
@@ -23,6 +26,7 @@ export const recomputeChordGrid = memoizeBySomeProperties({
   showingVariations: initialState.showingVariations,
 }, (state) => {
 
+  let baseKey = KEYS[state.selectedKeyIndex];
   let chordGrid: ChordType[] = [];
   state.chordRules.map((chordRule, chordRuleIndex) => {
     let pitchClass = chordRule.pitchClass.slice();
@@ -44,9 +48,8 @@ export const recomputeChordGrid = memoizeBySomeProperties({
       ...chordRule,
       pitchClass: pitchClass.slice(),
       variation: variation,
-      baseKey: KEYS[state.selectedKeyIndex],
+      baseKey: baseKey,
       chordRuleIndex: chordRuleIndex,
-      id: `c${chordRuleIndex}v${variation}`
     };
 
     chordGrid.push(baseChord);
@@ -69,7 +72,6 @@ export const recomputeChordGrid = memoizeBySomeProperties({
           ...baseChord,
           pitchClass: pitchClass.slice(),
           variation: v,
-          id: `c${chordRuleIndex}v${v}`
         };
 
         chordGrid.push(chordVariation);

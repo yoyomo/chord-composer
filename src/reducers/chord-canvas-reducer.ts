@@ -43,21 +43,21 @@ export const reduceChordCanvas = (state: State, action: Action): State => {
 
     case "select-chord": {
       state = {...state};
-      state.selectedChord = action.chord;
+      state.selectedGridChord = action.chord;
       break;
     }
 
     case "show-variations": {
       state = {...state};
       state.showingVariations = {...state.showingVariations};
-      state.showingVariations[state.selectedChord.chordRuleIndex] = true;
+      state.showingVariations[state.selectedGridChord.chordRuleIndex] = true;
       break;
     }
 
     case "hide-variations": {
       state = {...state};
       state.showingVariations = {...state.showingVariations};
-      state.showingVariations[state.selectedChord.chordRuleIndex] = false;
+      state.showingVariations[state.selectedGridChord.chordRuleIndex] = false;
       break;
     }
 

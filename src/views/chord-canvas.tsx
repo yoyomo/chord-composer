@@ -4,7 +4,7 @@ import React from "react";
 import {State} from "../state";
 import {Action} from "../react-root";
 import {selectChord, selectKey} from "../reducers/chord-canvas-reducer";
-import {ChordType} from "../reducers/recompute-chord-grid";
+import {chordIdentifier, ChordType} from "../reducers/recompute-chord-grid";
 
 
 export function ChordCanvas(dispatch: (action: Action) => void) {
@@ -27,12 +27,12 @@ export function ChordCanvas(dispatch: (action: Action) => void) {
           <div>
             {state.selectedKeyIndex != null &&
             state.chordGrid.map(chord => {
-              return <ChordElement key={"chord-" + chord.id}
+              return <ChordElement key={"chord-" + chordIdentifier(chord)}
                                    chord={chord}
                                    notes={state.notes}
                                    audioContext={state.audioContext}
-                                   isSelected={state.selectedChord.id === chord.id}
-                                   selectChordRule={() => dispatcher.selectChord(chord)}
+                                   isSelected={chordIdentifier(state.selectedGridChord) === chordIdentifier(chord)}
+                                   onSelect={() => dispatcher.selectChord(chord)}
                                    waveType={state.waveType}
                                    soundOn={state.soundOn}
               />
