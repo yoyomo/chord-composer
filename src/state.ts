@@ -17,7 +17,7 @@ export const initialState = {
   chordGrid: [] as ChordType[],
   showingVariations: {} as ToggleMap,
   selectedGridChord: {} as ChordType,
-  waveType: "triangle" as OscillatorType,
+  waveType: "sine" as OscillatorType,
   soundOn: true,
   savedChords: [] as ChordType[],
   selectedSavedChord: null as unknown as number,

@@ -21,7 +21,7 @@ export function ChordMapper(dispatch: (action: Action) => void) {
 
   return (state: State) => {
     return (
-        <div className={"w-100 bg-light-gray dark-gray h5 overflow-x-auto"}>
+        <div className={"w-100 bg-light-gray dark-gray h5 overflow-x-hide-show overflow-y-hidden gpu"}>
 
           <div className={"db nowrap"}>
             {blackKeys.map(blackKey => {

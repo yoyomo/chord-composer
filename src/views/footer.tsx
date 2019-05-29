@@ -26,8 +26,8 @@ export function Footer(dispatch: (action: Action) => void) {
 
   return (state: State) => {
     return (
-        <div className={"w-100 bg-light-gray dark-gray h3 flex flex-row items-stretch"}>
-          <div className={"overflow-auto"}>
+        <div className={"w-100 bg-light-gray dark-gray h9rem overflow-hidden flex flex-row items-stretch"}>
+          <div className={"dib overflow-y-hide-show"}>
             {state.savedChords.map((savedChord, s) => {
               return <ChordElement key={"saved-chord-" + s}
                                    chord={savedChord}
