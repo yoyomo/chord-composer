@@ -19,17 +19,19 @@ export function ChordMapper(dispatch: (action: Action) => void) {
 
   return (state: State) => {
     return (
-        <div className={"w-100 bg-light-gray dark-gray h3 flex flex-row items-stretch"}>
+        <div className={"w-100 bg-light-gray dark-gray "}>
 
-          <div className={"bg-black white"}>
+          <div className={"db"}>
             {blackKeys.map(blackKey => {
-            return <div>{blackKey}</div>
+            return <div className={"bg-gray light-gray tc w3-5 h3 dib v-mid pointer pa3 br b--white"}>
+                {blackKey}
+            </div>
           })}
           </div>
 
-          <div className={"bg-near white"}>
+          <div className={"db"}>
           {whiteKeys.map(whiteKey => {
-            return <div>{whiteKey}</div>
+            return <div className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 br b--black"}>{whiteKey}</div>
           })}
           </div>
 
