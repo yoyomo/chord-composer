@@ -4,15 +4,15 @@ import {Action} from "../react-root";
 import {KEYS} from "../components/note-key";
 
 export const SelectedKey = () => {
-  return <div className={"bg-red w2 h2 pa2 br-100"}/>
+  return <div className={"bg-light-red w2 h2 pa2 br-100"}/>
 };
 
 export function ChordMapper(dispatch: (action: Action) => void) {
 
   let dispatcher = {};
 
-  //c,#,d,#,e,f,#,g,#, +  a,#,b,c,#,d,#,e,f,#,g,#,  +  a,#,b
-  let displayKeys = KEYS.slice(3).concat(KEYS).concat(KEYS.slice(0, 3));
+  //c,#,d,#,e,f,#,g,#, +  a,#,b,c,#,d,#,e,f,#,g,#,  +  a,#,b,c,#,d,#,e,f,#,g,#, + a,#,b
+  let displayKeys = KEYS.slice(3).concat(KEYS).concat(KEYS).concat(KEYS.slice(0, 3));
 
   return (state: State) => {
     let selectedKeys: boolean[] = [];
