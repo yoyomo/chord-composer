@@ -9,27 +9,29 @@ export function ChordMapper(dispatch: (action: Action) => void) {
   let dispatcher = {
   };
 
-  let blackKeys = KEYS.filter(key => {
+  let displayKeys = KEYS.slice(3).concat(KEYS).concat(KEYS.slice(0,3));
+
+  let blackKeys = displayKeys.filter(key => {
     return key.includes('#');
   });
 
-  let whiteKeys = KEYS.filter(key => {
+  let whiteKeys = displayKeys.filter(key => {
     return !key.includes('#');
   });
 
   return (state: State) => {
     return (
-        <div className={"w-100 bg-light-gray dark-gray "}>
+        <div className={"w-100 bg-light-gray dark-gray h5 overflow-x-auto"}>
 
-          <div className={"db"}>
+          <div className={"db nowrap"}>
             {blackKeys.map(blackKey => {
-            return <div className={"bg-gray light-gray tc w3-5 h3 dib v-mid pointer pa3 br b--white"}>
+            return <div className={`bg-gray light-gray tc ${blackKey === "G#" ? 'w3' : 'w3-5'} h3 dib v-mid pointer pa3 br b--white`}>
                 {blackKey}
             </div>
           })}
           </div>
 
-          <div className={"db"}>
+          <div className={"db nowrap"}>
           {whiteKeys.map(whiteKey => {
             return <div className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 br b--black"}>{whiteKey}</div>
           })}
