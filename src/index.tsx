@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './css/extensions.css';
-import './css/tachyons.css';
+import './css/index.css';
 import * as serviceWorker from './serviceWorker';
 import {ReactRoot} from "./react-root";
 
