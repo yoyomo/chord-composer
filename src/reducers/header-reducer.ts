@@ -1,26 +1,6 @@
 import {State} from "../state";
 import {Action} from "../react-root";
 
-export interface DecreaseOctaveAction {
-  type: "decrease-octave"
-}
-
-export const decreaseOctave = (): DecreaseOctaveAction => {
-  return {
-    type: "decrease-octave",
-  };
-};
-
-export interface IncreaseOctaveAction {
-  type: "increase-octave"
-}
-
-export const increaseOctave = (): IncreaseOctaveAction => {
-  return {
-    type: "increase-octave",
-  };
-};
-
 export interface ChangeBaseFrequencyAction {
   type: "change-base-frequency"
   frequency: number
@@ -56,8 +36,6 @@ export const toggleSound = (): ToggleSoundAction => {
 };
 
 export type HeaderActions =
-    DecreaseOctaveAction
-    | IncreaseOctaveAction
     | ChangeBaseFrequencyAction
     | SelectWaveTypeAction
     | ToggleSoundAction;
@@ -65,24 +43,6 @@ export type HeaderActions =
 
 export const reduceHeader = (state: State, action: Action): State => {
   switch (action.type) {
-
-    case "decrease-octave": {
-      state = {...state};
-      state.octave--;
-      if (state.octave < 0) {
-        state.octave = 0;
-      }
-      break;
-    }
-
-    case "increase-octave": {
-      state = {...state};
-      state.octave++;
-      if (state.octave > 5) {
-        state.octave = 5;
-      }
-      break;
-    }
 
     case "change-base-frequency": {
       state = {...state};

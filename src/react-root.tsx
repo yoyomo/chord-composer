@@ -7,11 +7,13 @@ import {recomputeChordGrid} from "./reducers/recompute-chord-grid";
 import {HeaderActions, reduceHeader} from "./reducers/header-reducer";
 import {ChordCanvasActions, reduceChordCanvas} from "./reducers/chord-canvas-reducer";
 import {FooterActions, reduceFooter} from "./reducers/footer-reducer";
+import {ChordToolsActions, reduceChordTools} from "./reducers/chord-tools-reducer";
 
 export type Action =
   HeaderActions
-    | ChordCanvasActions
-    | FooterActions
+  | ChordCanvasActions
+  | FooterActions
+  | ChordToolsActions
   | IgnoredAction
   ;
 
@@ -28,6 +30,7 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
   reduce = (state: State, action: Action) => {
     return reducerChain(state, action)
       .apply(reduceHeader)
+      .apply(reduceChordTools)
       .apply(reduceFooter)
       .apply(reduceChordCanvas)
       .apply(computed("notes", recomputeAllNotes))

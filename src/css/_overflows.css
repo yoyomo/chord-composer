@@ -21,24 +21,3 @@
 .overflow-y-hide-show:hover {
     overflow-y: auto;
 }
-
-.overflow-y-hide-show::-webkit-scrollbar{
-    width: 10px;
-    border-radius: 10px;
-}
-
-.overflow-x-hide-show::-webkit-scrollbar {
-    height: 10px;
-    border-radius: 10px;
-}
-
-.overflow-y-hide-show::-webkit-scrollbar *,
-.overflow-x-hide-show::-webkit-scrollbar * {
-    background: transparent;
-}
-
-.overflow-y-hide-show::-webkit-scrollbar-thumb,
-.overflow-x-hide-show::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-}
