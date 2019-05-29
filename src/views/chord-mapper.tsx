@@ -24,16 +24,20 @@ export function ChordMapper(dispatch: (action: Action) => void) {
         <div className={"w-100 bg-light-gray dark-gray h5 overflow-x-hide-show overflow-y-hidden gpu"}>
 
           <div className={"db nowrap"}>
-            {blackKeys.map(blackKey => {
-            return <div className={`bg-gray light-gray tc ${blackKey === "G#" ? 'w3' : 'w3-5'} h3 dib v-mid pointer pa3 br b--white`}>
+            {blackKeys.map((blackKey,i) => {
+            return <div key={"black-key-"+i}
+              className={`bg-gray light-gray tc ${blackKey === "G#" ? 'w3' : 'w3-5'} h3 dib v-mid pointer pa3 br b--white`}>
                 {blackKey}
             </div>
           })}
           </div>
 
           <div className={"db nowrap"}>
-          {whiteKeys.map(whiteKey => {
-            return <div className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 br b--black"}>{whiteKey}</div>
+          {whiteKeys.map((whiteKey,i)=> {
+            return <div key={"white-key-"+i}
+              className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 br b--black"}>
+              {whiteKey}
+            </div>
           })}
           </div>
 

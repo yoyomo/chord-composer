@@ -1,3 +1,10 @@
+@import url(_borders.css);
+@import url(_margins.css);
+@import url(_heights.css);
+@import url(_widths.css);
+@import url(_overflows.css);
+@import url(_colors.css);
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -10,71 +17,6 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
-
-
-.w-100px {width: 100px;}
-.h-100px {height: 100px;}
-
-.ma {margin: auto;}
-
-.bg-transparent {
-  background: transparent;
-}
-
-.border-less{
-  border: none;
-}
-
-.w3-5 { width: 6rem; }
-.h3-5 { height: 6rem; }
-.h9rem { height: 9rem; }
-
-.max-h-100 { max-height: 100%; }
-
-.gpu {
-  -webkit-transform: translate3d(0,0,0);
-  -moz-transform: translate3d(0,0,0);
-  -ms-transform: translate3d(0,0,0);
-  -o-transform: translate3d(0,0,0);
-  transform: translate3d(0,0,0);
-}
-
-.overflow-x-hide-show {
-  overflow-x: hidden;
-}
-
-.overflow-x-hide-show:hover {
-  overflow-x: auto;
-}
-
-.overflow-y-hide-show {
-  overflow-y: hidden;
-}
-
-.overflow-y-hide-show:hover {
-  overflow-y: auto;
-}
-
-.overflow-y-hide-show::-webkit-scrollbar{
-  width: 10px;
-  border-radius: 10px;
-}
-
-.overflow-x-hide-show::-webkit-scrollbar {
-  height: 10px;
-  border-radius: 10px;
-}
-
-.overflow-y-hide-show::-webkit-scrollbar *,
-.overflow-x-hide-show::-webkit-scrollbar * {
-  background: transparent;
-}
-
-.overflow-y-hide-show::-webkit-scrollbar-thumb,
-.overflow-x-hide-show::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px;
 }
 
 
