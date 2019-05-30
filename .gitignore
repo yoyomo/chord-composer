@@ -1,4 +1,4 @@
-node_modules/**/*
+webpack/node_modules/**/*
 .expo/*
 npm-debug.*
 *.jks
@@ -7,4 +7,4 @@ npm-debug.*
 *.mobileprovision
 .idea/*
 **/*.js
-!src/scripts/*.js
+vendor/**/*
