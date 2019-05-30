@@ -1,0 +1,10 @@
+webpack/node_modules/**/*
+.expo/*
+npm-debug.*
+*.jks
+*.p12
+*.key
+*.mobileprovision
+.idea/*
+**/*.js
+vendor/**/*
