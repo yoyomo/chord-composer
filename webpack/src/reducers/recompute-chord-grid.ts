@@ -3,13 +3,15 @@ import {initialState} from "../state";
 import {KEYS} from "../components/note-key";
 
 export const chordIdentifier = (chord: ChordType): string => {
-  return `k${chord.baseKey}c${chord.chordRuleIndex}v${chord.variation}p${chord.pitchClass}`
+  return `k${chord.baseKey}c${chord.chordRuleIndex}v${chord.variation}p${chord.pitchClass}m${chord.mml}`
 };
 
 export interface ChordType extends ChordRuleType {
   baseKey: string,
   variation: number,
   chordRuleIndex: number,
+  octave: number,
+  mml: string
 }
 
 export interface ChordRuleType {
@@ -18,6 +20,22 @@ export interface ChordRuleType {
   pitchClass: number[],
   quality: string,
 }
+
+export const calculateMML = (octave: number, pitchClass: number[]) => {
+  let mml = "o" + octave + "[";
+  for (let p = 0; p < pitchClass.length; p++) {
+    let pitch = pitchClass[p];
+    if (p > 0 && pitchClass[p] < pitchClass[p - 1]) {
+      mml += "<";
+    }
+
+    mml += KEYS[pitch % KEYS.length].toLowerCase();
+  }
+
+  mml += ']';
+
+  return mml;
+};
 
 export const recomputeChordGrid = memoizeBySomeProperties({
   chordRules: initialState.chordRules,
@@ -34,13 +52,13 @@ export const recomputeChordGrid = memoizeBySomeProperties({
 
     // add key and octave
     for (let p = 0; p < pitchClass.length; p++) {
-      pitchClass[p] += state.selectedKeyIndex + state.octave * 12;
+      pitchClass[p] += state.selectedKeyIndex + state.octave * KEYS.length;
     }
 
     // make sure pitchClass is incrementing array
     for (let p = 0; p < pitchClass.length; p++) {
       while (p > 0 && pitchClass[p] < pitchClass[p - 1]) {
-        pitchClass[p] += 12;
+        pitchClass[p] += KEYS.length;
       }
     }
 
@@ -50,6 +68,8 @@ export const recomputeChordGrid = memoizeBySomeProperties({
       variation: variation,
       baseKey: baseKey,
       chordRuleIndex: chordRuleIndex,
+      octave: state.octave,
+      mml: calculateMML(state.octave, pitchClass)
     };
 
     chordGrid.push(baseChord);
@@ -63,7 +83,7 @@ export const recomputeChordGrid = memoizeBySomeProperties({
 
         if (firstPitch) {
           while (firstPitch < pitchClass[pitchClass.length - 1]) {
-            firstPitch += 12;
+            firstPitch += KEYS.length;
           }
           pitchClass.push(firstPitch);
         }
@@ -72,6 +92,7 @@ export const recomputeChordGrid = memoizeBySomeProperties({
           ...baseChord,
           pitchClass: pitchClass.slice(),
           variation: v,
+          mml: calculateMML(state.octave, pitchClass)
         };
 
         chordGrid.push(chordVariation);
