@@ -6,7 +6,9 @@ export interface ClassAndChildren {
   children?: React.ReactNode
 }
 export type IgnoredAction = { type: '' };
-
+export type IgnoredSideEffect = { effectType: '' };
+export type GlobalAction = { type: string };
+export type SideEffect = { effectType: string };
 export type Reducer<State> = (state: State, action: Action) => State
 
 export interface ReducerChain<S> {

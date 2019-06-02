@@ -39,4 +39,5 @@ npm-debug.*
 *.mobileprovision
 .idea/*
 **/*.js
+**/*.jsx
 vendor/**/*
