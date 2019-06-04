@@ -22,7 +22,7 @@ export function reducerChain<State>(state: State, action: Action,
   const chainer: ReducerChain<State> = {
     apply: (reducer: Reducer<State>) => {
       let reduction = reducer(state, action);
-      effects.concat(reduction.effects || []);
+      effects = effects.concat(reduction.effects || []);
       state = reduction.state;
       return chainer;
     },

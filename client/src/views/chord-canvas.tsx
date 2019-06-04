@@ -1,10 +1,10 @@
-import {KEYS, NoteKey} from "../components/note-key";
+import {NoteKey} from "../components/note-key";
 import {ChordElement} from "../components/chord";
 import React from "react";
 import {State} from "../state";
 import {Action} from "../react-root";
 import {selectChord, selectKey} from "../reducers/chord-canvas-reducer";
-import {chordIdentifier, ChordType} from "../reducers/recompute-chord-grid";
+import {chordIdentifier, ChordType, KEYS} from "../reducers/recompute-chord-grid";
 
 
 export function ChordCanvas(dispatch: (action: Action) => void) {

@@ -1,10 +1,12 @@
 import {memoizeBySomeProperties} from "../utils/memoizers";
 import {initialState} from "../state";
-import {KEYS} from "../components/note-key";
+import {calculateMML} from "../utils/mml";
 
 export const chordIdentifier = (chord: ChordType): string => {
   return `k${chord.baseKey}c${chord.chordRuleIndex}v${chord.variation}p${chord.pitchClass}m${chord.mml}`
 };
+
+export const KEYS = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 
 export interface ChordType extends ChordRuleType {
   baseKey: string,
@@ -20,22 +22,6 @@ export interface ChordRuleType {
   pitchClass: number[],
   quality: string,
 }
-
-export const calculateMML = (octave: number, pitchClass: number[]) => {
-  let mml = "o" + octave + "[";
-  for (let p = 0; p < pitchClass.length; p++) {
-    let pitch = pitchClass[p];
-    if (p > 0 && pitchClass[p] < pitchClass[p - 1]) {
-      mml += "<";
-    }
-
-    mml += KEYS[pitch % KEYS.length].toLowerCase();
-  }
-
-  mml += ']';
-
-  return mml;
-};
 
 export const recomputeChordGrid = memoizeBySomeProperties({
   chordRules: initialState.chordRules,

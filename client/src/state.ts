@@ -1,5 +1,6 @@
 import {BASE_CHORD_RULES} from "./constants/base-chord-rules";
 import {ChordRuleType, ChordType} from "./reducers/recompute-chord-grid";
+import {UserResource} from "./resources/user-resource";
 
 const AudioContext = (window as any).AudioContext // Default
   || (window as any).webkitAudioContext // Safari and old versions of Chrome
@@ -21,6 +22,7 @@ export const initialState = {
   soundOn: true,
   savedChords: [] as ChordType[],
   selectedSavedChord: null as unknown as number,
+  loggedInUser: null as unknown as UserResource
 
 };
 

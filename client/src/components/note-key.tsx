@@ -1,8 +1,6 @@
 import React from "react";
 import {ClassAndChildren} from "../core/reducers";
 
-export const KEYS = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
-
 interface NoteKeyProps extends ClassAndChildren {
   keyIndex: number
   baseKey: string

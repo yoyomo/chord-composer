@@ -1,0 +1,1 @@
+export const RapiV1UsersPath = "/api/v1/users";

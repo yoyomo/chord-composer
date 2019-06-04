@@ -2,6 +2,8 @@ import {State} from "../state";
 import {Action, Effect} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
 import {requestResourceFetch} from "../core/resources";
+import {RapiV1UsersPath} from "../resources/routes";
+import {parseMMLChords} from "../utils/mml";
 
 export interface InitAction {
   type: 'init'
@@ -20,12 +22,24 @@ export const reduceInitialLoading = (state: State, action: Action): ReductionWit
   let effects: Effect[] = [];
   switch (action.type) {
     case "init": {
-      effects.push(requestResourceFetch(["load-logged-in-user"], "/api/v1/users/1"));
+      effects.push(requestResourceFetch([loadUserRequestName], RapiV1UsersPath + "/1"));
       break;
     }
 
     case "complete-request": {
-      debugger;
+      let response = JSON.parse(action.response);
+
+      if (action.name[0] === loadUserRequestName){
+        let user = response;
+        if (user){
+          state = {...state};
+          state.loggedInUser = {...state.loggedInUser};
+          state.loggedInUser = user;
+
+          state.savedChords = parseMMLChords(state.loggedInUser.favoriteChords)
+        }
+      }
+
       break;
     }
 
@@ -33,3 +47,5 @@ export const reduceInitialLoading = (state: State, action: Action): ReductionWit
 
   return {state, effects};
 };
+
+export const loadUserRequestName = "load-logged-in-user";
