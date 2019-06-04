@@ -5,30 +5,23 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
-.bundle
-
-# Ignore the default SQLite database.
-db/*.sqlite3
-db/*.sqlite3-journal
+/.bundle
 
 # Ignore all logfiles and tempfiles.
-log/*
-tmp/*
-!log/.keep
-!tmp/.keep
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
 
 # Ignore uploaded files in development
-storage/*
-!storage/.keep
+/storage/*
+!/storage/.keep
 
-node_modules
-yarn-error.log
-
-public/assets
 .byebug_history
 
 # Ignore master key for decrypting credentials and more.
-config/master.key
+/config/master.key
+
 
 webpack/node_modules/**/*
 .expo/*
@@ -39,5 +32,5 @@ npm-debug.*
 *.mobileprovision
 .idea/*
 **/*.js
-**/*.jsx
 vendor/**/*
+
