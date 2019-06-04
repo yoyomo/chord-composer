@@ -23,13 +23,14 @@
 /config/master.key
 
 
-webpack/node_modules/**/*
+client/node_modules/**/*
 .expo/*
 npm-debug.*
 *.jks
 *.p12
 *.key
 *.mobileprovision
+client/.idea/*
 .idea/*
 **/*.js
 vendor/**/*
