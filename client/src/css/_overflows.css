@@ -1,0 +1,23 @@
+.gpu {
+    -webkit-transform: translate3d(0,0,0);
+    -moz-transform: translate3d(0,0,0);
+    -ms-transform: translate3d(0,0,0);
+    -o-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+}
+
+.overflow-x-hide-show {
+    overflow-x: hidden;
+}
+
+.overflow-x-hide-show:hover {
+    overflow-x: auto;
+}
+
+.overflow-y-hide-show {
+    overflow-y: hidden;
+}
+
+.overflow-y-hide-show:hover {
+    overflow-y: auto;
+}
