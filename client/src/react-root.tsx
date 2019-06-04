@@ -58,8 +58,8 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
 
   reduceEffects = (effects: Effect[]) => {
     effects.map(effect => {
-      this.services.map(service => {
-        service(effect);
+      return this.services.map(service => {
+        return service(effect);
       })
     })
   };

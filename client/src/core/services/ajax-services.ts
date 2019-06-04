@@ -54,7 +54,7 @@ export function completeRequest(requestEffect: RequestAjaxEffect,
   return {
     type: "complete-request",
     name: requestEffect.name,
-    success: status >= 200 && status < 300 || status === 304,
+    success: status >= 200 && status < 300,
     status: status,
     response: response,
     headers: headers,
