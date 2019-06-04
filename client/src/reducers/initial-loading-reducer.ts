@@ -1,9 +1,9 @@
 import {State} from "../state";
 import {Action, Effect} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
-import {requestResourceFetch} from "../core/resources";
 import {RapiV1UsersPath} from "../resources/routes";
 import {parseMMLChords} from "../utils/mml";
+import {requestAjax} from "../core/services/ajax-services";
 
 export interface InitAction {
   type: 'init'
@@ -22,7 +22,7 @@ export const reduceInitialLoading = (state: State, action: Action): ReductionWit
   let effects: Effect[] = [];
   switch (action.type) {
     case "init": {
-      effects.push(requestResourceFetch([loadUserRequestName], RapiV1UsersPath + "/1"));
+      effects.push(requestAjax([loadUserRequestName], {url: RapiV1UsersPath + "/1", method: "GET"}));
       break;
     }
 
@@ -36,7 +36,7 @@ export const reduceInitialLoading = (state: State, action: Action): ReductionWit
           state.loggedInUser = {...state.loggedInUser};
           state.loggedInUser = user;
 
-          state.savedChords = parseMMLChords(state.loggedInUser.favoriteChords)
+          state.savedChords = parseMMLChords(state.chordRules, state.loggedInUser.favorite_chords)
         }
       }
 

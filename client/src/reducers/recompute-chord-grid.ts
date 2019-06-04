@@ -3,7 +3,7 @@ import {initialState} from "../state";
 import {calculateMML} from "../utils/mml";
 
 export const chordIdentifier = (chord: ChordType): string => {
-  return `k${chord.baseKey}c${chord.chordRuleIndex}v${chord.variation}p${chord.pitchClass}m${chord.mml}`
+  return `k${chord.baseKey}c${chord.chordRuleIndex}v${chord.variation}p${chord.pitchClass}m${calculateMML(chord)}`
 };
 
 export const KEYS = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
@@ -13,7 +13,6 @@ export interface ChordType extends ChordRuleType {
   variation: number,
   chordRuleIndex: number,
   octave: number,
-  mml: string
 }
 
 export interface ChordRuleType {
@@ -55,7 +54,6 @@ export const recomputeChordGrid = memoizeBySomeProperties({
       baseKey: baseKey,
       chordRuleIndex: chordRuleIndex,
       octave: state.octave,
-      mml: calculateMML(state.octave, pitchClass)
     };
 
     chordGrid.push(baseChord);
@@ -78,7 +76,6 @@ export const recomputeChordGrid = memoizeBySomeProperties({
           ...baseChord,
           pitchClass: pitchClass.slice(),
           variation: v,
-          mml: calculateMML(state.octave, pitchClass)
         };
 
         chordGrid.push(chordVariation);

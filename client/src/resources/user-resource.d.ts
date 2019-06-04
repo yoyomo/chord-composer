@@ -1,5 +1,5 @@
 export interface UserResource {
   username: string
   email: string
-  favoriteChords: string[]
+  favorite_chords: string[]
 }
