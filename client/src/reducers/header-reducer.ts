@@ -1,5 +1,6 @@
 import {State} from "../state";
 import {Action} from "../react-root";
+import {ReductionWithEffect} from "../core/reducers";
 
 export interface ChangeBaseFrequencyAction {
   type: "change-base-frequency"
@@ -41,7 +42,7 @@ export type HeaderActions =
     | ToggleSoundAction;
 
 
-export const reduceHeader = (state: State, action: Action): State => {
+export const reduceHeader = (state: State, action: Action): ReductionWithEffect<State> => {
   switch (action.type) {
 
     case "change-base-frequency": {
@@ -65,5 +66,5 @@ export const reduceHeader = (state: State, action: Action): State => {
 
   }
 
-  return state;
+  return {state};
 };

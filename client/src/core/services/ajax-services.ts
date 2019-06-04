@@ -1,4 +1,5 @@
-import {GlobalAction, IgnoredSideEffect} from "../reducers";
+import {Action, Effect} from "../../react-root";
+import {Service} from "./services";
 
 export interface AjaxConfig {
   url: string
@@ -21,13 +22,13 @@ export function loadingRequest(name: string[]): LoadingRequest {
   }
 }
 
-export interface RequestAjax {
+export interface RequestAjaxEffect {
   effectType: "request-ajax"
   name: string[]
   config: AjaxConfig
 }
 
-export function requestAjax(name: string[], config: AjaxConfig): RequestAjax {
+export function requestAjax(name: string[], config: AjaxConfig): RequestAjaxEffect {
   return {
     effectType: "request-ajax",
     name,
@@ -45,9 +46,9 @@ export interface CompleteRequest {
   when: number
 }
 
-export type AjaxAction = CompleteRequest;
+export type AjaxAction = CompleteRequest | LoadingRequest ;
 
-export function completeRequest(requestEffect: RequestAjax,
+export function completeRequest(requestEffect: RequestAjaxEffect,
                                 status: number, response: string,
                                 headers: string, when = Date.now()): CompleteRequest {
   return {
@@ -61,10 +62,9 @@ export function completeRequest(requestEffect: RequestAjax,
   }
 }
 
-export function withAjax(dispatch: (action: GlobalAction) => void, queueSize = 6, rootUrl = "") {
-  return (effect: RequestAjax | IgnoredSideEffect) => {
+export function withAjax(dispatch: (action: Action) => void, queueSize = 6, rootUrl = ""): Service {
+  return (effect: Effect) => {
     let requests = {} as { [k: string]: XMLHttpRequest };
-    let existing: XMLHttpRequest;
     let canceled = false;
     let xhrQueue: XMLHttpRequest[] = [];
     let configsQueue: AjaxConfig[] = [];
@@ -73,12 +73,14 @@ export function withAjax(dispatch: (action: GlobalAction) => void, queueSize = 6
     const checkAndExecuteNext = () => {
       if (canceled) return;
 
-      while (executingCount < queueSize && xhrQueue.length) {
+      while (executingCount < queueSize && xhrQueue.length && configsQueue.length) {
         let nextXhr = xhrQueue.shift();
         let nextConfig = configsQueue.shift();
 
         executingCount++;
-        executeXhrWithConfig(nextConfig, nextXhr, rootUrl);
+        if (nextConfig && nextXhr){
+          executeXhrWithConfig(nextConfig, nextXhr, rootUrl);
+        }
       }
     };
 
@@ -180,7 +182,7 @@ export function getAjaxUrl(config: AjaxConfig, rootUrl = ""): string {
   return url;
 }
 
-export function getAjaxBody(config: AjaxConfig): string {
+export function getAjaxBody(config: AjaxConfig): string | null {
   if (config.body) return config.body;
   if (config.json) return JSON.stringify(config.json);
   return null;

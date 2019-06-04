@@ -1,5 +1,6 @@
 import {State} from "../state";
 import {Action} from "../react-root";
+import {ReductionWithEffect} from "../core/reducers";
 
 export interface DecreaseOctaveAction {
   type: "decrease-octave"
@@ -28,7 +29,7 @@ export type ChordToolsActions =
   DecreaseOctaveAction
   | IncreaseOctaveAction;
 
-export const reduceChordTools = (state: State, action: Action): State => {
+export const reduceChordTools = (state: State, action: Action): ReductionWithEffect<State> => {
   switch (action.type) {
 
     case "decrease-octave": {
@@ -50,5 +51,5 @@ export const reduceChordTools = (state: State, action: Action): State => {
     }
   }
 
-  return state;
+  return {state};
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import {Action} from "../react-root";
+import {Action, Effect} from "../react-root";
 
 export interface ClassAndChildren {
   className?: string,
@@ -9,22 +9,26 @@ export type IgnoredAction = { type: '' };
 export type IgnoredSideEffect = { effectType: '' };
 export type GlobalAction = { type: string };
 export type SideEffect = { effectType: string };
-export type Reducer<State> = (state: State, action: Action) => State
+export type ReductionWithEffect<State extends Object> = { state: State, effects?: Effect[] | void};
+export type Reducer <State> = (state: State, action: Action) => ReductionWithEffect<State>
 
 export interface ReducerChain<S> {
-  result: () => S
+  result: () => { state: S, effects: Effect[] }
   apply: (reducer: Reducer<S>) => ReducerChain<S>
 }
 
-export function reducerChain<State>(state: State, action: Action): ReducerChain<State> {
+export function reducerChain<State>(state: State, action: Action,
+                                    effects: Effect[] = []): ReducerChain<State> {
   const chainer: ReducerChain<State> = {
     apply: (reducer: Reducer<State>) => {
-      state = reducer(state, action);
+      let reduction = reducer(state, action);
+      effects.concat(reduction.effects || []);
+      state = reduction.state;
       return chainer;
     },
 
     result: () => {
-      return state;
+      return {state, effects};
     }
   };
 
@@ -35,14 +39,15 @@ export function subReducersFor<State>() {
   return function subReducer<Key extends keyof State>(key: Key, reducer: Reducer<State[Key]>): Reducer<State> {
     return (state: State, action: Action) => {
       let reduction = reducer(state[key], action);
-      if (reduction !== state[key]) {
+      if (reduction.state !== state[key]) {
         state = {...(state as any)};
-        state[key] = reduction;
+        state[key] = reduction.state;
       }
-      return state;
+      return {state, effects: reduction.effects};
     }
   }
 }
+
 
 export function computedFor<State>() {
   return function computed<Key extends keyof State>(key: Key, compute: (s: State) => State[Key]): Reducer<State> {
@@ -52,7 +57,7 @@ export function computedFor<State>() {
         state = {...(state as any)};
         state[key] = next;
       }
-      return state;
+      return {state};
     }
   }
 }

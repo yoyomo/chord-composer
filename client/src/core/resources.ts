@@ -1,7 +1,7 @@
 import {
   AjaxConfig, encodeQueryParts,
   requestAjax
-} from "./services/ajax";
+} from "./services/ajax-services";
 
 export type RequestJsonResourceQuery = {
   include?: string[],
@@ -11,8 +11,8 @@ export type RequestJsonResourceQuery = {
 }
 
 export const jsonResourceHeaders = {} as { [k: string]: string };
-jsonResourceHeaders['Accept'] = "application/vnd.api+json";
-jsonResourceHeaders['Content-Type'] = "application/vnd.api+json";
+jsonResourceHeaders['Accept'] = "json";
+jsonResourceHeaders['Content-Type'] = "json";
 
 export function requestResourceWrite(name: string[], data: any, createUrl?: string) {
   let ajaxConfig = {} as AjaxConfig;

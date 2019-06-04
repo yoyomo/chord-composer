@@ -1,5 +1,6 @@
 import {State} from "../state";
 import {Action} from "../react-root";
+import {ReductionWithEffect} from "../core/reducers";
 
 export interface ShowVariationsAction {
   type: "show-variations"
@@ -60,7 +61,7 @@ export type FooterActions =
     | RemoveSavedChordAction
     | SelectSavedChordAction;
 
-export const reduceFooter = (state: State, action: Action): State => {
+export const reduceFooter = (state: State, action: Action): ReductionWithEffect<State> => {
   switch (action.type) {
 
     case "show-variations": {
@@ -100,5 +101,5 @@ export const reduceFooter = (state: State, action: Action): State => {
 
   }
 
-  return state;
+  return {state};
 };
