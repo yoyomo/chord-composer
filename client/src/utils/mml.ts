@@ -32,10 +32,10 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
     let readingChord = false;
 
     let chordNoteKeys = mmlChord.match(/[abcdefgABCDEFG]/g);
-    if (!chordNoteKeys) return;
+    if (!chordNoteKeys) return null;
 
     let upperCaseKeys = mmlChord.match(/[ABCDEFG]/g);
-    if (!upperCaseKeys) return;
+    if (!upperCaseKeys) return null;
 
     let baseKey = upperCaseKeys[0];
     let variation = chordNoteKeys.length - chordNoteKeys.indexOf(baseKey);
@@ -76,8 +76,12 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
     }
 
 
-    let chordRuleIndex = 0; //TODO find chord rule index
-    chordRulePitchClass
+    let chordRuleIndex;
+    for (chordRuleIndex = 0 ; chordRuleIndex < chordRules.length; chordRuleIndex++){
+      if (JSON.stringify(chordRules[chordRuleIndex].pitchClass) === JSON.stringify(chordRulePitchClass)) {
+        break;
+      }
+    }
 
     let chord = {
       ...chordRules[chordRuleIndex],
