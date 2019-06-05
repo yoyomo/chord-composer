@@ -29,7 +29,7 @@ export function ChordTools(dispatch: (action: Action) => void) {
         </ParameterButton>
 
         <Parameter title={"Variations"} className={"dib"}>
-          {Object.keys(state.selectedGridChord).length > 0 ?
+          { state.selectedGridChord ?
             <div className={"pointer"}>
               {state.showingVariations[state.selectedGridChord.chordRuleIndex] ?
                 <ParameterButton className={"ma1"} onClick={dispatcher.hideVariations}>

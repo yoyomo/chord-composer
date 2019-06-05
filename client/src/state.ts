@@ -17,7 +17,7 @@ export const initialState = {
   chordRules: BASE_CHORD_RULES as ChordRuleType[],
   chordGrid: [] as ChordType[],
   showingVariations: {} as ToggleMap,
-  selectedGridChord: {} as ChordType,
+  selectedGridChord: null as unknown as ChordType | void,
   waveType: "sine" as OscillatorType,
   soundOn: true,
   savedChords: [] as ChordType[],

@@ -49,8 +49,10 @@ export const reduceChordCanvas = (state: State, action: Action): ReductionWithEf
     }
 
     case "show-variations": {
+      if(!state.selectedGridChord) break;
       state = {...state};
       state.showingVariations = {...state.showingVariations};
+      if (!state.selectedGridChord) break;
       state.showingVariations[state.selectedGridChord.chordRuleIndex] = true;
       break;
     }
@@ -58,6 +60,7 @@ export const reduceChordCanvas = (state: State, action: Action): ReductionWithEf
     case "hide-variations": {
       state = {...state};
       state.showingVariations = {...state.showingVariations};
+      if (!state.selectedGridChord) break;
       state.showingVariations[state.selectedGridChord.chordRuleIndex] = false;
       break;
     }

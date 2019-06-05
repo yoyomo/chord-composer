@@ -17,7 +17,7 @@ export function ChordMapper(dispatch: (action: Action) => void) {
   return (state: State) => {
     let selectedKeys: boolean[] = [];
 
-    if (state.selectedGridChord.pitchClass) {
+    if (state.selectedGridChord) {
       let tmpPitchClass = state.selectedGridChord.pitchClass.slice();
       let pitchClass = tmpPitchClass.slice();
       for(let i =0; i < pitchClass.length; i++){

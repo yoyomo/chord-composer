@@ -20,7 +20,7 @@ export function Footer(dispatch: (action: Action) => void) {
   };
 
   return (state: State) => {
-    let disabledButtons = Object.keys(state.selectedGridChord).length === 0;
+    let disabledButtons = !!state.selectedGridChord;
     return (
       <div className={"w-100 bg-light-gray dark-gray h9rem overflow-hidden flex flex-row items-stretch"}>
         <div className={"dib overflow-y-hide-show"}>
@@ -32,7 +32,7 @@ export function Footer(dispatch: (action: Action) => void) {
                                  waveType={state.waveType}
                                  soundOn={state.soundOn}
                                  onSelect={() => dispatcher.onSelectSavedChord(s)}
-                                 isSelected={chordIdentifier(state.selectedGridChord) === chordIdentifier(savedChord)}/>
+                                 isSelected={!!state.selectedGridChord && chordIdentifier(state.selectedGridChord) === chordIdentifier(savedChord)}/>
           })}
         </div>
         <div className={"dib fr"}>
