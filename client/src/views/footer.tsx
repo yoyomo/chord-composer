@@ -20,7 +20,7 @@ export function Footer(dispatch: (action: Action) => void) {
   };
 
   return (state: State) => {
-    let disabledButtons = !!state.selectedGridChord;
+    let disabledButtons = !state.selectedGridChord;
     return (
       <div className={"w-100 bg-light-gray dark-gray h9rem overflow-hidden flex flex-row items-stretch"}>
         <div className={"dib overflow-y-hide-show"}>

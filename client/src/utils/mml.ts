@@ -24,7 +24,6 @@ export const calculateMML = (chord: ChordType) => {
 
 export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[]): ChordType[] => {
   let result: ChordType[] = [];
-
   mmlChords.map(mmlChord => {
     let octave = 0;
     let pitchClass: number[] = [];
@@ -38,7 +37,7 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
     if (!upperCaseKeys) return null;
 
     let baseKey = upperCaseKeys[0];
-    let variation = chordNoteKeys.length - chordNoteKeys.indexOf(baseKey);
+    let variation = (chordNoteKeys.length - chordNoteKeys.indexOf(baseKey) ) % chordNoteKeys.length;
 
     for (let m = 0; m < mmlChord.length; m++) {
       let mmlItem = mmlChord[m];
@@ -60,9 +59,11 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
 
           let pitch = KEYS.indexOf(key.toUpperCase());
 
-          pitch = (pitch + KEYS.indexOf(baseKey)) % KEYS.length;
+          pitch = (pitch - KEYS.indexOf(baseKey) + KEYS.length) % KEYS.length;
 
           chordRulePitchClass.push(pitch);
+
+          pitch += octave * 12;
 
           while (pitchClass.length > 0 && pitch < pitchClass.slice(-1)[0]){
             pitch += KEYS.length;
@@ -77,6 +78,8 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
 
 
     let chordRuleIndex;
+    chordRulePitchClass = chordRulePitchClass.slice(chordRulePitchClass.indexOf(0)).concat(chordRulePitchClass.slice(0, chordRulePitchClass.indexOf(0)));
+
     for (chordRuleIndex = 0 ; chordRuleIndex < chordRules.length; chordRuleIndex++){
       if (JSON.stringify(chordRules[chordRuleIndex].pitchClass) === JSON.stringify(chordRulePitchClass)) {
         break;

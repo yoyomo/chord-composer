@@ -27,16 +27,16 @@ export const reduceInitialLoading = (state: State, action: Action): ReductionWit
     }
 
     case "complete-request": {
+      if (!action.response) break;
       let response = JSON.parse(action.response);
 
       if (action.name[0] === loadUserRequestName){
         let user = response;
         if (user){
           state = {...state};
-          state.loggedInUser = {...state.loggedInUser};
           state.loggedInUser = user;
 
-          state.savedChords = parseMMLChords(state.chordRules, state.loggedInUser.favorite_chords)
+          state.savedChords = parseMMLChords(state.chordRules, user.favorite_chords)
         }
       }
 

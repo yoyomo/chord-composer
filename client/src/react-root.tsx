@@ -45,6 +45,7 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
   }
 
   reduce = (state: State, action: Action) => {
+    console.log("action", action);
     return reducerChain(state, action)
       .apply(reduceInitialLoading)
       .apply(reduceHeader)
@@ -58,6 +59,7 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
 
   reduceEffects = (effects: Effect[]) => {
     effects.map(effect => {
+      console.log("effect",effect);
       return this.services.map(service => {
         return service(effect);
       })

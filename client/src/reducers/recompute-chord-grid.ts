@@ -27,9 +27,11 @@ export const recomputeChordGrid = memoizeBySomeProperties({
   selectedKeyIndex: initialState.selectedKeyIndex,
   octave: initialState.octave,
   showingVariations: initialState.showingVariations,
-}, (state) => {
+}, (state): ChordType[] => {
 
-  let baseKey = KEYS[state.selectedKeyIndex];
+  if (state.selectedKeyIndex === undefined) return [];
+  let selectedKeyIndex: number = state.selectedKeyIndex;
+  let baseKey = KEYS[selectedKeyIndex];
   let chordGrid: ChordType[] = [];
   state.chordRules.map((chordRule, chordRuleIndex) => {
     let pitchClass = chordRule.pitchClass.slice();
@@ -37,7 +39,7 @@ export const recomputeChordGrid = memoizeBySomeProperties({
 
     // add key and octave
     for (let p = 0; p < pitchClass.length; p++) {
-      pitchClass[p] += state.selectedKeyIndex + state.octave * KEYS.length;
+      pitchClass[p] += selectedKeyIndex + state.octave * KEYS.length;
     }
 
     // make sure pitchClass is incrementing array
