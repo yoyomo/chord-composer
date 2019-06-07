@@ -1,0 +1,2 @@
+web: cd client && PORT=3002 npm run start
+api: ./bin/rails s -p 3001
