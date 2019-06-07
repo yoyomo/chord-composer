@@ -65,14 +65,13 @@ export const recomputeChordGrid = memoizeBySomeProperties({
       let pitchClass = baseChord.pitchClass.slice();
 
       for (let v = 1; v < pitchClass.length; v++) {
-        let firstPitch = pitchClass.shift();
+        let firstPitch = pitchClass[0];
 
-        if (firstPitch) {
-          while (firstPitch < pitchClass[pitchClass.length - 1]) {
-            firstPitch += KEYS.length;
-          }
-          pitchClass.push(firstPitch);
+        while (firstPitch < pitchClass[pitchClass.length - 1]) {
+          firstPitch += KEYS.length;
         }
+
+        pitchClass = pitchClass.slice(1).concat(firstPitch);
 
         let chordVariation: ChordType = {
           ...baseChord,

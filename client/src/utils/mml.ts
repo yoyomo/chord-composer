@@ -30,10 +30,10 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
     let chordRulePitchClass: number[] = [];
     let readingChord = false;
 
-    let chordNoteKeys = mmlChord.match(/[abcdefgABCDEFG]/g);
+    let chordNoteKeys = mmlChord.match(/[abcdefgABCDEFG]#?/g);
     if (!chordNoteKeys) return null;
 
-    let upperCaseKeys = mmlChord.match(/[ABCDEFG]/g);
+    let upperCaseKeys = mmlChord.match(/[ABCDEFG]#?/g);
     if (!upperCaseKeys) return null;
 
     let baseKey = upperCaseKeys[0];
@@ -59,9 +59,9 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
 
           let pitch = KEYS.indexOf(key.toUpperCase());
 
-          pitch = (pitch - KEYS.indexOf(baseKey) + KEYS.length) % KEYS.length;
+          let basePitch = (pitch - KEYS.indexOf(baseKey) + KEYS.length) % KEYS.length;
 
-          chordRulePitchClass.push(pitch);
+          chordRulePitchClass.push(basePitch);
 
           pitch += octave * 12;
 
