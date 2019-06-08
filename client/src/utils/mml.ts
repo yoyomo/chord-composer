@@ -63,7 +63,7 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
 
           chordRulePitchClass.push(basePitch);
 
-          pitch += octave * 12;
+          pitch += octave * KEYS.length;
 
           while (pitchClass.length > 0 && pitch < pitchClass.slice(-1)[0]){
             pitch += KEYS.length;

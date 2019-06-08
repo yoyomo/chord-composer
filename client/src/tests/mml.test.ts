@@ -12,13 +12,12 @@ export class ChordComposerTest {
 }
 
 
-const testMML = (chordRules: ChordRuleType[], chord: ChordType, variation: number, mmlText: string) => {
-  expect(chord.variation).toEqual(variation);
+const testMML = (chordRules: ChordRuleType[], chord: ChordType, mmlText: string) => {
   expect(calculateMML(chord)).toEqual(mmlText);
   expect(parseMMLChords(chordRules, [mmlText])).toEqual([chord]);
 };
 
-const testSelectedKeyIndexMML = (octave: number,selectedKeyIndex: number) => {
+const testSelectedKeyIndexMML = (octave: number, selectedKeyIndex: number) => {
   let test = new ChordComposerTest();
 
   test.state = {...test.state};
@@ -34,22 +33,25 @@ const testSelectedKeyIndexMML = (octave: number,selectedKeyIndex: number) => {
 
   expect(test.state.chordGrid.length).toBeGreaterThan(test.state.chordRules.length);
 
-  let i = 0;
-  let chord = test.state.chordRules[i];
+  let variedPitchClass: number[] = [];
 
-  let variedPitchClass = chord.pitchClass;
+  for (let i = 0; i < test.state.chordGrid.length; i++) {
+    let chord = test.state.chordGrid[i];
+    let baseChord = test.state.chordRules[test.state.chordGrid[i].chordRuleIndex];
 
-  for (let v = 0; v < chord.pitchClass.length; v++) {
-
-    if (v > 0) {
+    if(chord.variation === 0){
+      variedPitchClass = baseChord.pitchClass;
+    }
+    else {
       variedPitchClass = variedPitchClass.slice(1).concat([variedPitchClass[0]]);
     }
+
     let chordNoteKeys: string[] = variedPitchClass.map(pitch => {
       let keyPitch = (pitch + selectedKeyIndex) % KEYS.length;
       return pitch === 0 ? KEYS[keyPitch] : KEYS[keyPitch].toLowerCase();
     });
     let mmlText = `o${test.state.octave}[${chordNoteKeys.join('')}]`;
-    testMML(test.state.chordRules, test.state.chordGrid[i + v], v, mmlText);
+    testMML(test.state.chordRules, chord, mmlText);
   }
 
 };

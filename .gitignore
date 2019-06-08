@@ -31,7 +31,9 @@ npm-debug.*
 *.key
 *.mobileprovision
 client/.idea/*
+client/.idea/**/*
 client/.idea/workspace.xml
+client/.idea/misc.xml
 .idea/*
 **/*.js
 vendor/**/*
