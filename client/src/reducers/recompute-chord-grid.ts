@@ -65,7 +65,6 @@ export const recomputeChordGrid = memoizeBySomeProperties({
       let pitchClass = baseChord.pitchClass.slice();
 
       for (let v = 1; v < pitchClass.length; v++) {
-        if (v==3) debugger
         let firstPitch = pitchClass[0];
 
         while (firstPitch < pitchClass[pitchClass.length - 1]) {
@@ -74,7 +73,7 @@ export const recomputeChordGrid = memoizeBySomeProperties({
 
         pitchClass = pitchClass.slice(1).concat(firstPitch);
 
-        while (pitchClass[0] > baseChord.pitchClass[0] + KEYS.length){
+        while (pitchClass[0] >= state.octave * KEYS.length + KEYS.length){
           pitchClass = pitchClass.map(pitch => pitch - KEYS.length);
         }
 
