@@ -25,9 +25,7 @@ const testSelectedKeyIndexMML = (octave: number, selectedKeyIndex: number) => {
   test.state.selectedKeyIndex = selectedKeyIndex;
 
   test.state.showingVariations = {...test.state.showingVariations};
-  for (let i = 0; i < test.state.chordRules.length; i++) {
-    test.state.showingVariations[i] = true;
-  }
+  test.state.showingVariations = new Array(test.state.chordRules.length).fill(true);
 
   test.state.chordGrid = recomputeChordGrid(test.state);
 
@@ -39,18 +37,15 @@ const testSelectedKeyIndexMML = (octave: number, selectedKeyIndex: number) => {
     let chord = test.state.chordGrid[i];
     let baseChord = test.state.chordRules[test.state.chordGrid[i].chordRuleIndex];
 
-    if(chord.variation === 0){
-      variedPitchClass = baseChord.pitchClass;
-    }
-    else {
-      variedPitchClass = variedPitchClass.slice(1).concat([variedPitchClass[0]]);
-    }
+    variedPitchClass = chord.variation === 0 ? baseChord.pitchClass
+        : variedPitchClass.slice(1).concat([variedPitchClass[0]]);
 
-    let chordNoteKeys: string[] = variedPitchClass.map(pitch => {
+    let chordNoteKeys: string = variedPitchClass.map(pitch => {
       let keyPitch = (pitch + selectedKeyIndex) % KEYS.length;
       return pitch === 0 ? KEYS[keyPitch] : KEYS[keyPitch].toLowerCase();
-    });
-    let mmlText = `o${test.state.octave}[${chordNoteKeys.join('')}]`;
+    }).join('');
+
+    let mmlText = `o${test.state.octave}[${chordNoteKeys}]`;
     testMML(test.state.chordRules, chord, mmlText);
   }
 
@@ -59,7 +54,7 @@ const testSelectedKeyIndexMML = (octave: number, selectedKeyIndex: number) => {
 
 it('saves and retrieves identical chords', () => {
 
-  for (let o = MINIMUM_OCTAVE; o < MAXIMUM_OCTAVE; o++) {
+  for (let o = MINIMUM_OCTAVE; o <= MAXIMUM_OCTAVE; o++) {
     for (let k = 0; k < KEYS.length; k++) {
       testSelectedKeyIndexMML(o, k);
     }

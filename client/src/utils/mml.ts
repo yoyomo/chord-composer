@@ -25,6 +25,7 @@ export const calculateMML = (chord: ChordType) => {
 export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[]): ChordType[] => {
   let result: ChordType[] = [];
   mmlChords.map(mmlChord => {
+
     let octave = 0;
     let pitchClass: number[] = [];
     let chordRulePitchClass: number[] = [];
