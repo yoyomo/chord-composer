@@ -1,4 +1,4 @@
-@import url(tachyons.css);
+@import url(~tachyons);
 @import url(_borders.css);
 @import url(_margins.css);
 @import url(_heights.css);
