@@ -18,7 +18,6 @@ ActiveRecord::Schema.define(version: 2019_06_04_031616) do
   create_table "users", force: :cascade do |t|
     t.string "uuid"
     t.string "username"
-    t.string "email"
     t.text "favorite_chords", default: [], array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
