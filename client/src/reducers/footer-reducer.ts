@@ -125,7 +125,10 @@ export const updateFavoriteChords = (favoriteChords: ChordType[]): Effect[] => {
   effects.push(requestAjax([updateFavoriteChordRequestName], {
     url: RapiV1UsersPath + "/1",
     method: "PUT",
-    headers: {["Accept"]: "application/json; charset=utf-8", ["Content-Type"]: "application/json; charset=utf-8"},
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
     json: {
       user: {
         favorite_chords: mmlFavoriteChords

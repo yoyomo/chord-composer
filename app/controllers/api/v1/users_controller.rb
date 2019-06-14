@@ -18,6 +18,7 @@ class Api::V1::UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
+      @user.send_confirmation_instructions
       render json: @user, status: :created, location: @user
     else
       render json: @user.errors, status: :unprocessable_entity
