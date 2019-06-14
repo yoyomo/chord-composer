@@ -21,18 +21,18 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+/config/credentials.yml.enc
 
-
-client/node_modules/**/*
+/client/node_modules/**/*
 .expo/*
 npm-debug.*
 *.jks
 *.p12
 *.key
 *.mobileprovision
-client/.idea/*
-client/.idea/**/*
-client/.idea/workspace.xml
+/client/.idea/*
+/client/.idea/**/*
+/client/.idea/workspace.xml
 client/.idea/misc.xml
 .idea/*
 **/*.js
