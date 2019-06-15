@@ -16,9 +16,8 @@ class Api::V1::UsersController < ApplicationController
   # POST /users
   def create
     @user = User.new(user_params)
-
     if @user.save
-      @user.send_confirmation_instructions
+      @user.send_confirmation_instructions({redirect_url: 'http://localhost:3002'})
       render json: @user, status: :created, location: @user
     else
       render json: @user.errors, status: :unprocessable_entity
