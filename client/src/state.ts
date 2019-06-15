@@ -1,6 +1,7 @@
 import {BASE_CHORD_RULES} from "./constants/base-chord-rules";
 import {ChordRuleType, ChordType} from "./reducers/recompute-chord-grid";
 import {UserResource} from "./resources/user-resource";
+import {PathPart} from "./reducers/router-reducer";
 
 let AudioContext = (window as any).AudioContext // Default
   || (window as any).webkitAudioContext // Safari and old versions of Chrome
@@ -23,6 +24,7 @@ export const initialState = {
   savedChords: [] as ChordType[],
   selectedSavedChord: undefined as number | void,
   loggedInUser: undefined as UserResource | void,
+  pathParts: [] as PathPart[]
 
 };
 

@@ -1,14 +1,14 @@
 import React from "react";
-import {State} from "../state";
-import {Action} from "../react-root";
+import {State} from "../../../state";
+import {Action} from "../../../react-root";
 import {
   removeSavedChord,
   saveChord,
   selectSavedChord,
-} from "../reducers/footer-reducer";
-import {ParameterButton} from "../components/parameter-button";
-import {ChordElement} from "../components/chord";
-import {chordIdentifier} from "../reducers/recompute-chord-grid";
+} from "../../../reducers/footer-reducer";
+import {ParameterButton} from "../../../components/parameter-button";
+import {ChordElement} from "../../../components/chord";
+import {chordIdentifier} from "../../../reducers/recompute-chord-grid";
 
 
 export function Footer(dispatch: (action: Action) => void) {

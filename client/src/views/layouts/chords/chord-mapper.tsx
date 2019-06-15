@@ -1,7 +1,7 @@
 import React from "react";
-import {State} from "../state";
-import {Action} from "../react-root";
-import {KEYS} from "../reducers/recompute-chord-grid";
+import {State} from "../../../state";
+import {Action} from "../../../react-root";
+import {KEYS} from "../../../reducers/recompute-chord-grid";
 
 export const SelectedKey = () => {
   return <div className={"bg-light-red w2 h2 pa2 br-100"}/>

@@ -10,21 +10,23 @@ import {FooterActions, reduceFooter} from "./reducers/footer-reducer";
 import {ChordToolsActions, reduceChordTools} from "./reducers/chord-tools-reducer";
 import {RequestAjaxEffect} from "./core/services/ajax-services";
 import {getCoreServices, Service, ServicesActions} from "./core/services/services";
-import {init, InitialLoadingActions, reduceInitialLoading} from "./reducers/initial-loading-reducer";
+import {reduceInitialLoading} from "./reducers/initial-loading-reducer";
+import {NavigationActions, NavigationEffect, visit} from "./core/services/navigation-services";
+import {reduceNavigation} from "./reducers/router-reducer";
 
 export type Action =
-  ServicesActions
-  | InitialLoadingActions
-  | HeaderActions
-  | ChordCanvasActions
-  | FooterActions
-  | ChordToolsActions
-  ;
+    ServicesActions
+    | HeaderActions
+    | ChordCanvasActions
+    | FooterActions
+    | ChordToolsActions
+    | NavigationActions
+    ;
 
 export type Effect =
-  RequestAjaxEffect
-  ;
-
+    RequestAjaxEffect
+    | NavigationEffect
+    ;
 
 
 // const subReducer = subReducersFor<State>();
@@ -41,32 +43,33 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
   }
 
   componentDidMount(): void {
-    this.dispatch(init())
+    this.dispatch(visit({pathname: window.location.pathname}))
   }
 
   reduce = (state: State, action: Action) => {
     console.log("action", action);
     return reducerChain(state, action)
-      .apply(reduceInitialLoading)
-      .apply(reduceHeader)
-      .apply(reduceChordTools)
-      .apply(reduceFooter)
-      .apply(reduceChordCanvas)
-      .apply(computed("notes", recomputeAllNotes))
-      .apply(computed("chordGrid", recomputeChordGrid))
-      .result();
+        .apply(reduceNavigation)
+        .apply(reduceInitialLoading)
+        .apply(reduceHeader)
+        .apply(reduceChordTools)
+        .apply(reduceFooter)
+        .apply(reduceChordCanvas)
+        .apply(computed("notes", recomputeAllNotes))
+        .apply(computed("chordGrid", recomputeChordGrid))
+        .result();
   };
 
   reduceEffects = (effects: Effect[]) => {
     effects.map(effect => {
-      console.log("effect",effect);
+      console.log("effect", effect);
       return this.services.map(service => {
         return service(effect);
       })
     })
   };
 
-  dispatch = ( action: Action) => {
+  dispatch = (action: Action) => {
     let oldState = {...this.state};
     let reduction = this.reduce(oldState, action);
     this.reduceEffects(reduction.effects);
@@ -77,9 +80,9 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
     let state: State = {...this.state};
     let RootPageContent = RootPage(this.dispatch);
     return (
-      <div>
-        {RootPageContent(state)}
-      </div>
+        <div>
+          {RootPageContent(state)}
+        </div>
     )
   }
 }
