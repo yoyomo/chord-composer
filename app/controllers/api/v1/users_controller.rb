@@ -1,4 +1,4 @@
-class Api::V1::UsersController < ApplicationController
+class Api::V1::UsersController < APIController
   before_action :set_user, only: [:show, :update, :destroy]
 
   # GET /users
@@ -17,7 +17,7 @@ class Api::V1::UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      @user.send_confirmation_instructions({redirect_url: 'http://localhost:3002'})
+      @user.send_confirmation_instructions
       render json: @user, status: :created, location: @user
     else
       render json: @user.errors, status: :unprocessable_entity

@@ -35,6 +35,8 @@ DeviseTokenAuth.setup do |config|
   # By default we will use callbacks for single omniauth.
   # It depends on fields like email, provider and uid.
   # config.default_callbacks = true
+  #
+  config.default_confirm_success_url = "http://localhost:3002"
 
   # Makes it possible to change the headers names
   # config.headers_names = {:'access-token' => 'access-token',
