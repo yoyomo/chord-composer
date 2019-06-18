@@ -15,6 +15,7 @@ import {NavigationActions, NavigationEffect, visit} from "./core/services/naviga
 import {reduceNavigation} from "./reducers/router-reducer";
 import {InputChange, reduceInputs} from "./reducers/input-reducers";
 import {ClearInputDebouncing} from "./core/services/input-debouncing-service";
+import {LogInActions, reduceLogin} from "./reducers/login-reducer";
 
 export type Action =
     ServicesActions
@@ -24,6 +25,7 @@ export type Action =
     | ChordToolsActions
     | NavigationActions
     | InputChange
+    | LogInActions
     ;
 
 export type Effect =
@@ -56,6 +58,7 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
         .apply(reduceNavigation)
         .apply(reduceInitialLoading)
         .apply(subReducer("inputs", reduceInputs))
+        .apply(reduceLogin)
         .apply(reduceHeader)
         .apply(reduceChordTools)
         .apply(reduceFooter)

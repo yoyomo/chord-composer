@@ -12,14 +12,8 @@ export function RootPage(dispatch: (action: Action) => void) {
   return (state: State) => {
     return (
         <div className={"vw-100 vh-100 flex flex-column overflow-hidden"}>
-          {(function () {
-            switch (state.pathParts[0]) {
-              case "login":
-                return LoginContent(state);
-              case "chords":
-                return ChordsContent(state);
-            }
-          })()}
+          {state.pathParts[0] === "login" && LoginContent(state)}
+          {state.pathParts[0] === "chords" && ChordsContent(state)}
         </div>
     );
   }

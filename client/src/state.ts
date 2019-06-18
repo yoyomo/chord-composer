@@ -27,8 +27,14 @@ export const initialState = {
   pathParts: [] as PathPart[],
 
   inputs: {
-    username: "",
+    email: "",
     password: "",
+    confirmPassword: "",
+  },
+
+  errors: {
+    signIn: undefined as string[] | void,
+    signUp: undefined as string[] | void
   },
 
 };

@@ -78,7 +78,7 @@ export function withAjax(dispatch: (action: Action) => void, queueSize = 6, root
         let nextConfig = configsQueue.shift();
 
         executingCount++;
-        if (nextConfig && nextXhr){
+        if (nextConfig && nextXhr) {
           executeXhrWithConfig(nextConfig, nextXhr, rootUrl);
         }
       }
@@ -126,8 +126,7 @@ export function withAjax(dispatch: (action: Action) => void, queueSize = 6, root
         if (executingCount < queueSize) {
           executingCount++;
           executeXhrWithConfig(effect.config, xhr, rootUrl);
-        }
-        else {
+        } else {
           xhrQueue.push(xhr);
           configsQueue.push(effect.config);
         }
@@ -140,7 +139,11 @@ export function executeXhrWithConfig(config: AjaxConfig, xhr: XMLHttpRequest, ro
 
   xhr.open(config.method, getAjaxUrl(config, rootUrl), true);
 
-  const headers = config.headers;
+  const headers = config.headers || {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+  };
+
   if (headers) {
     for (let key in headers) {
       xhr.setRequestHeader(key, headers[key]);

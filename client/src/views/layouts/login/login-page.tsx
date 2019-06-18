@@ -2,21 +2,19 @@ import * as React from "react";
 import {Action} from "../../../react-root";
 
 import {State} from "../../../state";
-import {inputChangeDispatcher} from "../../../reducers/input-reducers";
+import {SignIn} from "./sign-in";
+import {SignUp} from "./sign-up";
 
 export function LoginPage(dispatch: (action: Action) => void) {
 
+  let SignInContent = SignIn(dispatch);
+  let SignUpContent = SignUp(dispatch);
+
   return (state: State) => {
     return (
-      <div className={"vw-100 vh-100 flex flex-column overflow-hidden"}>
-        <div className={"ma3 pa3 ba br3 w-75 b--light-gray shadow-1"}>
-          <div className={"db ma2"}>
-            <input value={state.inputs.username} onChange={inputChangeDispatcher(dispatch, "username")}/>
-          </div>
-          <div className={"db ma2"}>
-            <input value={state.inputs.password} onChange={inputChangeDispatcher(dispatch, "password")}/>
-          </div>
-        </div>
+      <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1"}>
+        {!state.pathParts[1] && SignInContent(state)}
+        {state.pathParts[1] === "sign_up" && SignUpContent(state)}
       </div>
     );
   }

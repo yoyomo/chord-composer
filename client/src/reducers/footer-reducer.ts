@@ -2,7 +2,7 @@ import {State} from "../state";
 import {Action, Effect} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
 import {requestAjax} from "../core/services/ajax-services";
-import {RapiV1UsersPath} from "../resources/routes";
+import {ApiV1UsersPath} from "../resources/routes";
 import {ChordType} from "./recompute-chord-grid";
 import {calculateMML} from "../utils/mml";
 
@@ -123,12 +123,7 @@ export const updateFavoriteChords = (favoriteChords: ChordType[]): Effect[] => {
 
   let mmlFavoriteChords = favoriteChords.map(favoriteChord => calculateMML(favoriteChord));
   effects.push(requestAjax([updateFavoriteChordRequestName], {
-    url: RapiV1UsersPath + "/1",
-    method: "PUT",
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json"
-    },
+    url: ApiV1UsersPath + "/1", method: "PUT",
     json: {
       user: {
         favorite_chords: mmlFavoriteChords
