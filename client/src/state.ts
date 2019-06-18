@@ -24,8 +24,14 @@ export const initialState = {
   savedChords: [] as ChordType[],
   selectedSavedChord: undefined as number | void,
   loggedInUser: undefined as UserResource | void,
-  pathParts: [] as PathPart[]
+  pathParts: [] as PathPart[],
+
+  inputs: {
+    username: "",
+    password: "",
+  },
 
 };
 
 export type State = typeof initialState;
+export type Inputs = typeof initialState.inputs;

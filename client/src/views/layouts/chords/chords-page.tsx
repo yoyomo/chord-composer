@@ -18,7 +18,7 @@ export function ChordsPage(dispatch: (action: Action) => void) {
 
   return (state: State) => {
     return (
-        <div className={"vw-100 vh-100 flex flex-column overflow-hidden"}>
+        <div>
           {HeaderContent(state)}
           {ChordToolsContent(state)}
           {ChordCanvasContent(state)}

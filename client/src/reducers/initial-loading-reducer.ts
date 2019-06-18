@@ -2,6 +2,7 @@ import {State} from "../state";
 import {Action, Effect} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
 import {parseMMLChords} from "../utils/mml";
+import {historyPush} from "../core/services/navigation-services";
 
 export const reduceInitialLoading = (state: State, action: Action): ReductionWithEffect<State> => {
   let effects: Effect[] = [];
@@ -13,11 +14,14 @@ export const reduceInitialLoading = (state: State, action: Action): ReductionWit
 
       if (action.name[0] === loadUserRequestName){
         let user = response;
-        if (user){
+        if (user.success){
           state = {...state};
           state.loggedInUser = user;
 
           state.savedChords = parseMMLChords(state.chordRules, user.favorite_chords)
+        }
+        else {
+          effects = effects.concat(historyPush({pathname: '/login'}));
         }
       }
 

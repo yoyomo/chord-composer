@@ -1,7 +1,7 @@
 import React from 'react';
 import {initialState, State} from "./state";
 import {RootPage} from "./views/root-page";
-import {ClassAndChildren, computedFor, reducerChain} from "./core/reducers";
+import {ClassAndChildren, computedFor, reducerChain, subReducersFor} from "./core/reducers";
 import {recomputeAllNotes} from "./reducers/recompute-all-notes";
 import {recomputeChordGrid} from "./reducers/recompute-chord-grid";
 import {HeaderActions, reduceHeader} from "./reducers/header-reducer";
@@ -13,6 +13,8 @@ import {getCoreServices, Service, ServicesActions} from "./core/services/service
 import {reduceInitialLoading} from "./reducers/initial-loading-reducer";
 import {NavigationActions, NavigationEffect, visit} from "./core/services/navigation-services";
 import {reduceNavigation} from "./reducers/router-reducer";
+import {InputChange, reduceInputs} from "./reducers/input-reducers";
+import {ClearInputDebouncing} from "./core/services/input-debouncing-service";
 
 export type Action =
     ServicesActions
@@ -21,15 +23,17 @@ export type Action =
     | FooterActions
     | ChordToolsActions
     | NavigationActions
+    | InputChange
     ;
 
 export type Effect =
     RequestAjaxEffect
     | NavigationEffect
+    | ClearInputDebouncing
     ;
 
 
-// const subReducer = subReducersFor<State>();
+const subReducer = subReducersFor<State>();
 const computed = computedFor<State>();
 
 export class ReactRoot extends React.Component<{}, typeof initialState> {
@@ -51,6 +55,7 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
     return reducerChain(state, action)
         .apply(reduceNavigation)
         .apply(reduceInitialLoading)
+        .apply(subReducer("inputs", reduceInputs))
         .apply(reduceHeader)
         .apply(reduceChordTools)
         .apply(reduceFooter)
@@ -72,8 +77,9 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
   dispatch = (action: Action) => {
     let oldState = {...this.state};
     let reduction = this.reduce(oldState, action);
-    this.reduceEffects(reduction.effects);
     this.setState(reduction.state);
+    console.log("newState", this.state);
+    this.reduceEffects(reduction.effects);
   };
 
   render() {

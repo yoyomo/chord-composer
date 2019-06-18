@@ -51,11 +51,16 @@ export function linkClick(location: PathLocation): LinkClick {
 
 export interface HistoryProvider {
   push(location: PathLocation): void
+  listen(callback: (location: PathLocation, action: string) => void): () => void
   location: PathLocation
 }
 
-
 export function withHistory(dispatch: (action: Action) => void, history: HistoryProvider): Service {
+
+  history.listen((location, action) => {
+    dispatch(visit(location));
+  });
+
   return (effect: Effect) => {
     switch (effect.effectType) {
       case 'history-push':

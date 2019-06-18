@@ -1,4 +1,4 @@
-import {historyPush, navigationReducer, PathLocation} from "../core/services/navigation-services";
+import {navigationReducer, PathLocation} from "../core/services/navigation-services";
 import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {Effect} from "../react-root";
@@ -14,9 +14,7 @@ export function routerReducer(state: State,
 
   let nextPathParts: PathPart[] = location.pathname.split("/").slice(1) as PathPart[];
   if (!nextPathParts[0]) nextPathParts = ["chords"];
-
-  effects.push(requestAjax([loadUserRequestName], {url: RapiV1UsersPath + "/1", method: "GET"}));
-
+  
   switch (nextPathParts[0]) {
 
     case "login":
@@ -24,14 +22,12 @@ export function routerReducer(state: State,
       break;
 
     case "chords":
-      //if not logged in, go to login page
-      // nextPathParts = ["login"];
+      effects.push(requestAjax([loadUserRequestName], {url: RapiV1UsersPath + "/1", method: "GET"}));
       break;
 
   }
 
 
-  effects = effects.concat(historyPush({pathname: nextPathParts.join('/')}));
   state.pathParts = nextPathParts;
 
   return {state, effects};
