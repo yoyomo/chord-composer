@@ -84,7 +84,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
     case "sign-up": {
       effects.push(requestAjax([userSignUpRequesName],
-        {url: AuthSignUp, method: "GET",
+        {url: AuthSignUp, method: "POST",
           json: {
             email: state.inputs.email,
             password: state.inputs.password
