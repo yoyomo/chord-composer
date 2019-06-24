@@ -2,8 +2,7 @@ import {State} from "../state";
 import {Action, Effect} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
 import {requestAjax} from "../core/services/ajax-services";
-import {loadUserRequestName} from "./initial-loading-reducer";
-import {AuthSignIn, ApiV1UsersPath, AuthSignUp} from "../resources/routes";
+import {AuthSignIn, AuthSignUp} from "../resources/routes";
 import {historyPush} from "../core/services/navigation-services";
 
 export interface SignInAction {
@@ -75,7 +74,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       effects.push(requestAjax([userSignInRequesName],
         {url: AuthSignIn, method: "POST",
         json: {
-          username: state.inputs.email,
+          email: state.inputs.email,
           password: state.inputs.password
       }
       }));
@@ -87,7 +86,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       effects.push(requestAjax([userSignUpRequesName],
         {url: AuthSignUp, method: "GET",
           json: {
-            username: state.inputs.email,
+            email: state.inputs.email,
             password: state.inputs.password
           }
         }));
