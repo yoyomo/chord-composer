@@ -32,10 +32,17 @@ export const initialState = {
     confirmPassword: "",
   },
 
-  errors: {
-    signIn: undefined as string[] | void,
-    signUp: undefined as string[] | void
+  loginPage: {
+    success: {
+      signUp: undefined as string | void
+    },
+    errors: {
+      signIn: undefined as string[] | void,
+      signUp: undefined as string[] | void
+    }
   },
+
+
 
 };
 

@@ -13,8 +13,8 @@ export function SignUp(dispatch: (action: Action) => void) {
   return (state: State) => {
     return (
       <div>
-        {state.errors.signUp && state.errors.signUp.map(errorMessage => {
-          return <div className={"red"}>
+        {state.loginPage.errors.signUp && state.loginPage.errors.signUp.map(errorMessage => {
+          return <div className={"red"} key={"sign-up-error_"+errorMessage}>
             {errorMessage}
           </div>
         })}
