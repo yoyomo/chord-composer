@@ -1,10 +1,9 @@
 import {initialState, State} from "../state";
 import {Action, Effect} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
-import {requestAjax} from "../core/services/ajax-services";
-import {AuthSignIn, AuthSignUp} from "../resources/routes";
+import {parseHTTPHeaders, requestAjax} from "../core/services/ajax-services";
+import {AuthSignIn, AuthSignUp, AuthValidateToken} from "../resources/routes";
 import {historyPush} from "../core/services/navigation-services";
-import {UserResource} from "../resources/user-resource";
 import {ResourceType} from "../resources/resource";
 
 export interface SignInAction {
@@ -59,8 +58,19 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
       if (action.name[0] === userSignInRequesName){
         if(action.success) {
+          effects = effects.concat(requestAjax([validateTokenRequestName],{url: AuthValidateToken, method: "GET", headers: parseHTTPHeaders(action.headers)}));
+        } else {
+          state = {...state};
+          state.loginPage = {...state.loginPage};
+          state.loginPage.errors = {...state.loginPage.errors};
+          state.loginPage.errors.signIn = response.errors
+        }
+      }
+      else if (action.name[0] === validateTokenRequestName){
+        if(action.success) {
           state = {...state};
           state.loggedInUser = response.data;
+          state.headers = parseHTTPHeaders(action.headers);
           effects = effects.concat(historyPush({pathname: '/chords'}));
         } else {
           state = {...state};
@@ -69,8 +79,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state.loginPage.errors.signIn = response.errors
         }
       }
-
-      if (action.name[0] === userSignUpRequesName){
+      else if (action.name[0] === userSignUpRequesName){
         if(action.success) {
           state = {...state};
           state.loginPage = {...state.loginPage};
@@ -91,7 +100,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
     case "sign-in": {
       effects.push(requestAjax([userSignInRequesName],
-        {url: AuthSignIn, method: "POST",
+        {url: AuthSignIn, method: "POST", headers: state.headers,
         json: {
           email: state.inputs.email,
           password: state.inputs.password
@@ -111,7 +120,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       }
       else{
         effects.push(requestAjax([userSignUpRequesName],
-          {url: AuthSignUp, method: "POST",
+          {url: AuthSignUp, method: "POST", headers: state.headers,
             json: {
               email: state.inputs.email,
               password: state.inputs.password
@@ -134,5 +143,6 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
   return {state, effects};
 };
 
+export const validateTokenRequestName = "validate-token";
 export const userSignInRequesName = "user-sign-in";
 export const userSignUpRequesName = "user-sign-up";

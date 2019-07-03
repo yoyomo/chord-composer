@@ -7,7 +7,7 @@ export interface AjaxConfig {
   json?: Object
   query?: { [k: string]: string | number }
   body?: string
-  headers?: { [k: string]: string }
+  headers: { [k: string]: string }
 }
 
 export interface LoadingRequest {
@@ -134,15 +134,27 @@ export function withAjax(dispatch: (action: Action) => void, queueSize = 6, root
   }
 }
 
+export const parseHTTPHeaders = (headersStr: string) => {
+  let headers: {[k: string]: string} = {};
+  const regex = /([\w-]+): (.*)/g;
+
+  let header;
+  while (!!(header = regex.exec(headersStr))){
+    headers[header[1]] = header[2];
+  }
+
+  return headers;
+};
+
 export function executeXhrWithConfig(config: AjaxConfig, xhr: XMLHttpRequest, rootUrl = "") {
   xhr.withCredentials = false;
 
   xhr.open(config.method, getAjaxUrl(config, rootUrl), true);
 
-  const headers = config.headers || {
+  const headers: {[k: string]: string} = {...config.headers,...{
     "Accept": "application/json",
     "Content-Type": "application/json"
-  };
+  }};
 
   if (headers) {
     for (let key in headers) {

@@ -25,6 +25,7 @@ export const initialState = {
   selectedSavedChord: undefined as number | void,
   loggedInUser: undefined as UserResource | void,
   pathParts: [] as PathPart[],
+  headers: {} as {[k: string]: string},
 
   inputs: {
     email: "",

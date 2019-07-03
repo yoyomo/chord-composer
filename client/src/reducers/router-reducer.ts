@@ -2,9 +2,6 @@ import {navigationReducer, PathLocation} from "../core/services/navigation-servi
 import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {Effect} from "../react-root";
-import {requestAjax} from "../core/services/ajax-services";
-import {ApiV1UsersPath} from "../resources/routes";
-import {loadUserRequestName} from "./initial-loading-reducer";
 
 export type PathPart = 'login' | 'chords' | 'sign_up'
 export function routerReducer(state: State,
@@ -22,7 +19,6 @@ export function routerReducer(state: State,
       break;
 
     case "chords":
-      effects.push(requestAjax([loadUserRequestName], {url: ApiV1UsersPath + "/1", method: "GET"}));
       break;
 
   }

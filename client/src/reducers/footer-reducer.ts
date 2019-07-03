@@ -3,7 +3,6 @@ import {Action, Effect} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
 import {requestAjax} from "../core/services/ajax-services";
 import {ApiV1UsersPath} from "../resources/routes";
-import {ChordType} from "./recompute-chord-grid";
 import {calculateMML} from "../utils/mml";
 
 export interface ShowVariationsAction {
@@ -93,7 +92,7 @@ export const reduceFooter = (state: State, action: Action): ReductionWithEffect<
       if (!state.selectedGridChord) break;
       state.savedChords.push(state.selectedGridChord);
 
-      effects = effects.concat(updateFavoriteChords(state.savedChords));
+      effects = effects.concat(updateFavoriteChords(state));
       break;
     }
 
@@ -103,7 +102,7 @@ export const reduceFooter = (state: State, action: Action): ReductionWithEffect<
       state.savedChords.splice(state.selectedSavedChord || state.savedChords.length - 1, 1);
       state.selectedSavedChord = null as unknown as number;
 
-      effects = effects.concat(updateFavoriteChords(state.savedChords));
+      effects = effects.concat(updateFavoriteChords(state));
       break;
     }
 
@@ -118,12 +117,12 @@ export const reduceFooter = (state: State, action: Action): ReductionWithEffect<
   return {state, effects};
 };
 
-export const updateFavoriteChords = (favoriteChords: ChordType[]): Effect[] => {
+export const updateFavoriteChords = (state: State): Effect[] => {
   let effects: Effect[] = [];
 
-  let mmlFavoriteChords = favoriteChords.map(favoriteChord => calculateMML(favoriteChord));
+  let mmlFavoriteChords = state.savedChords.map(favoriteChord => calculateMML(favoriteChord));
   effects.push(requestAjax([updateFavoriteChordRequestName], {
-    url: ApiV1UsersPath + "/1", method: "PUT",
+    url: ApiV1UsersPath + "/1", method: "PUT", headers: state.headers,
     json: {
       user: {
         favorite_chords: mmlFavoriteChords
