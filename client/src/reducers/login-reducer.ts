@@ -28,18 +28,34 @@ export const goSignUp = (): GoSignUpAction => {
 
 export interface SignUpAction {
   type: "sign-up"
+  token_id: string
 }
 
-export const signUp = (): SignUpAction => {
+export const signUp = (token_id: string): SignUpAction => {
   return {
-    type: "sign-up"
+    type: "sign-up",
+    token_id
   };
 };
+
+export interface ErrorOnSignUpAction {
+  type: "error-on-sign-up"
+  errorMessage: string
+}
+
+export const errorOnSignUp = (errorMessage: string): ErrorOnSignUpAction => {
+  return {
+    type: "error-on-sign-up",
+    errorMessage
+  };
+};
+
 
 export type LogInActions =
   | SignInAction
   | GoSignUpAction
-  | SignUpAction;
+  | SignUpAction
+  | ErrorOnSignUpAction;
 
 
 export interface ResponseType {
@@ -56,18 +72,21 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       if (!action.response) break;
       let response = JSON.parse(action.response) as ResponseType;
 
-      if (action.name[0] === userSignInRequesName){
-        if(action.success) {
-          effects = effects.concat(requestAjax([validateTokenRequestName],{url: AuthValidateToken, method: "GET", headers: parseHTTPHeaders(action.headers)}));
+      if (action.name[0] === userSignInRequesName) {
+        if (action.success) {
+          effects = effects.concat(requestAjax([validateTokenRequestName], {
+            url: AuthValidateToken,
+            method: "GET",
+            headers: parseHTTPHeaders(action.headers)
+          }));
         } else {
           state = {...state};
           state.loginPage = {...state.loginPage};
           state.loginPage.errors = {...state.loginPage.errors};
           state.loginPage.errors.signIn = response.errors
         }
-      }
-      else if (action.name[0] === validateTokenRequestName){
-        if(action.success) {
+      } else if (action.name[0] === validateTokenRequestName) {
+        if (action.success) {
           state = {...state};
           state.loggedInUser = response.data;
           state.headers = parseHTTPHeaders(action.headers);
@@ -78,9 +97,8 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state.loginPage.errors = {...state.loginPage.errors};
           state.loginPage.errors.signIn = response.errors
         }
-      }
-      else if (action.name[0] === userSignUpRequesName){
-        if(action.success) {
+      } else if (action.name[0] === userSignUpRequesName) {
+        if (action.success) {
           state = {...state};
           state.loginPage = {...state.loginPage};
           state.loginPage.success = {...state.loginPage.success};
@@ -100,27 +118,31 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
     case "sign-in": {
       effects.push(requestAjax([userSignInRequesName],
-        {url: AuthSignIn, method: "POST", headers: state.headers,
-        json: {
-          email: state.inputs.email,
-          password: state.inputs.password
-      }
-      }));
+        {
+          url: AuthSignIn, method: "POST", headers: state.headers,
+          json: {
+            email: state.inputs.email,
+            password: state.inputs.password
+          }
+        }));
 
       break;
     }
 
     case "sign-up": {
 
-      if(state.inputs.password !== state.inputs.confirmPassword) {
+      if (state.inputs.password !== state.inputs.confirmPassword) {
         state = {...state};
         state.loginPage = {...state.loginPage};
         state.loginPage.errors = {...state.loginPage.errors};
         state.loginPage.errors.signUp = ["Password mismatch"];
-      }
-      else{
+      } else {
+
+        // TODO create Customer & subscription to plan through Stripe
+        // TODO THEN create user
         effects.push(requestAjax([userSignUpRequesName],
-          {url: AuthSignUp, method: "POST", headers: state.headers,
+          {
+            url: AuthSignUp, method: "POST", headers: state.headers,
             json: {
               email: state.inputs.email,
               password: state.inputs.password
@@ -128,6 +150,16 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           }));
       }
 
+
+      break;
+    }
+
+    case "error-on-sign-up": {
+
+      state = {...state};
+      state.loginPage = {...state.loginPage};
+      state.loginPage.errors = {...state.loginPage.errors};
+      state.loginPage.errors.signUp = [action.errorMessage];
 
       break;
     }

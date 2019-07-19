@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 2019_06_14_023937) do
     t.string "email"
     t.text "favorite_chords", default: [], array: true
     t.json "tokens"
+    t.string "stripe_customer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true

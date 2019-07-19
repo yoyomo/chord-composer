@@ -49,6 +49,7 @@ GEM
     builder (3.2.3)
     byebug (11.0.1)
     concurrent-ruby (1.1.5)
+    connection_pool (2.2.2)
     crass (1.0.4)
     devise (4.6.2)
       bcrypt (~> 3.0)
@@ -60,6 +61,8 @@ GEM
       devise (> 3.5.2, < 4.7)
       rails (>= 4.2.0, < 6)
     erubi (1.8.0)
+    faraday (0.15.4)
+      multipart-post (>= 1.2, < 3)
     ffi (1.11.1)
     foreman (0.85.0)
       thor (~> 0.19.1)
@@ -85,6 +88,9 @@ GEM
     mini_portile2 (2.4.0)
     minitest (5.11.3)
     msgpack (1.2.10)
+    multipart-post (2.1.1)
+    net-http-persistent (3.0.1)
+      connection_pool (~> 2.2)
     nio4r (2.3.1)
     nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
@@ -141,6 +147,9 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    stripe (4.0.3)
+      faraday (~> 0.13)
+      net-http-persistent (~> 3.0)
     thor (0.19.4)
     thread_safe (0.3.6)
     tzinfo (1.2.5)
@@ -164,15 +173,16 @@ DEPENDENCIES
   foreman
   listen (>= 3.0.5, < 3.2)
   omniauth
-  pg (>= 0.18, < 2.0)
-  puma (~> 3.11)
-  rails (~> 5.2.2)
+  pg
+  puma
+  rails
   spring
   spring-watcher-listen (~> 2.0.0)
+  stripe
   tzinfo-data
 
 RUBY VERSION
    ruby 2.6.3p62
 
 BUNDLED WITH
-   1.17.2
+   1.17.3

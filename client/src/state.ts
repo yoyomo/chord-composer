@@ -27,6 +27,13 @@ export const initialState = {
   pathParts: [] as PathPart[],
   headers: {} as {[k: string]: string},
 
+  // TODO request data from backend & display plan information
+  stripe: {
+    publishableKey: "pk_test_djBzxE7qYBOJYdTPP2OT7aXa00gGQMNEZb" as string,
+    plans: ["plan_FPRSWCfeC2eHz1"] as string[],
+    chosenPlanID: "plan_FPRSWCfeC2eHz1" as string,
+  },
+
   inputs: {
     email: "",
     password: "",

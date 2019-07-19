@@ -1,4 +1,4 @@
-import {navigationReducer, PathLocation} from "../core/services/navigation-services";
+import {historyPush, navigationReducer, PathLocation} from "../core/services/navigation-services";
 import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {Effect} from "../react-root";
@@ -15,10 +15,18 @@ export function routerReducer(state: State,
   switch (nextPathParts[0]) {
 
     case "login":
+      if(state.loggedInUser) {
+        nextPathParts = ["chords"];
+        effects = effects.concat(historyPush({pathname: "chords"}));
+      }
 
       break;
 
     case "chords":
+      if(!state.loggedInUser){
+        nextPathParts = ["login"];
+        effects = effects.concat(historyPush({pathname: "login"}));
+      }
       break;
 
   }
