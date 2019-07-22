@@ -1,19 +1,16 @@
 class Api::V1::UsersController < APIController
   before_action :set_user, only: [:show, :update, :destroy]
 
-  # GET /users
   def index
     @users = User.all
 
     render json: @users
   end
 
-  # GET /users/1
   def show
     render json: @user
   end
 
-  # POST /users
   def create
     @user = User.new(user_params)
     if @user.save
@@ -24,7 +21,6 @@ class Api::V1::UsersController < APIController
     end
   end
 
-  # PATCH/PUT /users/1
   def update
     if @user.update(user_params)
       render json: @user
@@ -33,19 +29,35 @@ class Api::V1::UsersController < APIController
     end
   end
 
-  # DELETE /users/1
   def destroy
     @user.destroy
   end
 
+  def stripe_create
+    if params[:email].nil? || params[:token_id].nil? || params[:plan_id].nil?
+      Rails.logger "Stripe Error: Email, Token ID, and Plan ID are required"
+      return render json: @user.errors, status: :unprocessable_entity if params[:email]
+    end
+
+    customer = Stripe::Customer.create({
+                                         email: params[:email],
+                                         source: params[:token_id]
+                                       })
+
+    subscription = Stripe::Subscription.create({
+                                                 customer: customer.id,
+                                                 items: [{plan: params[:plan_id]}]
+                                               })
+
+    render json: subscription
+  end
+
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_user
     @user = User.find(params[:id])
   end
 
-  # Only allow a trusted parameter "white list" through.
   def user_params
     params.require(:user).permit(:username, :email, favorite_chords: [])
   end

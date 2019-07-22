@@ -2,9 +2,11 @@ import {initialState, State} from "../state";
 import {Action, Effect} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
 import {parseHTTPHeaders, requestAjax} from "../core/services/ajax-services";
-import {AuthSignIn, AuthSignUp, AuthValidateToken} from "../resources/routes";
+import {ApiV1UsersPath, AuthSignIn, AuthSignUp, AuthValidateToken} from "../resources/routes";
 import {historyPush} from "../core/services/navigation-services";
 import {ResourceType} from "../resources/resource";
+import {UserResource} from "../resources/user-resource";
+import {SubscriptionResource} from "../resources/subscription-resource";
 
 export interface SignInAction {
   type: "sign-in"
@@ -88,7 +90,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       } else if (action.name[0] === validateTokenRequestName) {
         if (action.success) {
           state = {...state};
-          state.loggedInUser = response.data;
+          state.loggedInUser = response.data as UserResource;
           state.headers = parseHTTPHeaders(action.headers);
           effects = effects.concat(historyPush({pathname: '/chords'}));
         } else {
@@ -113,6 +115,20 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state.loginPage.errors.signUp = (response.errors as any).full_messages;
           state.loginPage.success = initialState.loginPage.success;
         }
+      } else if (action.name[0] === stripeCreateCustomerRequesName) {
+        if(action.success){
+          let subscription = response.data as SubscriptionResource;
+          effects.push(requestAjax([userSignUpRequesName],
+            {
+              url: AuthSignUp, method: "POST", headers: state.headers,
+              json: {
+                email: state.inputs.email,
+                password: state.inputs.password,
+                customer_id: subscription.customer
+              }
+            }));
+        }
+
       }
       break;
 
@@ -138,14 +154,12 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         state.loginPage.errors.signUp = ["Password mismatch"];
       } else {
 
-        // TODO create Customer & subscription to plan through Stripe
-        // TODO THEN create user
-        effects.push(requestAjax([userSignUpRequesName],
+        effects.push(requestAjax([stripeCreateCustomerRequesName],
           {
-            url: AuthSignUp, method: "POST", headers: state.headers,
+            url: ApiV1UsersPath + '/stripe_create', method: "POST", headers: state.headers,
             json: {
-              email: state.inputs.email,
-              password: state.inputs.password
+              token_id: action.token_id,
+              plan_id: state.stripe.chosenPlanID
             }
           }));
       }
@@ -178,3 +192,4 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 export const validateTokenRequestName = "validate-token";
 export const userSignInRequesName = "user-sign-in";
 export const userSignUpRequesName = "user-sign-up";
+export const stripeCreateCustomerRequesName = "stripe-create-customer";

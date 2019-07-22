@@ -4,12 +4,11 @@ import {Action} from "../../../react-root";
 import {State} from "../../../state";
 import {inputChangeDispatcher} from "../../../reducers/input-reducers";
 import {errorOnSignUp, signUp} from "../../../reducers/login-reducer";
-import {CardElement, Elements, ReactStripeElements, StripeProvider} from "react-stripe-elements";
+import {CardElement, Elements, injectStripe, ReactStripeElements, StripeProvider} from "react-stripe-elements";
 
 export interface SignUpFormProps extends ReactStripeElements.InjectedStripeProps {
   onSubmit: (token_id: string) => void
   onError: (errorMessage: string) => void
-  stripeAPIKey: string
 }
 
 class SignUpForm extends React.Component<SignUpFormProps> {
@@ -25,7 +24,7 @@ class SignUpForm extends React.Component<SignUpFormProps> {
     const {error, token} = await this.props.stripe.createToken({});
     if (!error && token) {
       this.props.onSubmit(token.id);
-    } else if (error && error.message){
+    } else if (error && error.message) {
       console.error(error);
       this.props.onError(error.message);
     }
@@ -34,23 +33,21 @@ class SignUpForm extends React.Component<SignUpFormProps> {
 
   render() {
     return (
-      <StripeProvider apiKey={this.props.stripeAPIKey}>
-        <Elements>
-          <div>
-            <div className={"pa2 mv2 ba br3 b--moon-gray"}>
-              <CardElement/>
-            </div>
-            <div className={"db ma2"}>
-              <div className={"dib ma2 bg-light-blue white br4 pa2 pointer"} onClick={this.submit}>
-                Sign Up
-              </div>
-            </div>
+      <div>
+        <div className={"pa2 mv2 ba br3 b--moon-gray"}>
+          <CardElement/>
+        </div>
+        <div className={"db ma2"}>
+          <div className={"dib ma2 bg-light-blue white br4 pa2 pointer"} onClick={this.submit}>
+            Sign Up
           </div>
-        </Elements>
-      </StripeProvider>
+        </div>
+      </div>
     )
   }
 }
+
+export const StripeSignUpForm = injectStripe(SignUpForm);
 
 export function SignUp(dispatch: (action: Action) => void) {
   const dispatcher = {
@@ -81,7 +78,11 @@ export function SignUp(dispatch: (action: Action) => void) {
           <input className={"ba b--light-silver br1"} type="password" value={state.inputs.confirmPassword}
                  onChange={inputChangeDispatcher(dispatch, "confirmPassword")}/>
         </div>
-        <SignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error} stripeAPIKey={state.stripe.publishableKey}/>
+        <StripeProvider apiKey={state.stripe.publishableKey}>
+          <Elements>
+            <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error}/>
+          </Elements>
+        </StripeProvider>
       </div>
     );
   }
