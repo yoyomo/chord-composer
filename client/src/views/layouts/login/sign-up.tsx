@@ -77,11 +77,12 @@ export function SignUp(dispatch: (action: Action) => void) {
           <Input type="password" value={state.inputs.confirmPassword}
                  onChange={inputChangeDispatcher(dispatch, "confirmPassword")}/>
         </div>
-        <StripeProvider apiKey={state.stripe.publishableKey}>
+        {state.stripe.object && <StripeProvider apiKey={state.stripe.publishableKey}>
           <Elements>
             <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error}/>
           </Elements>
         </StripeProvider>
+        }
       </div>
     );
   }

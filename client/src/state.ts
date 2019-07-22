@@ -29,7 +29,7 @@ export const initialState = {
 
   // TODO request data from backend & display plan information
   stripe: {
-    object: {} as stripe.Stripe,
+    object: undefined as stripe.Stripe | void,
     publishableKey: "pk_test_djBzxE7qYBOJYdTPP2OT7aXa00gGQMNEZb" as string,
     plans: ["plan_FPRSWCfeC2eHz1"] as string[],
     chosenPlanID: "plan_FPRSWCfeC2eHz1" as string,

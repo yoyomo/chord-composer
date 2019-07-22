@@ -22,8 +22,10 @@ export const reduceStripe = (state: State, action: Action): ReductionWithEffect<
   let effects: Effect[] = [];
   switch (action.type) {
 
-    case "complete-request":{
-
+    case "set-stripe-object":{
+      state = {...state};
+      state.stripe = {...state.stripe};
+      state.stripe.object = action.stripeObject;
 
       break;
     }
