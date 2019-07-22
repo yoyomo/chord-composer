@@ -1,9 +1,8 @@
 import * as React from "react";
-import {Action} from "../../../react-root";
-
 import {State} from "../../../state";
 import {SignIn} from "./sign-in";
 import {SignUp} from "./sign-up";
+import {Action} from "../../../core/root-reducer";
 
 export function LoginPage(dispatch: (action: Action) => void) {
 

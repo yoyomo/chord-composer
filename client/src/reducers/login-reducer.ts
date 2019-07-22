@@ -1,12 +1,13 @@
 import {initialState, State} from "../state";
-import {Action, Effect} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
-import {parseHTTPHeaders, requestAjax} from "../core/services/ajax-services";
+import {parseHTTPHeaders, requestAjax} from "../core/services/ajax-service";
 import {ApiV1UsersPath, AuthSignIn, AuthSignUp, AuthValidateToken} from "../resources/routes";
-import {historyPush} from "../core/services/navigation-services";
+import {historyPush} from "../core/services/navigation-service";
 import {ResourceType} from "../resources/resource";
 import {UserResource} from "../resources/user-resource";
 import {SubscriptionResource} from "../resources/subscription-resource";
+import {Action} from "../core/root-reducer";
+import {Effect} from "../core/services/service";
 
 export interface SignInAction {
   type: "sign-in"

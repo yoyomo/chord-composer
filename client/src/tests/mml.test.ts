@@ -3,7 +3,7 @@ import {initialState, State} from "../state";
 import {ChordRuleType, ChordType, KEYS, recomputeChordGrid} from "../reducers/recompute-chord-grid";
 import {MAXIMUM_OCTAVE, MINIMUM_OCTAVE} from "../reducers/chord-tools-reducer";
 
-export class ChordComposerTest {
+export class KordPoseTest {
   state: State;
 
   constructor() {
@@ -18,7 +18,7 @@ const testMML = (chordRules: ChordRuleType[], chord: ChordType, mmlText: string)
 };
 
 const testSelectedKeyIndexMML = (octave: number, selectedKeyIndex: number) => {
-  let test = new ChordComposerTest();
+  let test = new KordPoseTest();
 
   test.state = {...test.state};
   test.state.octave = octave;

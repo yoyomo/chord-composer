@@ -1,8 +1,9 @@
 import {State} from "../state";
-import {Action, Effect} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
 import {parseMMLChords} from "../utils/mml";
-import {historyPush} from "../core/services/navigation-services";
+import {historyPush} from "../core/services/navigation-service";
+import {Action} from "../core/root-reducer";
+import {Effect} from "../core/services/service";
 
 export const reduceInitialLoading = (state: State, action: Action): ReductionWithEffect<State> => {
   let effects: Effect[] = [];

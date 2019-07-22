@@ -1,6 +1,5 @@
 import React from "react";
 import {State} from "../../../state";
-import {Action} from "../../../react-root";
 import {
   changeBaseFrequency,
   selectWaveType,
@@ -8,6 +7,7 @@ import {
 } from "../../../reducers/header-reducer";
 import {ClassAndChildren} from "../../../core/reducers";
 import {Parameter} from "../../../components/parameter";
+import {Action} from "../../../core/root-reducer";
 
 export function Header(dispatch: (action: Action) => void) {
 

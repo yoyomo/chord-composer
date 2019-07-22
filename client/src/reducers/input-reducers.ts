@@ -1,7 +1,8 @@
 import {Inputs} from "../state";
-import {Action, Effect} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
 import {clearInputDebouncing} from "../core/services/input-debouncing-service";
+import {Action} from "../core/root-reducer";
+import {Effect} from "../core/services/service";
 
 export interface InputChange {
   type: "input-change"

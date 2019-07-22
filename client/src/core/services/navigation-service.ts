@@ -1,6 +1,6 @@
 import {ReductionWithEffect} from "../reducers";
-import {Action, Effect} from "../../react-root";
-import {Service} from "./services";
+import {Effect, Service} from "./service";
+import {Action} from "../root-reducer";
 
 export interface PathLocation {
   pathname: string,

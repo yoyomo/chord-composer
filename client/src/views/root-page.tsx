@@ -1,8 +1,8 @@
 import React from "react";
 import {State} from "../state";
-import {Action} from "../react-root";
 import {ChordsPage} from "./layouts/chords/chords-page";
 import {LoginPage} from "./layouts/login/login-page";
+import {Action} from "../core/root-reducer";
 
 
 export function RootPage(dispatch: (action: Action) => void) {

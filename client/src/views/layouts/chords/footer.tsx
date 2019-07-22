@@ -1,6 +1,5 @@
 import React from "react";
 import {State} from "../../../state";
-import {Action} from "../../../react-root";
 import {
   removeSavedChord,
   saveChord,
@@ -9,6 +8,7 @@ import {
 import {ParameterButton} from "../../../components/parameter-button";
 import {ChordElement} from "../../../components/chord";
 import {chordIdentifier} from "../../../reducers/recompute-chord-grid";
+import {Action} from "../../../core/root-reducer";
 
 
 export function Footer(dispatch: (action: Action) => void) {

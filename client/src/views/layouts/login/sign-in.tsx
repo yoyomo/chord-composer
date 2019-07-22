@@ -1,9 +1,8 @@
 import * as React from "react";
-import {Action} from "../../../react-root";
-
 import {State} from "../../../state";
 import {inputChangeDispatcher} from "../../../reducers/input-reducers";
 import {goSignUp, signIn} from "../../../reducers/login-reducer";
+import {Action} from "../../../core/root-reducer";
 
 export function SignIn(dispatch: (action: Action) => void) {
   const dispatcher = {

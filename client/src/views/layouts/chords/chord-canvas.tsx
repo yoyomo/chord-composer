@@ -2,9 +2,9 @@ import {NoteKey} from "../../../components/note-key";
 import {ChordElement} from "../../../components/chord";
 import React from "react";
 import {State} from "../../../state";
-import {Action} from "../../../react-root";
 import {selectChord, selectKey} from "../../../reducers/chord-canvas-reducer";
 import {chordIdentifier, ChordType, KEYS} from "../../../reducers/recompute-chord-grid";
+import {Action} from "../../../core/root-reducer";
 
 
 export function ChordCanvas(dispatch: (action: Action) => void) {

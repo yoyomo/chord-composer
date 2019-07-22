@@ -1,7 +1,7 @@
 import {State} from "../state";
-import {Action} from "../react-root";
 import {ChordType} from "./recompute-chord-grid";
 import {ReductionWithEffect} from "../core/reducers";
+import {Action} from "../core/root-reducer";
 
 export interface SelectKeyAction {
   type: "select-key"

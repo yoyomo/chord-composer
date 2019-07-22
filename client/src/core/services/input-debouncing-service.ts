@@ -1,4 +1,5 @@
-import {Action, Effect} from "../../react-root";
+import {Action} from "../root-reducer";
+import {Effect} from "./service";
 
 export const clearInputDebouncingEventName = "clear-input-debouncing";
 
@@ -18,4 +19,4 @@ export const withInputDebouncing = (dispatch: (action: Action) => void) => {
         break;
     }
   }
-}
+};

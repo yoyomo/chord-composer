@@ -1,11 +1,11 @@
 import * as React from "react";
-import {Action} from "../../../react-root";
 import {Header} from "./header";
 import {ChordTools} from "./chord-tools";
 import {ChordCanvas} from "./chord-canvas";
 import {ChordMapper} from "./chord-mapper";
 import {Footer} from "./footer";
 import {State} from "../../../state";
+import {Action} from "../../../core/root-reducer";
 
 
 export function ChordsPage(dispatch: (action: Action) => void) {

@@ -1,10 +1,10 @@
 import React from "react";
 import {State} from "../../../state";
-import {Action} from "../../../react-root";
 import {ParameterButton} from "../../../components/parameter-button";
 import {Parameter} from "../../../components/parameter";
 import {hideVariations, showVariations} from "../../../reducers/footer-reducer";
 import {decreaseOctave, increaseOctave, MAXIMUM_OCTAVE, MINIMUM_OCTAVE} from "../../../reducers/chord-tools-reducer";
+import {Action} from "../../../core/root-reducer";
 
 export function ChordTools(dispatch: (action: Action) => void) {
 

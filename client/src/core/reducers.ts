@@ -1,5 +1,6 @@
 import React from "react";
-import {Action, Effect} from "../react-root";
+import {Action} from "./root-reducer";
+import {Effect} from "./services/service";
 
 export interface ClassAndChildren {
   className?: string,

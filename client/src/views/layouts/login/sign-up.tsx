@@ -1,10 +1,11 @@
 import * as React from "react";
-import {Action} from "../../../react-root";
 
 import {State} from "../../../state";
 import {inputChangeDispatcher} from "../../../reducers/input-reducers";
 import {errorOnSignUp, signUp} from "../../../reducers/login-reducer";
 import {CardElement, Elements, injectStripe, ReactStripeElements, StripeProvider} from "react-stripe-elements";
+import {Input} from "../../../components/input";
+import {Action} from "../../../core/root-reducer";
 
 export interface SignUpFormProps extends ReactStripeElements.InjectedStripeProps {
   onSubmit: (token_id: string) => void
@@ -65,17 +66,15 @@ export function SignUp(dispatch: (action: Action) => void) {
         })}
         <div className={"db ma2"}>
           Email:
-          <input className={"ba b--light-silver br1"} value={state.inputs.email}
-                 onChange={inputChangeDispatcher(dispatch, "email")}/>
+          <Input type="email" value={state.inputs.email} onChange={inputChangeDispatcher(dispatch, "email")}/>
         </div>
         <div className={"db ma2"}>
           Password:
-          <input className={"ba b--light-silver br1"} type="password" value={state.inputs.password}
-                 onChange={inputChangeDispatcher(dispatch, "password")}/>
+          <Input type="password" value={state.inputs.password} onChange={inputChangeDispatcher(dispatch, "password")}/>
         </div>
         <div className={"db ma2"}>
           Confirm Password:
-          <input className={"ba b--light-silver br1"} type="password" value={state.inputs.confirmPassword}
+          <Input type="password" value={state.inputs.confirmPassword}
                  onChange={inputChangeDispatcher(dispatch, "confirmPassword")}/>
         </div>
         <StripeProvider apiKey={state.stripe.publishableKey}>

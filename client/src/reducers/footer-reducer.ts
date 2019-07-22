@@ -1,9 +1,10 @@
 import {State} from "../state";
-import {Action, Effect} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
-import {requestAjax} from "../core/services/ajax-services";
+import {requestAjax} from "../core/services/ajax-service";
 import {ApiV1UsersPath} from "../resources/routes";
 import {calculateMML} from "../utils/mml";
+import {Action} from "../core/root-reducer";
+import {Effect} from "../core/services/service";
 
 export interface ShowVariationsAction {
   type: "show-variations"

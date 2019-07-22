@@ -1,7 +1,7 @@
-import {historyPush, navigationReducer, PathLocation} from "../core/services/navigation-services";
+import {historyPush, navigationReducer, PathLocation} from "../core/services/navigation-service";
 import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
-import {Effect} from "../react-root";
+import {Effect} from "../core/services/service";
 
 export type PathPart = 'login' | 'chords' | 'sign_up'
 export function routerReducer(state: State,

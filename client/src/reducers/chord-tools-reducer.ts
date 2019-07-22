@@ -1,6 +1,6 @@
 import {State} from "../state";
-import {Action} from "../react-root";
 import {ReductionWithEffect} from "../core/reducers";
+import {Action} from "../core/root-reducer";
 
 export interface DecreaseOctaveAction {
   type: "decrease-octave"
