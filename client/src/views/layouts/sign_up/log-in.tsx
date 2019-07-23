@@ -1,10 +1,11 @@
 import * as React from "react";
 import {State} from "../../../state";
-import {inputChangeDispatcher} from "../../../reducers/input-reducers";
+import {inputChangeDispatcher} from "../../../reducers/input-reducer";
 import {goSignUp, signIn} from "../../../reducers/login-reducer";
 import {Action} from "../../../core/root-reducer";
+import {Input} from "../../../components/input";
 
-export function SignIn(dispatch: (action: Action) => void) {
+export function LogIn(dispatch: (action: Action) => void) {
   const dispatcher = {
     signIn: () => dispatch(signIn()),
     goSignUp: () => dispatch(goSignUp())
@@ -12,7 +13,7 @@ export function SignIn(dispatch: (action: Action) => void) {
 
   return (state: State) => {
     return (
-      <div>
+      <form>
         {state.loginPage.errors.signIn && state.loginPage.errors.signIn.map(errorMessage => {
           return <div className={"red"} key={"sign-in-error_" + errorMessage}>
             {errorMessage}
@@ -21,12 +22,12 @@ export function SignIn(dispatch: (action: Action) => void) {
         {state.loginPage.success.signUp && <div className={"green"}> {state.loginPage.success.signUp} </div>}
         <div className={"db ma2"}>
           Email:
-          <input className={"ba b--light-silver br1"} value={state.inputs.email}
+          <Input type="email" value={state.inputs.email} autoComplete={"email"}
                  onChange={inputChangeDispatcher(dispatch, "email")}/>
         </div>
         <div className={"db ma2"}>
           Password:
-          <input className={"ba b--light-silver br1"} type="password" value={state.inputs.password}
+          <Input type="password" value={state.inputs.password} autoComplete={"current-password"}
                  onChange={inputChangeDispatcher(dispatch, "password")}/>
         </div>
         <div className={"db ma2"}>
@@ -37,7 +38,7 @@ export function SignIn(dispatch: (action: Action) => void) {
             Sign In
           </div>
         </div>
-      </div>
+      </form>
     );
   }
 }

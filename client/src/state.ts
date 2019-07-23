@@ -41,6 +41,10 @@ export const initialState = {
     confirmPassword: "",
   },
 
+  toggles: {
+    showLogInModal: false,
+  },
+
   loginPage: {
     success: {
       signUp: undefined as string | void
@@ -57,3 +61,4 @@ export const initialState = {
 
 export type State = typeof initialState;
 export type Inputs = typeof initialState.inputs;
+export type Toggles = typeof initialState.toggles;

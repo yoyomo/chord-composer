@@ -107,7 +107,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state.loginPage.success = {...state.loginPage.success};
           state.loginPage.success.signUp = "A confirmation email was sent to you. Please confirm your email.";
           state.loginPage.errors = initialState.loginPage.errors;
-          effects = effects.concat(historyPush({pathname: '/login'}));
+          effects = effects.concat(historyPush({pathname: '/sign_up'}));
 
         } else {
           state = {...state};
@@ -180,7 +180,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
     }
 
     case "go-sign-up": {
-      effects.push(historyPush({pathname: '/login/sign_up'}));
+      effects.push(historyPush({pathname: '/sign-up'}));
       break;
     }
 

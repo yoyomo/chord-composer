@@ -17,7 +17,7 @@
     "react-stripe-elements": "^4.0.0",
     "serve": "^11.0.0",
     "tachyons": "^4.11.1",
-    "typescript": "3.5.1"
+    "typescript": "3.4.5"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -22,7 +22,7 @@ export const reduceInitialLoading = (state: State, action: Action): ReductionWit
           state.savedChords = parseMMLChords(state.chordRules, user.favorite_chords)
         }
         else {
-          effects = effects.concat(historyPush({pathname: '/login'}));
+          effects = effects.concat(historyPush({pathname: '/sign_up'}));
         }
       }
 

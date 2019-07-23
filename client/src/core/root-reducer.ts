@@ -1,7 +1,7 @@
 import {computedFor, reducerChain, subReducersFor} from "./reducers";
 import {reduceNavigation} from "../reducers/router-reducer";
 import {reduceInitialLoading} from "../reducers/initial-loading-reducer";
-import {InputChange, reduceInputs} from "../reducers/input-reducers";
+import {InputChange, reduceInputs} from "../reducers/input-reducer";
 import {LogInActions, reduceLogin} from "../reducers/login-reducer";
 import {HeaderActions, reduceHeader} from "../reducers/header-reducer";
 import {ChordToolsActions, reduceChordTools} from "../reducers/chord-tools-reducer";
@@ -13,6 +13,7 @@ import {State} from "../state";
 import {ServicesActions} from "./services/service";
 import {NavigationActions} from "./services/navigation-service";
 import {reduceStripe, StripeActions} from "../reducers/stripe-reducer";
+import {reduceToggle, ToggleAction} from "../reducers/toggle-reducer";
 
 const subReducer = subReducersFor<State>();
 const computed = computedFor<State>();
@@ -25,6 +26,7 @@ export type Action =
   | ChordToolsActions
   | NavigationActions
   | InputChange
+  | ToggleAction
   | LogInActions
   | StripeActions
   ;
@@ -35,6 +37,7 @@ export const rootReducer = (state: State, action: Action) => {
     .apply(reduceNavigation)
     .apply(reduceInitialLoading)
     .apply(subReducer("inputs", reduceInputs))
+    .apply(subReducer("toggles", reduceToggle))
     .apply(reduceLogin)
     .apply(reduceHeader)
     .apply(reduceChordTools)

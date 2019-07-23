@@ -8,6 +8,8 @@ import {
 import {ClassAndChildren} from "../../../core/reducers";
 import {Parameter} from "../../../components/parameter";
 import {Action} from "../../../core/root-reducer";
+import {LogIn} from "../sign_up/log-in";
+import {toggleDispatcher} from "../../../reducers/toggle-reducer";
 
 export function Header(dispatch: (action: Action) => void) {
 
@@ -32,6 +34,8 @@ export function Header(dispatch: (action: Action) => void) {
         </div>
     )
   };
+
+  let LogInContent = LogIn(dispatch);
 
   return (state: State) => {
     return (
@@ -63,6 +67,23 @@ export function Header(dispatch: (action: Action) => void) {
               {"<(("}
             </div>
           </Parameter>
+
+          <div className={"ma2 pa2 dark-gray tc"}>
+            <div className={"db pointer"} onClick={toggleDispatcher(dispatch,"showLogInModal")}>
+              (8)
+            </div>
+            {state.toggles.showLogInModal &&
+            <div>
+              {state.loggedInUser ?
+                null
+                :
+                <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1 absolute bg-white"}>
+                  {LogInContent(state)}
+                </div>
+              }
+            </div>
+            }
+          </div>
 
         </div>
     );

@@ -1,13 +1,14 @@
 import * as React from "react";
-import {EventInput} from "../reducers/input-reducers";
+import {EventInput} from "../reducers/input-reducer";
+import {ClassAndChildren} from "../core/reducers";
 
-export interface InputProps {
+export interface InputProps extends ClassAndChildren{
   type?: string
   value: string
   onChange: (e: EventInput) => void
+  autoComplete?: string
 }
 
 export const Input = (props: InputProps) => {
-  return <input className={"pa2 mv2 ba br3 b--moon-gray"} type={props.type} value={props.value}
-                onChange={props.onChange}/>
+  return <input className={"pa2 mv2 ba br3 b--moon-gray " + props.className} {...props}/>
 };

@@ -3,7 +3,7 @@ import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {Effect} from "../core/services/service";
 
-export type PathPart = 'login' | 'chords' | 'sign_up'
+export type PathPart = 'chords' | 'sign-up'
 export function routerReducer(state: State,
                               location: PathLocation): ReductionWithEffect<State> {
   let effects: Effect[] = [];
@@ -14,7 +14,7 @@ export function routerReducer(state: State,
   
   switch (nextPathParts[0]) {
 
-    case "login":
+    case "sign-up":
       if(state.loggedInUser) {
         nextPathParts = ["chords"];
         effects = effects.concat(historyPush({pathname: "chords"}));
@@ -23,10 +23,6 @@ export function routerReducer(state: State,
       break;
 
     case "chords":
-      if(!state.loggedInUser){
-        nextPathParts = ["login"];
-        effects = effects.concat(historyPush({pathname: "login"}));
-      }
       break;
 
   }
