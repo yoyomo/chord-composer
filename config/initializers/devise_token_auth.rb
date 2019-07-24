@@ -9,7 +9,7 @@ DeviseTokenAuth.setup do |config|
 
   # By default, users will need to re-authenticate after 2 weeks. This setting
   # determines how long tokens will remain valid after they are issued.
-  # config.token_lifespan = 2.weeks
+  config.token_lifespan = 1.year
 
   # Sets the max number of concurrent devices per user, which is 10 by default.
   # After this limit is reached, the oldest tokens will be removed.
@@ -36,7 +36,7 @@ DeviseTokenAuth.setup do |config|
   # It depends on fields like email, provider and uid.
   # config.default_callbacks = true
   #
-  config.default_confirm_success_url = "http://localhost:3002"
+  config.default_confirm_success_url = ENV['CONFIRMED_REDIRECT_URL'] || 'http://localhost:3002'
 
   # Makes it possible to change the headers names
   # config.headers_names = {:'access-token' => 'access-token',

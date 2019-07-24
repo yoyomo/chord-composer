@@ -4,29 +4,28 @@ class Api::V1::UsersController < APIController
   def index
     @users = User.all
 
-    render json: @users
+    render json: {data: @users}
   end
 
   def show
-    render json: @user
+    render json: {data: @user}
   end
 
   def create
     @user = User.new(user_params)
     if @user.save
-      redirect_base_url = ENV['CONFIRMED_REDIRECT_URL'] || 'http://localhost:3002'
-      @user.send_confirmation_instructions(redirect_url: redirect_base_url + '?test=poop')
-      render json: @user, status: :created, location: @user
+      @user.send_confirmation_instructions
+      render json: {data: @user}, status: :created, location: @user
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: {errors: @user.errors}, status: :unprocessable_entity
     end
   end
 
   def update
     if @user.update(user_params)
-      render json: @user
+      render json: {data: @user}
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: {errors: @user.errors}, status: :unprocessable_entity
     end
   end
 

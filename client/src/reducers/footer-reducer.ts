@@ -134,3 +134,4 @@ export const updateFavoriteChords = (state: State): Effect[] => {
 };
 
 export const updateFavoriteChordRequestName = "update-favorite-chords";
+export const getLoggedInUserRequestName = "get-logged-in-user";

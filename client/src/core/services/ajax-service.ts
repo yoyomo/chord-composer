@@ -134,7 +134,7 @@ export function withAjax(dispatch: (action: Action) => void, queueSize = 6, root
   }
 }
 
-export const parseHTTPHeaders = (headersStr: string) => {
+export const parseHTTPHeadersToJSON = (headersStr: string) => {
   let headers: {[k: string]: string} = {};
   const regex = /([\w-]+): (.*)/g;
 

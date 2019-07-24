@@ -1,12 +1,14 @@
 import {initialState, State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
-import {parseHTTPHeaders, requestAjax} from "../core/services/ajax-service";
+import {parseHTTPHeadersToJSON, requestAjax} from "../core/services/ajax-service";
 import {AuthSignIn, AuthSignUp, AuthValidateToken} from "../resources/routes";
 import {historyPush} from "../core/services/navigation-service";
 import {ResourceType} from "../resources/resource";
 import {UserResource} from "../resources/user-resource";
 import {Action} from "../core/root-reducer";
 import {Effect} from "../core/services/service";
+import {setCookie} from "../utils/cookies";
+import {getLoggedInUserRequestName} from "./footer-reducer";
 
 export interface SignInAction {
   type: "sign-in"
@@ -66,6 +68,8 @@ export interface ResponseType {
   errors: string[]
 }
 
+export const AuthHeaders = ["access-token", "token-type", "client", "expiry", "uid"];
+
 export const reduceLogin = (state: State, action: Action): ReductionWithEffect<State> => {
   let effects: Effect[] = [];
   switch (action.type) {
@@ -79,7 +83,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           effects = effects.concat(requestAjax([validateTokenRequestName], {
             url: AuthValidateToken,
             method: "GET",
-            headers: parseHTTPHeaders(action.headers)
+            headers: parseHTTPHeadersToJSON(action.headers)
           }));
         } else {
           state = {...state};
@@ -92,7 +96,17 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         if (action.success) {
           state = {...state};
           state.loggedInUser = response.data as UserResource;
-          state.headers = parseHTTPHeaders(action.headers);
+          state.headers = parseHTTPHeadersToJSON(action.headers);
+
+          for (let key in state.headers){
+            if (AuthHeaders.indexOf(key) !== -1) {
+              setCookie(key, state.headers[key], Number(state.headers["expiry"]));
+            } else {
+              delete state.headers[key];
+            }
+          }
+          setCookie("id", state.loggedInUser.id.toString(), Number(state.headers["expiry"]));
+
           effects = effects.concat(historyPush({pathname: '/chords'}));
         } else {
           state = {...state};
@@ -117,6 +131,9 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state.loginPage.errors.signUp = (response.errors as any).full_messages || response.errors;
           state.loginPage.success = initialState.loginPage.success;
         }
+      } else if (action.name[0] === getLoggedInUserRequestName) {
+        state = {...state};
+        state.loggedInUser = response.data as UserResource;
       }
       break;
 
