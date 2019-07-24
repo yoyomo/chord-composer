@@ -17,7 +17,7 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
   }
 
   componentDidMount(): void {
-    this.dispatch(visit({pathname: window.location.pathname}))
+    this.dispatch(visit(window.location))
   }
 
   reduceActions = (state: State, action: Action) => {
