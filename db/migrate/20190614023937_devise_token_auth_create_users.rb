@@ -35,16 +35,19 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[5.2]
       # t.string   :unlock_token # Only if unlock strategy is :email or :both
       # t.datetime :locked_at
 
-      ## User Info
-      t.string :username
-      t.string :email
-      t.text :favorite_chords, array: true, default: []
-
       ## Tokens
       t.json :tokens
 
+      ## User Info
+      t.string :username
+      t.string :email, :null => false
+      t.text :favorite_chords, array: true, default: []
+
       ## Stripe
       t.string :stripe_customer_id
+      t.string :stripe_subscription_id
+      t.string :stripe_plan_id
+      t.string :stripe_token_id
 
       t.timestamps
     end

@@ -1,11 +1,10 @@
 import {initialState, State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {parseHTTPHeaders, requestAjax} from "../core/services/ajax-service";
-import {AuthSignIn, AuthSignUp, AuthValidateToken, StripeSubscribePath} from "../resources/routes";
+import {AuthSignIn, AuthSignUp, AuthValidateToken} from "../resources/routes";
 import {historyPush} from "../core/services/navigation-service";
 import {ResourceType} from "../resources/resource";
 import {UserResource} from "../resources/user-resource";
-import {SubscriptionResource} from "../resources/subscription-resource";
 import {Action} from "../core/root-reducer";
 import {Effect} from "../core/services/service";
 
@@ -86,7 +85,8 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state = {...state};
           state.loginPage = {...state.loginPage};
           state.loginPage.errors = {...state.loginPage.errors};
-          state.loginPage.errors.signIn = response.errors
+          state.loginPage.errors.signIn = response.errors;
+          state.loginPage.success = initialState.loginPage.success;
         }
       } else if (action.name[0] === validateTokenRequestName) {
         if (action.success) {
@@ -101,6 +101,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state.loginPage.errors.signIn = response.errors
         }
       } else if (action.name[0] === userSignUpRequesName) {
+
         if (action.success) {
           state = {...state};
           state.loginPage = {...state.loginPage};
@@ -113,28 +114,9 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state = {...state};
           state.loginPage = {...state.loginPage};
           state.loginPage.errors = {...state.loginPage.errors};
-          state.loginPage.errors.signUp = (response.errors as any).full_messages;
+          state.loginPage.errors.signUp = (response.errors as any).full_messages || response.errors;
           state.loginPage.success = initialState.loginPage.success;
         }
-      } else if (action.name[0] === stripeCreateCustomerRequesName) {
-        if(action.success){
-          let subscription = response.data as SubscriptionResource;
-          effects.push(requestAjax([userSignUpRequesName],
-            {
-              url: AuthSignUp, method: "POST", headers: state.headers,
-              json: {
-                email: state.inputs.email,
-                password: state.inputs.password,
-                customer_id: subscription.customer
-              }
-            }));
-        } else {
-          state = {...state};
-          state.loginPage = {...state.loginPage};
-          state.loginPage.errors = {...state.loginPage.errors};
-          state.loginPage.errors.signUp = response.errors
-        }
-
       }
       break;
 
@@ -176,13 +158,14 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
       if (state.loginPage.errors.signUp.length === 0) {
 
-        effects.push(requestAjax([stripeCreateCustomerRequesName],
+        effects.push(requestAjax([userSignUpRequesName],
           {
-            url: StripeSubscribePath, method: "PUT", headers: state.headers,
+            url: AuthSignUp, method: "POST", headers: state.headers,
             json: {
               email: state.inputs.email,
-              token_id: action.token_id,
-              plan_id: state.stripe.chosenPlanID
+              password: state.inputs.password,
+              stripe_plan_id: state.stripe.chosenPlanID,
+              stripe_token_id: action.token_id
             }
           }));
       }
@@ -215,4 +198,3 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 export const validateTokenRequestName = "validate-token";
 export const userSignInRequesName = "user-sign-in";
 export const userSignUpRequesName = "user-sign-up";
-export const stripeCreateCustomerRequesName = "stripe-create-customer";

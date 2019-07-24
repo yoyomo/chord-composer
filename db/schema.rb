@@ -32,11 +32,14 @@ ActiveRecord::Schema.define(version: 2019_06_14_023937) do
     t.datetime "last_sign_in_at"
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
+    t.json "tokens"
     t.string "username"
     t.string "email"
     t.text "favorite_chords", default: [], array: true
-    t.json "tokens"
     t.string "stripe_customer_id"
+    t.string "stripe_subscription_id"
+    t.string "stripe_plan_id"
+    t.string "stripe_token_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true

@@ -10,6 +10,7 @@ import {Input} from "../../../components/input";
 export interface SignUpFormProps extends ReactStripeElements.InjectedStripeProps {
   onSubmit: (token_id: string) => void
   onError: (errorMessage: string) => void
+  errors: string[]
 }
 
 class SignUpForm extends React.Component<SignUpFormProps> {
@@ -38,6 +39,11 @@ class SignUpForm extends React.Component<SignUpFormProps> {
         <div className={"pa2 mv2 ba br3 b--moon-gray"}>
           <CardElement/>
         </div>
+        {this.props.errors.map(errorMessage => {
+          return <div className={"red"} key={"sign-up-error_" + errorMessage}>
+            {errorMessage}
+          </div>
+        })}
         <div className={"db ma2"}>
           <div className={"dib ma2 bg-light-blue white br4 pa2 pointer"} onClick={this.submit}>
             Sign Up
@@ -59,11 +65,6 @@ export function SignUpPage(dispatch: (action: Action) => void) {
   return (state: State) => {
     return (
       <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1"}>
-        {state.loginPage.errors.signUp && state.loginPage.errors.signUp.map(errorMessage => {
-          return <div className={"red"} key={"sign-up-error_" + errorMessage}>
-            {errorMessage}
-          </div>
-        })}
         <div className={"db ma2"}>
           Email:
           <Input type="email" value={state.inputs.email} onChange={inputChangeDispatcher(dispatch, "email")}/>
@@ -79,7 +80,7 @@ export function SignUpPage(dispatch: (action: Action) => void) {
         </div>
         {state.stripe.object && <StripeProvider apiKey={state.stripe.publishableKey}>
           <Elements>
-            <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error}/>
+            <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error} errors={state.loginPage.errors.signUp}/>
           </Elements>
         </StripeProvider>
         }
