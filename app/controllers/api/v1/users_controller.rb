@@ -33,25 +33,6 @@ class Api::V1::UsersController < APIController
     @user.destroy
   end
 
-  def stripe_create
-    if params[:email].nil? || params[:token_id].nil? || params[:plan_id].nil?
-      Rails.logger "Stripe Error: Email, Token ID, and Plan ID are required"
-      return render json: @user.errors, status: :unprocessable_entity if params[:email]
-    end
-
-    customer = Stripe::Customer.create({
-                                         email: params[:email],
-                                         source: params[:token_id]
-                                       })
-
-    subscription = Stripe::Subscription.create({
-                                                 customer: customer.id,
-                                                 items: [{plan: params[:plan_id]}]
-                                               })
-
-    render json: subscription
-  end
-
   private
 
   def set_user

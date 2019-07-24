@@ -36,5 +36,6 @@ npm-debug.*
 client/.idea/misc.xml
 .idea/*
 **/*.js
+!client/src/setupProxy.js
 vendor/**/*
 

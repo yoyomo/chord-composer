@@ -1,7 +1,7 @@
 import {initialState, State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {parseHTTPHeaders, requestAjax} from "../core/services/ajax-service";
-import {ApiV1UsersPath, AuthSignIn, AuthSignUp, AuthValidateToken} from "../resources/routes";
+import {AuthSignIn, AuthSignUp, AuthValidateToken, StripeSubscribePath} from "../resources/routes";
 import {historyPush} from "../core/services/navigation-service";
 import {ResourceType} from "../resources/resource";
 import {UserResource} from "../resources/user-resource";
@@ -157,7 +157,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
         effects.push(requestAjax([stripeCreateCustomerRequesName],
           {
-            url: ApiV1UsersPath + '/stripe_create', method: "POST", headers: state.headers,
+            url: StripeSubscribePath, method: "PUT", headers: state.headers,
             json: {
               token_id: action.token_id,
               plan_id: state.stripe.chosenPlanID
