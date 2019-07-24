@@ -107,7 +107,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state.loginPage.success = {...state.loginPage.success};
           state.loginPage.success.signUp = "A confirmation email was sent to you. Please confirm your email.";
           state.loginPage.errors = initialState.loginPage.errors;
-          effects = effects.concat(historyPush({pathname: '/sign_up'}));
+          effects = effects.concat(historyPush({pathname: '/chords'}));
 
         } else {
           state = {...state};
@@ -128,6 +128,11 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
                 customer_id: subscription.customer
               }
             }));
+        } else {
+          state = {...state};
+          state.loginPage = {...state.loginPage};
+          state.loginPage.errors = {...state.loginPage.errors};
+          state.loginPage.errors.signUp = response.errors
         }
 
       }
@@ -148,17 +153,34 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
     case "sign-up": {
 
+      state = {...state};
+      state.loginPage = {...state.loginPage};
+      state.loginPage.errors = {...state.loginPage.errors};
+      state.loginPage.errors.signUp = [];
+
+      if (!state.inputs.email) {
+        state.loginPage.errors.signUp.push("Email is required");
+      }
+
+      if (!state.inputs.password) {
+        state.loginPage.errors.signUp.push("Password is required");
+      }
+
       if (state.inputs.password !== state.inputs.confirmPassword) {
-        state = {...state};
-        state.loginPage = {...state.loginPage};
-        state.loginPage.errors = {...state.loginPage.errors};
-        state.loginPage.errors.signUp = ["Password mismatch"];
-      } else {
+        state.loginPage.errors.signUp.push("Password mismatch");
+      }
+
+      if (!action.token_id ) {
+        state.loginPage.errors.signUp.push("Must insert valid card");
+      }
+
+      if (state.loginPage.errors.signUp.length === 0) {
 
         effects.push(requestAjax([stripeCreateCustomerRequesName],
           {
             url: StripeSubscribePath, method: "PUT", headers: state.headers,
             json: {
+              email: state.inputs.email,
               token_id: action.token_id,
               plan_id: state.stripe.chosenPlanID
             }

@@ -47,11 +47,11 @@ export const initialState = {
 
   loginPage: {
     success: {
-      signUp: undefined as string | void
+      signUp: "" as string
     },
     errors: {
-      signIn: undefined as string[] | void,
-      signUp: undefined as string[] | void
+      signIn: [] as string[],
+      signUp: [] as string[]
     }
   },
 

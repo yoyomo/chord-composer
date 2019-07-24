@@ -16,7 +16,7 @@ class StripeController < ApplicationController
                                                  items: [{plan: params[:plan_id]}]
                                                })
 
-    render json: subscription
+    render json: {data: subscription}
   end
 
 end
