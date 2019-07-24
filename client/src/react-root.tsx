@@ -37,9 +37,10 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
   dispatch = (action: Action) => {
     let oldState = {...this.state};
     let reduction = this.reduceActions(oldState, action);
-    this.setState(reduction.state);
-    console.log("newState", this.state);
-    this.reduceEffects(reduction.effects);
+    this.setState(reduction.state, () => {
+      console.log("newState", this.state);
+      this.reduceEffects(reduction.effects);
+    });
   };
 
   render() {
