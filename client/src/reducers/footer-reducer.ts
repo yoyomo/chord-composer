@@ -122,8 +122,10 @@ export const updateFavoriteChords = (state: State): Effect[] => {
   let effects: Effect[] = [];
 
   let mmlFavoriteChords = state.savedChords.map(favoriteChord => calculateMML(favoriteChord));
+
+  if(!state.loggedInUser) return [];
   effects.push(requestAjax([updateFavoriteChordRequestName], {
-    url: ApiV1UsersPath + "/1", method: "PUT", headers: state.headers,
+    url: `${ApiV1UsersPath}/${state.loggedInUser.id}`, method: "PUT", headers: state.headers,
     json: {
       user: {
         favorite_chords: mmlFavoriteChords
