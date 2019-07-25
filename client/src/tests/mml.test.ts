@@ -1,4 +1,4 @@
-import {calculateMML, parseMMLChords} from "../utils/mml";
+import {calculateMML, parseMMLChords} from "../utils/mml-utils";
 import {initialState, State} from "../state";
 import {ChordRuleType, ChordType, KEYS, recomputeChordGrid} from "../reducers/recompute-chord-grid";
 import {MAXIMUM_OCTAVE, MINIMUM_OCTAVE} from "../reducers/chord-tools-reducer";

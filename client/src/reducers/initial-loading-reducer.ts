@@ -1,6 +1,6 @@
 import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
-import {parseMMLChords} from "../utils/mml";
+import {parseMMLChords} from "../utils/mml-utils";
 import {historyPush} from "../core/services/navigation-service";
 import {Action} from "../core/root-reducer";
 import {Effect} from "../core/services/service";

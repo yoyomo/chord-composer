@@ -1,6 +1,8 @@
 import React, {SyntheticEvent} from "react";
 import {ClassAndChildren} from "../core/reducers";
 import {ChordType} from "../reducers/recompute-chord-grid";
+import {State} from "../state";
+import {playSound} from "../utils/sound-utils";
 
 interface ChordElementProps extends ClassAndChildren {
   chord: ChordType
@@ -19,7 +21,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
     return (
         <div
             className={`${this.props.chord.variation === 0 ? "bg-gray light-gray" : "bg-light-gray dark-gray"}
-            ${this.props.isSelected ? 'shadow-2' : ''}
+            ${this.props.isSelected ? 'shadow-2-skyblue' : ''}
              w3 h3 white dib tc v-mid pointer ma2 pt3 br3 `}
             style={{backgroundColor: this.getColor()}}
             onMouseDown={this.handleClick}
@@ -61,25 +63,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
     }
 
     this.props.chord.pitchClass.map(noteIndex => {
-      if (noteIndex < 0 || noteIndex >= this.props.notes.length) {
-        return null;
-      }
-      let noteValue = this.props.notes[noteIndex];
-
-      let osc1 = this.props.audioContext.createOscillator();
-      osc1.type = this.props.waveType;
-      osc1.frequency.value = noteValue;
-
-      let gain = this.props.audioContext.createGain();
-      osc1.connect(gain);
-      gain.connect(this.props.audioContext.destination);
-
-      let now = this.props.audioContext.currentTime;
-      gain.gain.setValueAtTime(0.2, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
-      osc1.start(now);
-      osc1.stop(now + 1.5);
-      return osc1;
+      return playSound(noteIndex, this.props.notes, this.props.audioContext, this.props.waveType);
     });
   };
 

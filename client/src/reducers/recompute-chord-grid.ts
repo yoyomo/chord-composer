@@ -1,6 +1,6 @@
 import {memoizeBySomeProperties} from "../utils/memoizers";
 import {initialState} from "../state";
-import {calculateMML} from "../utils/mml";
+import {calculateMML} from "../utils/mml-utils";
 
 export const chordIdentifier = (chord: ChordType): string => {
   return `k${chord.baseKey}c${chord.chordRuleIndex}v${chord.variation}p${chord.pitchClass}m${calculateMML(chord)}`

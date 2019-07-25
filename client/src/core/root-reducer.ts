@@ -14,6 +14,7 @@ import {ServicesActions} from "./services/service";
 import {NavigationActions} from "./services/navigation-service";
 import {reduceStripe, StripeActions} from "../reducers/stripe-reducer";
 import {reduceToggle, ToggleAction} from "../reducers/toggle-reducer";
+import {ChordMapperActions, reduceChordMapper} from "../reducers/chord-mapper-reducer";
 
 const subReducer = subReducersFor<State>();
 const computed = computedFor<State>();
@@ -29,6 +30,7 @@ export type Action =
   | ToggleAction
   | LogInActions
   | StripeActions
+  | ChordMapperActions
   ;
 
 
@@ -43,6 +45,7 @@ export const rootReducer = (state: State, action: Action) => {
     .apply(reduceChordTools)
     .apply(reduceFooter)
     .apply(reduceChordCanvas)
+    .apply(reduceChordMapper)
     .apply(reduceStripe)
     .apply(computed("notes", recomputeAllNotes))
     .apply(computed("chordGrid", recomputeChordGrid))

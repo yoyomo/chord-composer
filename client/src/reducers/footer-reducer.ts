@@ -2,7 +2,7 @@ import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {requestAjax} from "../core/services/ajax-service";
 import {ApiV1UsersPath} from "../resources/routes";
-import {calculateMML} from "../utils/mml";
+import {calculateMML} from "../utils/mml-utils";
 import {Action} from "../core/root-reducer";
 import {Effect} from "../core/services/service";
 
