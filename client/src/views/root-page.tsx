@@ -11,9 +11,19 @@ export function RootPage(dispatch: (action: Action) => void) {
   const SignUpContent = SignUpPage(dispatch);
   return (state: State) => {
     return (
-        <div className={"vw-100 vh-100 flex flex-column overflow-hidden"}>
-          {state.pathParts[0] === "sign-up" && SignUpContent(state)}
-          {state.pathParts[0] === "chords" && ChordsContent(state)}
+        <div className={"h-100"}>
+          {function() {
+            switch(state.pathParts[0]) {
+              case "sign-up":
+                return SignUpContent(state);
+
+              case "chords":
+                return ChordsContent(state);
+
+              default:
+                return "404 Not Found";
+            }
+          }()}
         </div>
     );
   }

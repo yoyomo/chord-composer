@@ -46,11 +46,7 @@ export class ReactRoot extends React.Component<{}, typeof initialState> {
   render() {
     let state: State = {...this.state};
     let RootPageContent = RootPage(this.dispatch);
-    return (
-        <div>
-          {RootPageContent(state)}
-        </div>
-    )
+    return RootPageContent(state);
   }
 }
 

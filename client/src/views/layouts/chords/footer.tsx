@@ -22,8 +22,16 @@ export function Footer(dispatch: (action: Action) => void) {
   return (state: State) => {
     let disabledButtons = !state.selectedGridChord;
     return (
-      <div className={"w-100 bg-light-gray dark-gray h9rem overflow-hidden flex flex-row items-stretch"}>
-        <div className={"dib overflow-y-hide-show"}>
+      <div className={"w-100 bg-light-gray dark-gray h5 flex flex-row items-stretch"}>
+        <div className={"dib fr h-100"}>
+          <ParameterButton className={"db w2 h2 pa2 ma1"} disabled={disabledButtons} onClick={dispatcher.saveChord}>
+            +
+          </ParameterButton>
+          <ParameterButton className={"db w2 h2 pa2 ma1"} disabled={disabledButtons} onClick={dispatcher.removeSavedChord}>
+            -
+          </ParameterButton>
+        </div>
+        <div className={"dib overflow-y-hide-show h-100"}>
           {state.savedChords.map((savedChord, s) => {
             return <ChordElement key={"saved-chord-" + s}
                                  chord={savedChord}
@@ -35,14 +43,7 @@ export function Footer(dispatch: (action: Action) => void) {
                                  isSelected={!!state.selectedGridChord && chordIdentifier(state.selectedGridChord) === chordIdentifier(savedChord)}/>
           })}
         </div>
-        <div className={"dib fr"}>
-          <ParameterButton className={"db w2 h2 pa2 ma1"} disabled={disabledButtons} onClick={dispatcher.saveChord}>
-            +
-          </ParameterButton>
-          <ParameterButton className={"db w2 h2 pa2 ma1"} disabled={disabledButtons} onClick={dispatcher.removeSavedChord}>
-            -
-          </ParameterButton>
-        </div>
+
       </div>
     );
   }

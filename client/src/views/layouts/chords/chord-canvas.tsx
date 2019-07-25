@@ -16,15 +16,8 @@ export function ChordCanvas(dispatch: (action: Action) => void) {
 
   return (state: State) => {
     return (
-        <div className={"overflow-auto h-100"}>
-          <div className={"w-100"}>
-            {KEYS.map((key, i) => {
-              return <NoteKey key={"note-key-" + i}
-                              baseKey={key} keyIndex={i}
-                              selectKey={dispatcher.selectKey}/>
-            })}
-          </div>
-          <div>
+        <div className={"overflow-hidden h-100"}>
+          <div className={"overflow-auto h-100"}>
             {state.selectedKeyIndex != null &&
             state.chordGrid.map(chord => {
               return <ChordElement key={"chord-" + chordIdentifier(chord)}

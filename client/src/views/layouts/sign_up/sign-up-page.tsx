@@ -64,26 +64,30 @@ export function SignUpPage(dispatch: (action: Action) => void) {
 
   return (state: State) => {
     return (
-      <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1"}>
-        <div className={"db ma2"}>
-          Email:
-          <Input type="email" value={state.inputs.email} onChange={inputChangeDispatcher(dispatch, "email")}/>
+      <div className={"w-100 h-100 flex flex-column overflow-hidden"}>
+        <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1"}>
+          <div className={"db ma2"}>
+            Email:
+            <Input type="email" value={state.inputs.email} onChange={inputChangeDispatcher(dispatch, "email")}/>
+          </div>
+          <div className={"db ma2"}>
+            Password:
+            <Input type="password" value={state.inputs.password}
+                   onChange={inputChangeDispatcher(dispatch, "password")}/>
+          </div>
+          <div className={"db ma2"}>
+            Confirm Password:
+            <Input type="password" value={state.inputs.confirmPassword}
+                   onChange={inputChangeDispatcher(dispatch, "confirmPassword")}/>
+          </div>
+          {state.stripe.object && <StripeProvider apiKey={state.stripe.publishableKey}>
+            <Elements>
+              <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error}
+                                errors={state.loginPage.errors.signUp}/>
+            </Elements>
+          </StripeProvider>
+          }
         </div>
-        <div className={"db ma2"}>
-          Password:
-          <Input type="password" value={state.inputs.password} onChange={inputChangeDispatcher(dispatch, "password")}/>
-        </div>
-        <div className={"db ma2"}>
-          Confirm Password:
-          <Input type="password" value={state.inputs.confirmPassword}
-                 onChange={inputChangeDispatcher(dispatch, "confirmPassword")}/>
-        </div>
-        {state.stripe.object && <StripeProvider apiKey={state.stripe.publishableKey}>
-          <Elements>
-            <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error} errors={state.loginPage.errors.signUp}/>
-          </Elements>
-        </StripeProvider>
-        }
       </div>
     );
   }
