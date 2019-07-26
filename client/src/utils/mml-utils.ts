@@ -1,4 +1,4 @@
-import {ChordRuleType, ChordType, KEYS} from "../reducers/recompute-chord-grid";
+import {ChordRuleType, ChordType, KeyLetter, KEYS} from "../reducers/recompute-chord-grid";
 
 export const calculateMML = (chord: ChordType) => {
   let mml = "o" + chord.octave + "[";
@@ -8,7 +8,7 @@ export const calculateMML = (chord: ChordType) => {
       mml += "<";
     }
 
-    let key = KEYS[pitch % KEYS.length];
+    let key: string = KEYS[pitch % KEYS.length];
 
     if (key !== chord.baseKey) {
       key = key.toLowerCase();
@@ -37,7 +37,7 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
     let upperCaseKeys = mmlChord.match(/[ABCDEFG]#?/g);
     if (!upperCaseKeys) return null;
 
-    let baseKey = upperCaseKeys[0];
+    let baseKey: KeyLetter = upperCaseKeys[0] as KeyLetter;
     let variation = (chordNoteKeys.length - chordNoteKeys.indexOf(baseKey) ) % chordNoteKeys.length;
 
     for (let m = 0; m < mmlChord.length; m++) {
@@ -58,7 +58,7 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
 
         if (readingChord) {
 
-          let pitch = KEYS.indexOf(key.toUpperCase());
+          let pitch = KEYS.indexOf(key.toUpperCase() as KeyLetter);
 
           let basePitch = (pitch - KEYS.indexOf(baseKey) + KEYS.length) % KEYS.length;
 

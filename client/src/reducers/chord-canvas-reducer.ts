@@ -2,7 +2,7 @@ import {initialState, State} from "../state";
 import {ChordType} from "./recompute-chord-grid";
 import {ReductionWithEffect} from "../core/reducers";
 import {Action} from "../core/root-reducer";
-import {DISPLAYED_KEYS, mapChordToKeys} from "./chord-mapper-reducer";
+import {ChordMapperKeys, mapChordToKeys} from "./chord-mapper-reducer";
 import {memoizeBySomeProperties} from "../utils/memoizers";
 
 export interface SelectKeyAction {

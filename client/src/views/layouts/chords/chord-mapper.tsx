@@ -2,7 +2,7 @@ import React from "react";
 import {State} from "../../../state";
 import {KEYS} from "../../../reducers/recompute-chord-grid";
 import {Action} from "../../../core/root-reducer";
-import {DISPLAYED_KEYS, toggleChordMapperKey} from "../../../reducers/chord-mapper-reducer";
+import {ChordMapperKeys, toggleChordMapperKey} from "../../../reducers/chord-mapper-reducer";
 import {playSound} from "../../../utils/sound-utils";
 
 export const SelectedKey = () => {
@@ -27,7 +27,7 @@ export function ChordMapper(dispatch: (action: Action) => void) {
       <div className={"w-100 bg-light-gray dark-gray"}>
         <div className={"overflow-x-auto overflow-y-hidden gpu pb1"}>
           <div className={"db nowrap"}>
-            {DISPLAYED_KEYS.map((blackKey, i) => {
+            {ChordMapperKeys.map((blackKey, i) => {
               return blackKey.includes('#') &&
                 <div key={"black-key-" + i}
                      className={`bg-gray light-gray tc ${blackKey === "G#" ? 'w3' : 'w3-5'} h3 dib v-mid pointer pa3 br b--white`} onClick={() => onKeyClick(i)}>
@@ -38,7 +38,7 @@ export function ChordMapper(dispatch: (action: Action) => void) {
           </div>
 
           <div className={"db nowrap"}>
-            {DISPLAYED_KEYS.map((whiteKey, i) => {
+            {ChordMapperKeys.map((whiteKey, i) => {
               return !whiteKey.includes('#') &&
                 <div key={"white-key-" + i}
                      className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 br b--black"}  onClick={() => onKeyClick(i)}>
