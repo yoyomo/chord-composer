@@ -1,5 +1,5 @@
 import {Action} from "../../../core/root-reducer";
-import {selectChord, selectKey} from "../../../reducers/chord-canvas-reducer";
+import {selectChord, selectKey} from "../../../reducers/chord-grid-reducer";
 import {ChordType, KEYS} from "../../../reducers/recompute-chord-grid";
 import {State} from "../../../state";
 import {NoteKey} from "../../../components/note-key";

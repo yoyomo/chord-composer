@@ -2,9 +2,9 @@ import {ChordRuleType, ChordType, KeyLetter, KEYS} from "../reducers/recompute-c
 
 export const calculateMML = (chord: ChordType) => {
   let mml = "o" + chord.octave + "[";
-  for (let p = 0; p < chord.pitchClass.length; p++) {
-    let pitch = chord.pitchClass[p];
-    if (p > 0 && chord.pitchClass[p] < chord.pitchClass[p - 1]) {
+  for (let p = 0; p < chord.notes.length; p++) {
+    let pitch = chord.notes[p];
+    if (p > 0 && chord.notes[p] < chord.notes[p - 1]) {
       mml += "<";
     }
 
@@ -27,8 +27,8 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
   mmlChords.map(mmlChord => {
 
     let octave = 0;
+    let chordNotes: number[] = [];
     let pitchClass: number[] = [];
-    let chordRulePitchClass: number[] = [];
     let readingChord = false;
 
     let chordNoteKeys = mmlChord.match(/[abcdefgABCDEFG]#?/g);
@@ -58,19 +58,19 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
 
         if (readingChord) {
 
-          let pitch = KEYS.indexOf(key.toUpperCase() as KeyLetter);
+          let chordNote = KEYS.indexOf(key.toUpperCase() as KeyLetter);
 
-          let basePitch = (pitch - KEYS.indexOf(baseKey) + KEYS.length) % KEYS.length;
+          let basePitch = (chordNote - KEYS.indexOf(baseKey) + KEYS.length) % KEYS.length;
 
-          chordRulePitchClass.push(basePitch);
+          pitchClass.push(basePitch);
 
-          pitch += octave * KEYS.length;
+          chordNote += octave * KEYS.length;
 
-          while (pitchClass.length > 0 && pitch < pitchClass.slice(-1)[0]){
-            pitch += KEYS.length;
+          while (chordNotes.length > 0 && chordNote < chordNotes.slice(-1)[0]){
+            chordNote += KEYS.length;
           }
 
-          pitchClass.push(pitch);
+          chordNotes.push(chordNote);
 
         }
 
@@ -79,10 +79,10 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
 
 
     let chordRuleIndex;
-    chordRulePitchClass = chordRulePitchClass.slice(chordRulePitchClass.indexOf(0)).concat(chordRulePitchClass.slice(0, chordRulePitchClass.indexOf(0)));
+    pitchClass = pitchClass.slice(pitchClass.indexOf(0)).concat(pitchClass.slice(0, pitchClass.indexOf(0)));
 
     for (chordRuleIndex = 0 ; chordRuleIndex < chordRules.length; chordRuleIndex++){
-      if (JSON.stringify(chordRules[chordRuleIndex].pitchClass) === JSON.stringify(chordRulePitchClass)) {
+      if (JSON.stringify(chordRules[chordRuleIndex].pitchClass) === JSON.stringify(pitchClass)) {
         break;
       }
     }
@@ -90,7 +90,7 @@ export const parseMMLChords = (chordRules: ChordRuleType[], mmlChords: string[])
     let chord = {
       ...chordRules[chordRuleIndex],
       octave: octave,
-      pitchClass: pitchClass,
+      notes: chordNotes,
       variation: variation,
       baseKey: baseKey,
       chordRuleIndex: chordRuleIndex,

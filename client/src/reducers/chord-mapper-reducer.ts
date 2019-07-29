@@ -34,20 +34,20 @@ export type ChordMapperActions =
 export const mapChordToKeys = (state: State): State => {
   if (state.selectedGridChord) {
 
-    let tmpPitchClass = state.selectedGridChord.pitchClass.slice();
-    let pitchClass = tmpPitchClass.slice();
-    for (let i = 0; i < pitchClass.length; i++) {
-      let pitch = pitchClass[i];
+    let tmpChordNotes = state.selectedGridChord.notes.slice();
+    let chordNotes = tmpChordNotes.slice();
+    for (let i = 0; i < chordNotes.length; i++) {
+      let pitch = chordNotes[i];
       let newPitch = (pitch - state.octave * KEYS.length - FirstChordMapperKeyIndex) % (ChordMapperKeys.length);
 
-      tmpPitchClass[i] = newPitch;
-      if (tmpPitchClass[0] < 0) {
+      tmpChordNotes[i] = newPitch;
+      if (tmpChordNotes[0] < 0) {
         newPitch += KEYS.length;
       }
-      pitchClass[i] = newPitch;
+      chordNotes[i] = newPitch;
     }
     state.chordMapperKeys = ChordMapperKeys.map((key, i) => {
-      return pitchClass.includes(i);
+      return chordNotes.includes(i);
     });
   }
 
@@ -85,14 +85,12 @@ export const mapKeysToChord = (state: State): State => {
 
 
   //TODO find variations
-  let isShowingChords = state.chordGrid.length > 0;
-  let availableChords = isShowingChords ? state.chordGrid : state.chordRules;
-  nextChord: for (let i = 0; i < availableChords.length; i++) {
-    let chord = availableChords[i];
+  nextChord: for (let chordRuleIndex = 0; chordRuleIndex < state.chordRules.length; chordRuleIndex++) {
+    let chord = state.chordRules[chordRuleIndex];
 
     if (pitchClass.length !== chord.pitchClass.length) continue;
 
-    let chordPitchClass = isShowingChords ? state.chordRules[(chord as ChordType).chordRuleIndex].pitchClass.slice() : chord.pitchClass;
+    let chordPitchClass = chord.pitchClass;
     chordPitchClass = scalePitchClass(chordPitchClass);
 
     for (let p = 0; p < pitchClass.length; p++) {
@@ -111,18 +109,19 @@ export const mapKeysToChord = (state: State): State => {
 
     if (variation > 0) {
       state.showingVariations = {...state.showingVariations};
-      state.showingVariations[isShowingChords ? (chord as ChordType).chordRuleIndex : i] = true;
+      state.showingVariations[chordRuleIndex] = true;
     }
     console.log("variation", variation);
 
     let baseKeyIndex = keyIndexes[0]; //TODO get this right
     let baseKey = KEYS[baseKeyIndex];
     console.log("base key",baseKey);
+    let chordNotes = scalePitchClass(pitchClass.map(pitch => pitch + baseKeyIndex + state.octave * KEYS.length));
 
     state.selectedKeyIndex = baseKeyIndex;
-    state.selectedGridChord = isShowingChords ? chord as ChordType : {...chord,
-      pitchClass: scalePitchClass(pitchClass.map(pitch => pitch + baseKeyIndex + state.octave * KEYS.length)),
-      baseKey: baseKey, variation: variation, chordRuleIndex: i, octave: state.octave};
+    state.suggestedGridChords.push({...chord,
+      notes: chordNotes,
+      baseKey: baseKey, variation: variation, chordRuleIndex: chordRuleIndex, octave: state.octave});
 
 
 
@@ -139,6 +138,7 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
       state = {...state};
       state.chordMapperKeys = state.chordMapperKeys.slice();
       state.chordMapperKeys[action.keyIndex] = !state.chordMapperKeys[action.keyIndex];
+      state.suggestedGridChords = [];
 
       state = mapKeysToChord(state);
 

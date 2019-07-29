@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Header} from "./header";
 import {ChordTools} from "./chord-tools";
-import {ChordCanvas} from "./chord-canvas";
+import {ChordGrid} from "./chord-grid";
 import {ChordMapper} from "./chord-mapper";
 import {Footer} from "./footer";
 import {State} from "../../../state";
@@ -13,7 +13,7 @@ export function ChordsPage(dispatch: (action: Action) => void) {
 
   let HeaderContent = Header(dispatch);
   let ChordToolsContent = ChordTools(dispatch);
-  let ChordCanvasContent = ChordCanvas(dispatch);
+  let ChordCanvasContent = ChordGrid(dispatch);
   let ChordKeySelectorContent = ChordKeySelector(dispatch);
   let ChordMapperContent = ChordMapper(dispatch);
   let FooterContent = Footer(dispatch);

@@ -1,7 +1,6 @@
 import React, {SyntheticEvent} from "react";
 import {ClassAndChildren} from "../core/reducers";
 import {ChordType} from "../reducers/recompute-chord-grid";
-import {State} from "../state";
 import {playSound} from "../utils/sound-utils";
 
 interface ChordElementProps extends ClassAndChildren {
@@ -12,6 +11,7 @@ interface ChordElementProps extends ClassAndChildren {
   waveType: OscillatorType
   soundOn: boolean
   isSelected: boolean
+  isSuggested: boolean
 }
 
 export class ChordElement extends React.Component<ChordElementProps> {
@@ -22,6 +22,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
         <div
             className={`${this.props.chord.variation === 0 ? "bg-gray light-gray" : "bg-light-gray dark-gray"}
             ${this.props.isSelected ? 'shadow-2-skyblue' : ''}
+            ${this.props.isSuggested ? 'shadow-2-red' : ''}
              w3 h3 white dib tc v-mid pointer ma2 pt3 br3 `}
             style={{backgroundColor: this.getColor()}}
             onMouseDown={this.handleClick}

@@ -1,9 +1,8 @@
-import {initialState, State} from "../state";
+import {State} from "../state";
 import {ChordType} from "./recompute-chord-grid";
 import {ReductionWithEffect} from "../core/reducers";
 import {Action} from "../core/root-reducer";
-import {ChordMapperKeys, mapChordToKeys} from "./chord-mapper-reducer";
-import {memoizeBySomeProperties} from "../utils/memoizers";
+import {mapChordToKeys} from "./chord-mapper-reducer";
 
 export interface SelectKeyAction {
   type: "select-key"

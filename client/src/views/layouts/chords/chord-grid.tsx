@@ -1,13 +1,12 @@
-import {NoteKey} from "../../../components/note-key";
 import {ChordElement} from "../../../components/chord";
 import React from "react";
 import {State} from "../../../state";
-import {selectChord, selectKey} from "../../../reducers/chord-canvas-reducer";
-import {chordIdentifier, ChordType, KEYS} from "../../../reducers/recompute-chord-grid";
+import {selectChord, selectKey} from "../../../reducers/chord-grid-reducer";
+import {chordIdentifier, ChordType} from "../../../reducers/recompute-chord-grid";
 import {Action} from "../../../core/root-reducer";
 
 
-export function ChordCanvas(dispatch: (action: Action) => void) {
+export function ChordGrid(dispatch: (action: Action) => void) {
 
   let dispatcher = {
     selectKey: (keyIndex: number) => dispatch(selectKey(keyIndex)),
@@ -25,6 +24,7 @@ export function ChordCanvas(dispatch: (action: Action) => void) {
                                    notes={state.notes}
                                    audioContext={state.audioContext}
                                    isSelected={!!state.selectedGridChord && chordIdentifier(state.selectedGridChord) === chordIdentifier(chord)}
+                                   isSuggested={state.suggestedGridChords.filter(c => chordIdentifier(c) === chordIdentifier(chord)).length > 0}
                                    onSelect={() => dispatcher.selectChord(chord)}
                                    waveType={state.waveType}
                                    soundOn={state.soundOn}

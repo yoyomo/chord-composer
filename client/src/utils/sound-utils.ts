@@ -1,4 +1,3 @@
-import {State} from "../state";
 
 export const playSound = (noteIndex: number,notes: number[], audioContext: AudioContext, waveType: OscillatorType, soundOn = true) => {
   if (!soundOn) return null;

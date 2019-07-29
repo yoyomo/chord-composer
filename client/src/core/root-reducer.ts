@@ -6,7 +6,7 @@ import {LogInActions, reduceLogin} from "../reducers/login-reducer";
 import {HeaderActions, reduceHeader} from "../reducers/header-reducer";
 import {ChordToolsActions, reduceChordTools} from "../reducers/chord-tools-reducer";
 import {FooterActions, reduceFooter} from "../reducers/footer-reducer";
-import {ChordCanvasActions, reduceChordCanvas} from "../reducers/chord-canvas-reducer";
+import {ChordCanvasActions, reduceChordCanvas} from "../reducers/chord-grid-reducer";
 import {recomputeAllNotes} from "../reducers/recompute-all-notes";
 import {recomputeChordGrid} from "../reducers/recompute-chord-grid";
 import {State} from "../state";

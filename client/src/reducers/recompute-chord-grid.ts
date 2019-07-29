@@ -14,6 +14,7 @@ export interface ChordType extends ChordRuleType {
   variation: number,
   chordRuleIndex: number,
   octave: number,
+  notes: number[],
 }
 
 export interface ChordRuleType {
@@ -36,20 +37,20 @@ export const recomputeChordGrid = memoizeBySomeProperties({
   let chordGrid: ChordType[] = [];
 
   state.chordRules.map((chordRule, chordRuleIndex) => {
-    let pitchClass = chordRule.pitchClass.slice();
+    let chordNotes = chordRule.pitchClass.slice();
     let variation = 0;
 
-    for (let p = 0; p < pitchClass.length; p++) {
-      pitchClass[p] += selectedKeyIndex + state.octave * KEYS.length;
+    for (let p = 0; p < chordNotes.length; p++) {
+      chordNotes[p] += selectedKeyIndex + state.octave * KEYS.length;
 
-      while (p > 0 && pitchClass[p] < pitchClass[p - 1]) {
-        pitchClass[p] += KEYS.length;
+      while (p > 0 && chordNotes[p] < chordNotes[p - 1]) {
+        chordNotes[p] += KEYS.length;
       }
     }
 
     let baseChord: ChordType = {
       ...chordRule,
-      pitchClass: pitchClass.slice(),
+      notes: chordNotes.slice(),
       variation: variation,
       baseKey: baseKey,
       chordRuleIndex: chordRuleIndex,
@@ -60,24 +61,24 @@ export const recomputeChordGrid = memoizeBySomeProperties({
 
     if (state.showingVariations[chordRuleIndex]) {
 
-      let pitchClass = baseChord.pitchClass.slice();
+      let chordNotes = baseChord.notes.slice();
 
-      for (variation = 1; variation < pitchClass.length; variation++) {
-        let firstPitch = pitchClass[0];
+      for (variation = 1; variation < chordNotes.length; variation++) {
+        let firstPitch = chordNotes[0];
 
-        while (firstPitch < pitchClass[pitchClass.length - 1]) {
+        while (firstPitch < chordNotes[chordNotes.length - 1]) {
           firstPitch += KEYS.length;
         }
 
-        pitchClass = pitchClass.slice(1).concat(firstPitch);
+        chordNotes = chordNotes.slice(1).concat(firstPitch);
 
-        if (pitchClass[0] >= state.octave * KEYS.length + KEYS.length){
-          pitchClass = pitchClass.map(pitch => pitch - KEYS.length);
+        if (chordNotes[0] >= state.octave * KEYS.length + KEYS.length){
+          chordNotes = chordNotes.map(note => note - KEYS.length);
         }
 
         let chordVariation: ChordType = {
           ...baseChord,
-          pitchClass: pitchClass.slice(),
+          notes: chordNotes.slice(),
           variation: variation,
         };
 
