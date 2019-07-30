@@ -11,7 +11,7 @@ export function UserInfoModal(dispatch: (action: Action) => void) {
   return (state: State) => {
     return (
       <div className={"w-100 h-100"}>
-        <div className={"pointer bt b--light-gray "} onClick={dispatcher.signOut}>
+        <div className={"pointer bt b--light-gray hover-bg-black-10 pa2"} onClick={dispatcher.signOut}>
           Sign Out
         </div>
       </div>
