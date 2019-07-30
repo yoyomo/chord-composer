@@ -56,16 +56,6 @@ it('maps and demaps correctly', () => {
           expect(test.state.suggestedGridChords.filter(suggestedChord => {
             for(let key in suggestedChord){
               if(JSON.stringify(suggestedChord[key as keyof ChordType]) !== JSON.stringify(expectedChord[key as keyof ChordType])){
-                if(suggestedChord.octave === expectedChord.octave && expectedChord.octave === 0){
-                  console.log("basekey",baseKey);
-                  console.log("basekeyIndex",baseKeyIndex);
-                  console.log("v",variation);
-                  console.log("notes",notes);
-                  console.log("selected",selectedGridChord);
-                  console.log("suggested",suggestedChord);
-                  console.log("expected",expectedChord);
-                }
-
                 return false;
               }
             }

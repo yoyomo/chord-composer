@@ -96,36 +96,31 @@ export const mapKeysToChord = (state: State): State => {
     let chordPitchClass = chord.pitchClass;
     chordPitchClass = scalePitchClass(chordPitchClass);
 
-    let pitchClassFound = false;
-    let variation;
-    for (variation = 0; variation < chordPitchClass.length; variation++) {
-      if (JSON.stringify(pitchClass) === JSON.stringify(chordPitchClass)) {
-        pitchClassFound = true;
-        break;
+    for (let variation = 0; variation < chordPitchClass.length; variation++) {
+      if(variation > 0) chordPitchClass = keysToPitchClass(nextVariation(chordPitchClass));
+
+      if (JSON.stringify(pitchClass) !== JSON.stringify(chordPitchClass)) continue;
+
+      let baseKeyIndex = keyIndexes[(keyIndexes.length - variation) % keyIndexes.length];
+      let baseKey = KEYS[baseKeyIndex];
+      state.suggestedKeyIndexes.push(baseKeyIndex);
+
+      if (variation > 0) {
+        state.showingVariations = {...state.showingVariations};
+        state.showingVariations[chordRuleIndex] = true;
       }
-      chordPitchClass = keysToPitchClass(nextVariation(chordPitchClass));
+
+      state.suggestedGridChords = state.suggestedGridChords.slice();
+      for (let octave = MINIMUM_OCTAVE; octave <= MAXIMUM_OCTAVE; octave++) {
+        let chordNotes = scalePitchClass(pitchClass.map(pitch => pitch + keyIndexes[0] + octave * KEYS.length));
+        state.suggestedGridChords.push({
+          ...chord,
+          notes: chordNotes,
+          baseKey: baseKey, variation: variation, chordRuleIndex: chordRuleIndex, octave: octave
+        });
+      }
+
     }
-
-    if(!pitchClassFound) continue;
-
-
-    let baseKeyIndex = keyIndexes[(keyIndexes.length - variation) % keyIndexes.length];
-    let baseKey = KEYS[baseKeyIndex];
-    state.suggestedKeyIndexes.push(baseKeyIndex);
-
-    if (variation > 0) {
-      state.showingVariations = {...state.showingVariations};
-      state.showingVariations[chordRuleIndex] = true;
-    }
-
-    state.suggestedGridChords = state.suggestedGridChords.slice();
-    for(let octave = MINIMUM_OCTAVE; octave <= MAXIMUM_OCTAVE; octave++){
-      let chordNotes = scalePitchClass(pitchClass.map(pitch => pitch + keyIndexes[0] + octave * KEYS.length));
-      state.suggestedGridChords.push({...chord,
-        notes: chordNotes,
-        baseKey: baseKey, variation: variation, chordRuleIndex: chordRuleIndex, octave: octave});
-    }
-
   }
 
   return state;
