@@ -1,7 +1,7 @@
 import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {Action} from "../core/root-reducer";
-import {ChordType, KeyLetter, KEYS} from "./recompute-chord-grid";
+import {KeyLetter, KEYS} from "./recompute-chord-grid";
 import {MAXIMUM_OCTAVE, MINIMUM_OCTAVE} from "./chord-tools-reducer";
 
 export const FirstChordMapperKeyIndex = ((firstLetter: KeyLetter): number => {
@@ -80,10 +80,15 @@ export const keysToPitchClass = (keyIndexes: number[]): number[] => {
 };
 
 export const mapKeysToChord = (state: State): State => {
+  state = {...state};
+  state.suggestedGridChords = [];
+  state.suggestedKeyIndexes = [];
+
   let keyIndexes = chordMapperKeysToKeys(state.chordMapperKeys);
   let pitchClass = keysToPitchClass(scalePitchClass((keyIndexes)));
 
   for (let chordRuleIndex = 0; chordRuleIndex < state.chordRules.length; chordRuleIndex++) {
+
     let chord = state.chordRules[chordRuleIndex];
 
     if (pitchClass.length !== chord.pitchClass.length) continue;
@@ -104,25 +109,23 @@ export const mapKeysToChord = (state: State): State => {
     if(!pitchClassFound) continue;
 
 
-    let baseKeyIndex = keyIndexes[variation];
+    let baseKeyIndex = keyIndexes[(keyIndexes.length - variation) % keyIndexes.length];
     let baseKey = KEYS[baseKeyIndex];
-    state.selectedKeyIndex = baseKeyIndex;
+    state.suggestedKeyIndexes.push(baseKeyIndex);
 
-    state = {...state};
     if (variation > 0) {
       state.showingVariations = {...state.showingVariations};
       state.showingVariations[chordRuleIndex] = true;
     }
 
     state.suggestedGridChords = state.suggestedGridChords.slice();
-    for(let octave = MINIMUM_OCTAVE; octave < MAXIMUM_OCTAVE; octave++){
+    for(let octave = MINIMUM_OCTAVE; octave <= MAXIMUM_OCTAVE; octave++){
       let chordNotes = scalePitchClass(pitchClass.map(pitch => pitch + keyIndexes[0] + octave * KEYS.length));
       state.suggestedGridChords.push({...chord,
         notes: chordNotes,
         baseKey: baseKey, variation: variation, chordRuleIndex: chordRuleIndex, octave: octave});
     }
 
-    break;
   }
 
   return state;
@@ -135,7 +138,6 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
       state = {...state};
       state.chordMapperKeys = state.chordMapperKeys.slice();
       state.chordMapperKeys[action.keyIndex] = !state.chordMapperKeys[action.keyIndex];
-      state.suggestedGridChords = [];
 
       state = mapKeysToChord(state);
 

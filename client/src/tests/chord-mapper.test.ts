@@ -17,9 +17,13 @@ it('maps and demaps correctly', () => {
   test.state.chordRules.map((chordRule, chordRuleIndex) => {
     KEYS.map((baseKey, baseKeyIndex) => {
       for(let variation = 0; variation < chordRule.pitchClass.length; variation++){
-        let notes: number[] = chordRule.pitchClass;
+
+        let notes: number[] = scalePitchClass(chordRule.pitchClass.map(pitch => pitch + baseKeyIndex));
         for (let i = 0 ;i < variation; i++){
-          notes = scalePitchClass(nextVariation(chordRule.pitchClass));
+          notes = scalePitchClass(nextVariation(notes));
+        }
+        while (notes[0] >= KEYS.length) {
+          notes = notes.map(note => note - KEYS.length);
         }
 
         let selectedGridChord = {
@@ -34,34 +38,41 @@ it('maps and demaps correctly', () => {
         test.state.selectedGridChord = selectedGridChord;
 
         test.state = mapChordToKeys(test.state);
-        let chordNotes = notes.map(note => note + baseKeyIndex + ((KEYS.length - FirstChordMapperKeyIndex) % KEYS.length));
+        let chordMapperNotes = notes.map(note => note + KEYS.length - FirstChordMapperKeyIndex);
+        while (chordMapperNotes[0] >= KEYS.length) {
+          chordMapperNotes = chordMapperNotes.map(note => note - KEYS.length);
+        }
         let chordMapped = ChordMapperKeys.map((key, i) => {
-          return chordNotes.includes(i);
+          return chordMapperNotes.includes(i);
         });
 
-        console.log("testing", selectedGridChord);
-
         expect(test.state.chordMapperKeys).toEqual(chordMapped);
-        test.state.suggestedGridChords = [];
-        expect(test.state.suggestedGridChords).toEqual([]);
+
         test.state = mapKeysToChord(test.state);
 
-        let suggestedChordsByOctave = 0;
-        for (let octave = MINIMUM_OCTAVE; octave < MAXIMUM_OCTAVE; octave++) {
-          notes = notes.map(pitch => pitch + octave * KEYS.length + baseKeyIndex);
+        for (let octave = MINIMUM_OCTAVE; octave <= MAXIMUM_OCTAVE; octave++) {
 
-          let expectedChord = {...selectedGridChord, octave: octave, notes: notes};
-          suggestedChordsByOctave += test.state.suggestedGridChords.filter(suggestedChord =>{
-            for ( let key in expectedChord){
-              if(JSON.stringify(expectedChord[key as keyof ChordType]) !== JSON.stringify(suggestedChord[key as keyof ChordType]) ){
+          let expectedChord = {...selectedGridChord, octave: octave, notes: notes.map(pitch => pitch + octave * KEYS.length)};
+          expect(test.state.suggestedGridChords.filter(suggestedChord => {
+            for(let key in suggestedChord){
+              if(JSON.stringify(suggestedChord[key as keyof ChordType]) !== JSON.stringify(expectedChord[key as keyof ChordType])){
+                if(suggestedChord.octave === expectedChord.octave && expectedChord.octave === 0){
+                  console.log("basekey",baseKey);
+                  console.log("basekeyIndex",baseKeyIndex);
+                  console.log("v",variation);
+                  console.log("notes",notes);
+                  console.log("selected",selectedGridChord);
+                  console.log("suggested",suggestedChord);
+                  console.log("expected",expectedChord);
+                }
+
                 return false;
               }
             }
             return true;
-          }).length;
+          }).length).toEqual(1);
         }
 
-        expect(test.state.suggestedGridChords.length).toBeGreaterThanOrEqual(MAXIMUM_OCTAVE - MINIMUM_OCTAVE);
       }
 
     });

@@ -15,9 +15,11 @@ export function ChordKeySelector(dispatch: (action: Action) => void) {
   return (state: State) => {
     return (
       <div className={"w-100"}>
-        {KEYS.map((key, i) => {
-          return <NoteKey key={"note-key-" + i}
-                          baseKey={key} keyIndex={i}
+        {KEYS.map((key, keyIndex) => {
+          return <NoteKey key={"note-key-" + keyIndex}
+                          baseKey={key} keyIndex={keyIndex}
+                          isSuggested={state.suggestedKeyIndexes.indexOf(keyIndex) !== -1}
+                          isSelected={state.selectedKeyIndex === keyIndex}
                           selectKey={dispatcher.selectKey}/>
         })}
       </div>

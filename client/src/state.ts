@@ -20,6 +20,7 @@ export const initialState = {
   showingVariations: {} as ToggleMap,
   selectedGridChord: undefined as ChordType | void,
   suggestedGridChords: [] as ChordType[],
+  suggestedKeyIndexes: [] as number[],
   chordMapperKeys: [] as boolean[],
   waveType: "sine" as OscillatorType,
   soundOn: true,
