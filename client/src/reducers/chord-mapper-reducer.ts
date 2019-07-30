@@ -1,7 +1,7 @@
 import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {Action} from "../core/root-reducer";
-import {KeyLetter, KEYS} from "./recompute-chord-grid";
+import {ChordType, KeyLetter, KEYS} from "./recompute-chord-grid";
 import {MAXIMUM_OCTAVE, MINIMUM_OCTAVE} from "./chord-tools-reducer";
 
 export const FirstChordMapperKeyIndex = ((firstLetter: KeyLetter): number => {
@@ -16,20 +16,33 @@ export const FirstChordMapperKeyIndex = ((firstLetter: KeyLetter): number => {
 //c,#,d,#,e,f,#,g,#, +  a,#,b,c,#,d,#,e,f,#,g,#,  +  a,#,b,c,#,d,#,e,f,#,g,#, + a,#,b
 export const ChordMapperKeys = KEYS.slice(FirstChordMapperKeyIndex).concat(KEYS).concat(KEYS).concat(KEYS.slice(0, FirstChordMapperKeyIndex));
 
-export interface ToggleChordMapperKey {
+export interface ToggleChordMapperKeyAction {
   type: "toggle-chord-mapper-key"
   keyIndex: number
 }
 
-export const toggleChordMapperKey = (keyIndex: number): ToggleChordMapperKey => {
+export const toggleChordMapperKey = (keyIndex: number): ToggleChordMapperKeyAction => {
   return {
     type: "toggle-chord-mapper-key",
     keyIndex
   };
 };
 
+export interface SelectChordAction {
+  type: "select-chord"
+  chord: ChordType
+}
+
+export const selectChord = (chord: ChordType): SelectChordAction => {
+  return {
+    type: "select-chord",
+    chord: chord
+  };
+};
+
 export type ChordMapperActions =
-  ToggleChordMapperKey
+  ToggleChordMapperKeyAction
+  | SelectChordAction
   ;
 
 export const mapChordToKeys = (state: State): State => {
@@ -134,6 +147,16 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
       state.chordMapperKeys = state.chordMapperKeys.slice();
       state.chordMapperKeys[action.keyIndex] = !state.chordMapperKeys[action.keyIndex];
 
+      state = mapKeysToChord(state);
+
+      break;
+    }
+
+    case "select-chord": {
+      state = {...state};
+      state.selectedGridChord = action.chord;
+
+      state = mapChordToKeys(state);
       state = mapKeysToChord(state);
 
       break;

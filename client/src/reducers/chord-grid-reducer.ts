@@ -1,8 +1,6 @@
 import {State} from "../state";
-import {ChordType} from "./recompute-chord-grid";
 import {ReductionWithEffect} from "../core/reducers";
 import {Action} from "../core/root-reducer";
-import {mapChordToKeys} from "./chord-mapper-reducer";
 
 export interface SelectKeyAction {
   type: "select-key"
@@ -16,21 +14,8 @@ export const selectKey = (keyIndex: number): SelectKeyAction => {
   };
 };
 
-export interface SelectChordAction {
-  type: "select-chord"
-  chord: ChordType
-}
-
-export const selectChord = (chord: ChordType): SelectChordAction => {
-  return {
-    type: "select-chord",
-    chord: chord
-  };
-};
-
 export type ChordCanvasActions =
-  SelectKeyAction
-  | SelectChordAction;
+  SelectKeyAction;
 
 
 export const reduceChordCanvas = (state: State, action: Action): ReductionWithEffect<State> => {
@@ -40,15 +25,6 @@ export const reduceChordCanvas = (state: State, action: Action): ReductionWithEf
 
       state = {...state};
       state.selectedKeyIndex = keyIndex;
-      break;
-    }
-
-    case "select-chord": {
-      state = {...state};
-      state.selectedGridChord = action.chord;
-
-      state = mapChordToKeys(state);
-
       break;
     }
 

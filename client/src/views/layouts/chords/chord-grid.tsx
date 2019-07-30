@@ -1,15 +1,14 @@
 import {ChordElement} from "../../../components/chord";
 import React from "react";
 import {State} from "../../../state";
-import {selectChord, selectKey} from "../../../reducers/chord-grid-reducer";
 import {chordIdentifier, ChordType} from "../../../reducers/recompute-chord-grid";
 import {Action} from "../../../core/root-reducer";
+import {selectChord} from "../../../reducers/chord-mapper-reducer";
 
 
 export function ChordGrid(dispatch: (action: Action) => void) {
 
   let dispatcher = {
-    selectKey: (keyIndex: number) => dispatch(selectKey(keyIndex)),
     selectChord: (chord: ChordType) => dispatch(selectChord(chord)),
   };
 
