@@ -1,6 +1,5 @@
 import {computedFor, reducerChain, subReducersFor} from "./reducers";
 import {reduceNavigation} from "../reducers/router-reducer";
-import {reduceInitialLoading} from "../reducers/initial-loading-reducer";
 import {InputChange, reduceInputs} from "../reducers/input-reducer";
 import {LogInActions, reduceLogin} from "../reducers/login-reducer";
 import {HeaderActions, reduceHeader} from "../reducers/header-reducer";
@@ -37,7 +36,6 @@ export type Action =
 export const rootReducer = (state: State, action: Action) => {
   return reducerChain(state, action)
     .apply(reduceNavigation)
-    .apply(reduceInitialLoading)
     .apply(subReducer("inputs", reduceInputs))
     .apply(subReducer("toggles", reduceToggle))
     .apply(reduceLogin)

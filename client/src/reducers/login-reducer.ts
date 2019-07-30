@@ -9,6 +9,7 @@ import {Action} from "../core/root-reducer";
 import {Effect} from "../core/services/service";
 import {setCookie} from "../utils/cookies";
 import {getLoggedInUserRequestName} from "./footer-reducer";
+import {parseMMLChords} from "../utils/mml-utils";
 
 export interface SignInAction {
   type: "sign-in"
@@ -81,6 +82,25 @@ export interface ResponseType {
 
 export const AuthHeaders = ["access-token", "token-type", "client", "expiry", "uid"];
 
+export const setUser = (state: State, headers: string, userData: UserResource | void): State => {
+  state = {...state};
+  state.loggedInUser = userData;
+  state.headers = parseHTTPHeadersToJSON(headers);
+
+  state.savedChords = state.loggedInUser && parseMMLChords(state.chordRules, state.loggedInUser.favorite_chords) || [];
+
+  for (let key in state.headers) {
+    if (AuthHeaders.indexOf(key) !== -1) {
+      setCookie(key, state.headers[key], Number(state.headers["expiry"]));
+    } else {
+      delete state.headers[key];
+    }
+  }
+  setCookie("id", state.loggedInUser && state.loggedInUser.id.toString() || "", Number(state.headers["expiry"]));
+
+  return state;
+};
+
 export const reduceLogin = (state: State, action: Action): ReductionWithEffect<State> => {
   let effects: Effect[] = [];
   switch (action.type) {
@@ -106,19 +126,9 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       } else if (action.name[0] === validateTokenRequestName) {
         if (action.success) {
           state = {...state};
-          state.loggedInUser = response.data as UserResource;
-          state.headers = parseHTTPHeadersToJSON(action.headers);
+          state = setUser(state, action.headers, response.data as UserResource);
           state.toggles = {...state.toggles};
           state.toggles.showLogInModal = false;
-
-          for (let key in state.headers){
-            if (AuthHeaders.indexOf(key) !== -1) {
-              setCookie(key, state.headers[key], Number(state.headers["expiry"]));
-            } else {
-              delete state.headers[key];
-            }
-          }
-          setCookie("id", state.loggedInUser.id.toString(), Number(state.headers["expiry"]));
 
           effects = effects.concat(historyPush({pathname: '/chords'}));
         } else {
@@ -145,11 +155,13 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state.loginPage.success = initialState.loginPage.success;
         }
       } else if (action.name[0] === getLoggedInUserRequestName) {
-        state = {...state};
-        state.loggedInUser = response.data as UserResource;
+        if (action.success) {
+          state = setUser(state, action.headers, response.data as UserResource);
+        }
       } else if (action.name[0] === userSignOutRequesName) {
-        state = {...state};
-        state.loggedInUser = undefined;
+        if (action.success) {
+          state = setUser(state, action.headers, undefined);
+        }
       }
       break;
 
@@ -193,7 +205,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         state.loginPage.errors.signUp.push("Password mismatch");
       }
 
-      if (!action.token_id ) {
+      if (!action.token_id) {
         state.loginPage.errors.signUp.push("Must insert valid card");
       }
 
