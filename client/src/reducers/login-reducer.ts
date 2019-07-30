@@ -1,7 +1,7 @@
 import {initialState, State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {parseHTTPHeadersToJSON, requestAjax} from "../core/services/ajax-service";
-import {AuthSignIn, AuthSignUp, AuthValidateToken} from "../resources/routes";
+import {AuthSignIn, AuthSignOut, AuthSignUp, AuthValidateToken} from "../resources/routes";
 import {historyPush} from "../core/services/navigation-service";
 import {ResourceType} from "../resources/resource";
 import {UserResource} from "../resources/user-resource";
@@ -17,6 +17,16 @@ export interface SignInAction {
 export const signIn = (): SignInAction => {
   return {
     type: "sign-in"
+  };
+};
+
+export interface SignOutAction {
+  type: "sign-out"
+}
+
+export const signOut = (): SignOutAction => {
+  return {
+    type: "sign-out"
   };
 };
 
@@ -57,6 +67,7 @@ export const errorOnSignUp = (errorMessage: string): ErrorOnSignUpAction => {
 
 export type LogInActions =
   | SignInAction
+  | SignOutAction
   | GoSignUpAction
   | SignUpAction
   | ErrorOnSignUpAction;
@@ -97,6 +108,8 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state = {...state};
           state.loggedInUser = response.data as UserResource;
           state.headers = parseHTTPHeadersToJSON(action.headers);
+          state.toggles = {...state.toggles};
+          state.toggles.showLogInModal = false;
 
           for (let key in state.headers){
             if (AuthHeaders.indexOf(key) !== -1) {
@@ -134,19 +147,30 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       } else if (action.name[0] === getLoggedInUserRequestName) {
         state = {...state};
         state.loggedInUser = response.data as UserResource;
+      } else if (action.name[0] === userSignOutRequesName) {
+        state = {...state};
+        state.loggedInUser = undefined;
       }
       break;
 
     case "sign-in": {
       effects.push(requestAjax([userSignInRequesName],
         {
-          url: AuthSignIn, method: "POST", headers: state.headers,
+          url: AuthSignIn, method: "POST", headers: {},
           json: {
             email: state.inputs.email,
             password: state.inputs.password
           }
         }));
 
+      break;
+    }
+
+    case "sign-out": {
+      effects.push(requestAjax([userSignOutRequesName],
+        {
+          url: AuthSignOut, method: "DELETE", headers: state.headers
+        }));
       break;
     }
 
@@ -214,4 +238,5 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
 export const validateTokenRequestName = "validate-token";
 export const userSignInRequesName = "user-sign-in";
+export const userSignOutRequesName = "user-sign-out";
 export const userSignUpRequesName = "user-sign-up";

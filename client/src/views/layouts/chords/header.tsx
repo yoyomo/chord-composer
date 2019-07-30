@@ -10,6 +10,7 @@ import {Parameter} from "../../../components/parameter";
 import {Action} from "../../../core/root-reducer";
 import {LogIn} from "../sign_up/log-in";
 import {toggleDispatcher} from "../../../reducers/toggle-reducer";
+import {UserInfoModal} from "./user-info";
 
 export function Header(dispatch: (action: Action) => void) {
 
@@ -36,6 +37,7 @@ export function Header(dispatch: (action: Action) => void) {
   };
 
   let LogInContent = LogIn(dispatch);
+  let UserInfoModalContent = UserInfoModal(dispatch);
 
   return (state: State) => {
     return (
@@ -73,13 +75,11 @@ export function Header(dispatch: (action: Action) => void) {
               (8)
             </div>
             {state.toggles.showLogInModal &&
-            <div>
+            <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1 absolute bg-white"}>
               {state.loggedInUser ?
-                null
+                  UserInfoModalContent(state)
                 :
-                <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1 absolute bg-white"}>
-                  {LogInContent(state)}
-                </div>
+                  LogInContent(state)
               }
             </div>
             }
