@@ -87,7 +87,7 @@ export const setUser = (state: State, headers: string, userData: UserResource | 
   state.loggedInUser = userData;
   state.headers = parseHTTPHeadersToJSON(headers);
 
-  state.savedChords = state.loggedInUser && parseMMLChords(state.chordRules, state.loggedInUser.favorite_chords) || [];
+  state.savedChords = (state.loggedInUser && parseMMLChords(state.chordRules, state.loggedInUser.favorite_chords)) || [];
 
   for (let key in state.headers) {
     if (AuthHeaders.indexOf(key) !== -1) {
@@ -96,7 +96,7 @@ export const setUser = (state: State, headers: string, userData: UserResource | 
       delete state.headers[key];
     }
   }
-  setCookie("id", state.loggedInUser && state.loggedInUser.id.toString() || "", Number(state.headers["expiry"]));
+  setCookie("id", (state.loggedInUser && state.loggedInUser.id.toString()) || "", Number(state.headers["expiry"]));
 
   return state;
 };

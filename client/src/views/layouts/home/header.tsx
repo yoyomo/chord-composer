@@ -1,7 +1,7 @@
 import React from "react";
-import {State} from "../../../state";
+import {HomePages, State} from "../../../state";
 import {
-  changeBaseFrequency,
+  changeBaseFrequency, goToHomePage,
   selectWaveType,
   toggleSound
 } from "../../../reducers/header-reducer";
@@ -18,6 +18,7 @@ export function Header(dispatch: (action: Action) => void) {
     changeBaseFrequency: (freq: number) => dispatch(changeBaseFrequency(freq)),
     selectWaveType: (waveType: OscillatorType) => dispatch(selectWaveType(waveType)),
     toggleSound: () => dispatch(toggleSound()),
+    goToHomePage: (page: HomePages) => dispatch(goToHomePage(page)),
   };
 
   interface WaveTypeProps extends ClassAndChildren{
@@ -83,6 +84,17 @@ export function Header(dispatch: (action: Action) => void) {
               }
             </div>
             }
+          </div>
+
+          <div className={"ma2 pa2 dark-gray tc"}>
+            <div className={`db pointer ${state.homePage.page === 'chords' ? "light-blue" : ""}`} onClick={() => dispatcher.goToHomePage("chords")}>
+              [;]
+            </div>
+
+            <div className={`db pointer ${state.homePage.page === 'song' ? "light-blue" : ""}`} onClick={() => dispatcher.goToHomePage("song")}>
+              [...]
+            </div>
+
           </div>
 
         </div>

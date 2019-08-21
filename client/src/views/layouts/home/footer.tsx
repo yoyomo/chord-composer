@@ -22,7 +22,7 @@ export function Footer(dispatch: (action: Action) => void) {
   return (state: State) => {
     let disabledButtons = !state.selectedGridChord;
     return (
-      <div className={"w-100 bg-light-gray dark-gray h5 flex flex-row items-stretch"}>
+      <div className={"w-100 bg-light-gray dark-gray h4 flex flex-row items-stretch"}>
         <div className={"dib fr h-100"}>
           <ParameterButton className={"db w2 h2 pa2 ma1"} disabled={disabledButtons} onClick={dispatcher.saveChord}>
             +
@@ -40,7 +40,8 @@ export function Footer(dispatch: (action: Action) => void) {
                                  waveType={state.waveType}
                                  soundOn={state.soundOn}
                                  onSelect={() => dispatcher.onSelectSavedChord(s)}
-                                 isSelected={!!state.selectedGridChord && chordIdentifier(state.selectedGridChord) === chordIdentifier(savedChord)}/>
+                                 isSelected={!!state.selectedGridChord && chordIdentifier(state.selectedGridChord) === chordIdentifier(savedChord)}
+                                 isSuggested={state.suggestedGridChords.filter(c => chordIdentifier(c) === chordIdentifier(savedChord)).length > 0}/>
           })}
         </div>
 

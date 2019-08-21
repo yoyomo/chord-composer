@@ -1,4 +1,4 @@
-import {State} from "../state";
+import {HomePages, State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {Action} from "../core/root-reducer";
 
@@ -36,10 +36,24 @@ export const toggleSound = (): ToggleSoundAction => {
   };
 };
 
+export interface GoToHomePageAction {
+  type: "go-to-home-page"
+  page: HomePages
+}
+
+export const goToHomePage = (page: HomePages): GoToHomePageAction => {
+  return {
+    type: "go-to-home-page",
+    page
+  };
+};
+
+
 export type HeaderActions =
     | ChangeBaseFrequencyAction
     | SelectWaveTypeAction
-    | ToggleSoundAction;
+    | ToggleSoundAction
+    | GoToHomePageAction;
 
 
 export const reduceHeader = (state: State, action: Action): ReductionWithEffect<State> => {
@@ -60,6 +74,13 @@ export const reduceHeader = (state: State, action: Action): ReductionWithEffect<
     case "toggle-sound": {
       state = {...state};
       state.soundOn = !state.soundOn;
+      break;
+    }
+
+    case "go-to-home-page": {
+      state = {...state};
+      state.homePage = {...state.homePage};
+      state.homePage.page = action.page;
       break;
     }
 

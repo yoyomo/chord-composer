@@ -9,6 +9,12 @@ let AudioContext = (window as any).AudioContext // Default
 
 export type ToggleMap = {[k: number]: boolean}
 
+const loginPageInputs = {
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
+
 export const initialState = {
   audioContext: AudioContext && new AudioContext(),
   notes: [] as number[],
@@ -39,9 +45,7 @@ export const initialState = {
   },
 
   inputs: {
-    email: "",
-    password: "",
-    confirmPassword: "",
+    ...loginPageInputs,
   },
 
   toggles: {
@@ -58,10 +62,14 @@ export const initialState = {
     }
   },
 
-
+  homePage: {
+    page: "chords" as HomePages,
+  }
 
 };
 
 export type State = typeof initialState;
 export type Inputs = typeof initialState.inputs;
 export type Toggles = typeof initialState.toggles;
+
+export type HomePages = "chords" | "song"

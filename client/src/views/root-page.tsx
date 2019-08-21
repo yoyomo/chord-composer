@@ -1,13 +1,13 @@
 import React from "react";
 import {State} from "../state";
-import {ChordsPage} from "./layouts/chords/chords-page";
+import {HomePage} from "./layouts/home/home-page";
 import {SignUpPage} from "./layouts/sign_up/sign-up-page";
 import {Action} from "../core/root-reducer";
 
 
 export function RootPage(dispatch: (action: Action) => void) {
 
-  const ChordsContent = ChordsPage(dispatch);
+  const HomeContent = HomePage(dispatch);
   const SignUpContent = SignUpPage(dispatch);
   return (state: State) => {
     return (
@@ -17,8 +17,8 @@ export function RootPage(dispatch: (action: Action) => void) {
               case "sign-up":
                 return SignUpContent(state);
 
-              case "chords":
-                return ChordsContent(state);
+              case "home":
+                return HomeContent(state);
 
               default:
                 return "404 Not Found";
