@@ -9,7 +9,7 @@ import {requestAjax} from "../core/services/ajax-service";
 import {ApiV1UsersPath} from "../resources/routes";
 import {getLoggedInUserRequestName} from "./footer-reducer";
 
-export type PathPart = 'home' | 'sign-up'
+export type PathPart = 'home' | 'sign-up' | 'chords' | 'song'
 
 export function routerReducer(state: State,
                               location: PathLocation): ReductionWithEffect<State> {
@@ -19,7 +19,7 @@ export function routerReducer(state: State,
   effects = effects.concat(getStripe(state.stripe.publishableKey));
 
   let nextPathParts: PathPart[] = location.pathname.split("/").slice(1) as PathPart[];
-  if (!nextPathParts[0]) nextPathParts = ["home"];
+  if (!nextPathParts[0]) nextPathParts[0] = "home";
 
   switch (nextPathParts[0]) {
 
@@ -32,6 +32,8 @@ export function routerReducer(state: State,
       break;
 
     case "home":
+      if (!nextPathParts[1]) nextPathParts[1] = "chords";
+
       if (state.loggedInUser) break;
 
       state.headers = {...state.headers};
@@ -71,6 +73,7 @@ export function routerReducer(state: State,
         }
         return param;
       });
+
 
       break;
 

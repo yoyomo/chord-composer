@@ -2,6 +2,7 @@ import {BASE_CHORD_RULES} from "./constants/base-chord-rules";
 import {ChordRuleType, ChordType} from "./reducers/recompute-chord-grid";
 import {UserResource} from "./resources/user-resource";
 import {PathPart} from "./reducers/router-reducer";
+import {SongResource} from "./resources/song-resource";
 
 let AudioContext = (window as any).AudioContext // Default
   || (window as any).webkitAudioContext // Safari and old versions of Chrome
@@ -45,6 +46,7 @@ export const initialState = {
   },
 
   inputs: {
+    lyric: "",
     ...loginPageInputs,
   },
 
@@ -62,14 +64,11 @@ export const initialState = {
     }
   },
 
-  homePage: {
-    page: "chords" as HomePages,
-  }
+  songs: [] as SongResource[],
+  newSong: {id: undefined as unknown as number, user_id: "", title: "", author: "", chordsAndLyrics: [], created_at: null as unknown as string} as SongResource,
 
 };
 
 export type State = typeof initialState;
 export type Inputs = typeof initialState.inputs;
 export type Toggles = typeof initialState.toggles;
-
-export type HomePages = "chords" | "song"

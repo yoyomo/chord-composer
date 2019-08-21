@@ -1,6 +1,6 @@
 import {ChordRuleType, ChordType, KeyLetter, KEYS} from "../reducers/recompute-chord-grid";
 
-export const calculateMML = (chord: ChordType) => {
+export const calculateMML = (chord: ChordType): string => {
   let mml = "o" + chord.octave + "[";
   for (let p = 0; p < chord.notes.length; p++) {
     let pitch = chord.notes[p];

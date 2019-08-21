@@ -1,5 +1,5 @@
 import React from "react";
-import {HomePages, State} from "../../../state";
+import {State} from "../../../state";
 import {
   changeBaseFrequency, goToHomePage,
   selectWaveType,
@@ -11,6 +11,7 @@ import {Action} from "../../../core/root-reducer";
 import {LogIn} from "../sign_up/log-in";
 import {toggleDispatcher} from "../../../reducers/toggle-reducer";
 import {UserInfoModal} from "./user-info";
+import {PathPart} from "../../../reducers/router-reducer";
 
 export function Header(dispatch: (action: Action) => void) {
 
@@ -18,7 +19,7 @@ export function Header(dispatch: (action: Action) => void) {
     changeBaseFrequency: (freq: number) => dispatch(changeBaseFrequency(freq)),
     selectWaveType: (waveType: OscillatorType) => dispatch(selectWaveType(waveType)),
     toggleSound: () => dispatch(toggleSound()),
-    goToHomePage: (page: HomePages) => dispatch(goToHomePage(page)),
+    goToHomePage: (page: PathPart) => dispatch(goToHomePage(page)),
   };
 
   interface WaveTypeProps extends ClassAndChildren{
@@ -87,11 +88,11 @@ export function Header(dispatch: (action: Action) => void) {
           </div>
 
           <div className={"ma2 pa2 dark-gray tc"}>
-            <div className={`db pointer ${state.homePage.page === 'chords' ? "light-blue" : ""}`} onClick={() => dispatcher.goToHomePage("chords")}>
+            <div className={`db pointer ${state.pathParts[1] === 'chords' ? "light-blue" : ""}`} onClick={() => dispatcher.goToHomePage("chords")}>
               [;]
             </div>
 
-            <div className={`db pointer ${state.homePage.page === 'song' ? "light-blue" : ""}`} onClick={() => dispatcher.goToHomePage("song")}>
+            <div className={`db pointer ${state.pathParts[1] === 'song' ? "light-blue" : ""}`} onClick={() => dispatcher.goToHomePage("song")}>
               [...]
             </div>
 

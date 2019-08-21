@@ -18,8 +18,8 @@ export function HomePage(dispatch: (action: Action) => void) {
     return (
         <div className="w-100 h-100 flex flex-column overflow-hidden">
           {HeaderContent(state)}
-          {state.homePage.page === "chords" && ChordPageContent(state)}
-          {state.homePage.page === "song" && SongPageContent(state)}
+          {state.pathParts[1] === "chords" && ChordPageContent(state)}
+          {state.pathParts[1] === "song" && SongPageContent(state)}
           {FooterContent(state)}
         </div>
     );

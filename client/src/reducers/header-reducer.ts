@@ -1,6 +1,9 @@
-import {HomePages, State} from "../state";
+import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {Action} from "../core/root-reducer";
+import {historyPush} from "../core/services/navigation-service";
+import {Effect} from "../core/services/service";
+import {PathPart} from "./router-reducer";
 
 export interface ChangeBaseFrequencyAction {
   type: "change-base-frequency"
@@ -38,10 +41,10 @@ export const toggleSound = (): ToggleSoundAction => {
 
 export interface GoToHomePageAction {
   type: "go-to-home-page"
-  page: HomePages
+  page: PathPart
 }
 
-export const goToHomePage = (page: HomePages): GoToHomePageAction => {
+export const goToHomePage = (page: PathPart): GoToHomePageAction => {
   return {
     type: "go-to-home-page",
     page
@@ -57,6 +60,7 @@ export type HeaderActions =
 
 
 export const reduceHeader = (state: State, action: Action): ReductionWithEffect<State> => {
+  let effects: Effect[] = [];
   switch (action.type) {
 
     case "change-base-frequency": {
@@ -78,14 +82,11 @@ export const reduceHeader = (state: State, action: Action): ReductionWithEffect<
     }
 
     case "go-to-home-page": {
-      state = {...state};
-      state.homePage = {...state.homePage};
-      state.homePage.page = action.page;
+      effects = effects.concat(historyPush({pathname: action.page}));
       break;
     }
 
-
   }
 
-  return {state};
+  return {state, effects};
 };
