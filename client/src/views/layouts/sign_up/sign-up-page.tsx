@@ -65,6 +65,12 @@ export function SignUpPage(dispatch: (action: Action) => void) {
   return (state: State) => {
     return (
       <div className={"w-100 h-100 flex flex-column overflow-hidden"}>
+        <div className="w-100 bg-light-gray tc">
+          <div className="ma2 pa2 f4 gray b">
+            K O R D P O S E
+          </div>
+        </div>
+
         <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1"}>
           <div className={"db ma2"}>
             Email:
