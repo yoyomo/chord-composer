@@ -10,6 +10,9 @@ import {Effect} from "../core/services/service";
 import {setCookie} from "../utils/cookies";
 import {getLoggedInUserRequestName} from "./footer-reducer";
 import {parseMMLChords} from "../utils/mml-utils";
+import {getStripePublishableKeyRequestName} from "./router-reducer";
+import {StripeResource} from "../resources/stripe-resource";
+import {getStripe} from "../core/services/stripe-service";
 
 export interface SignInAction {
   type: "sign-in"
@@ -162,6 +165,14 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         if (action.success) {
           state = setUser(state, action.headers, undefined);
         }
+      } else if(action.name[0] === getStripePublishableKeyRequestName) {
+        let stripeData = response.data as StripeResource;
+        state = {...state};
+        state.stripe = {...state.stripe};
+        state.stripe.publishableKey = stripeData.publishable_key;
+
+        state.stripe.plans = stripeData.plans;
+        effects = effects.concat(getStripe(state.stripe.publishableKey));
       }
       break;
 

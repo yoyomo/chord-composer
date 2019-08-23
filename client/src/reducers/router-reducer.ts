@@ -6,7 +6,7 @@ import {getStripe} from "../core/services/stripe-service";
 import {AuthHeaders} from "./login-reducer";
 import {getCookie} from "../utils/cookies";
 import {requestAjax} from "../core/services/ajax-service";
-import {ApiV1UsersPath} from "../resources/routes";
+import {ApiV1UsersPath, StripePath} from "../resources/routes";
 import {getLoggedInUserRequestName} from "./footer-reducer";
 
 export type PathPart = 'home' | 'sign-up' | 'chords' | 'song'
@@ -16,7 +16,13 @@ export function routerReducer(state: State,
   let effects: Effect[] = [];
   state = {...state};
 
-  effects = effects.concat(getStripe(state.stripe.publishableKey));
+  if (!state.stripe.publishableKey || state.stripe.plans.length === 0) {
+    effects = effects.concat(requestAjax([getStripePublishableKeyRequestName], {
+      headers: state.headers,
+      url: StripePath + '/data',
+      method: 'GET'
+    }));
+  }
 
   let nextPathParts: PathPart[] = location.pathname.split("/").slice(1) as PathPart[];
   if (!nextPathParts[0]) nextPathParts[0] = "home";
@@ -84,5 +90,7 @@ export function routerReducer(state: State,
 
   return {state, effects};
 }
+
+export const getStripePublishableKeyRequestName = "get-stripe-publishable-key";
 
 export const reduceNavigation = navigationReducer(routerReducer);

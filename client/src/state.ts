@@ -3,6 +3,7 @@ import {ChordRuleType, ChordType} from "./reducers/recompute-chord-grid";
 import {UserResource} from "./resources/user-resource";
 import {PathPart} from "./reducers/router-reducer";
 import {SongResource} from "./resources/song-resource";
+import {StripePlanResource} from "./resources/stripe-resource";
 
 let AudioContext = (window as any).AudioContext // Default
   || (window as any).webkitAudioContext // Safari and old versions of Chrome
@@ -40,9 +41,9 @@ export const initialState = {
   // TODO request data from backend & display plan information
   stripe: {
     object: undefined as stripe.Stripe | void,
-    publishableKey: "pk_test_djBzxE7qYBOJYdTPP2OT7aXa00gGQMNEZb" as string,
-    plans: ["plan_FPRSWCfeC2eHz1"] as string[],
-    chosenPlanID: "plan_FPRSWCfeC2eHz1" as string,
+    publishableKey: undefined as string | void,
+    plans: [] as StripePlanResource[],
+    chosenPlanID: undefined as StripePlanResource | void,
   },
 
   inputs: {

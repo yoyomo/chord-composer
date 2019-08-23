@@ -86,12 +86,20 @@ export function SignUpPage(dispatch: (action: Action) => void) {
             <Input type="password" value={state.inputs.confirmPassword}
                    onChange={inputChangeDispatcher(dispatch, "confirmPassword")}/>
           </div>
-          {state.stripe.object && <StripeProvider apiKey={state.stripe.publishableKey}>
-            <Elements>
-              <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error}
-                                errors={state.loginPage.errors.signUp}/>
-            </Elements>
-          </StripeProvider>
+          {state.stripe.object && state.stripe.publishableKey && state.stripe.plans.length > 0 && <div>
+            {state.stripe.plans.map(stripePlan => {
+              return <div>
+                {stripePlan.amount} + {stripePlan.currency}
+              </div>
+            })
+            }
+            <StripeProvider apiKey={state.stripe.publishableKey}>
+              <Elements>
+                <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error}
+                                  errors={state.loginPage.errors.signUp}/>
+              </Elements>
+            </StripeProvider>
+          </div>
           }
         </div>
       </div>

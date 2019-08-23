@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     confirmations: 'custom/confirmations'
   }
 
-  get 'stripe/get_plans'
+  get 'stripe/data'
 
   namespace :api do
     namespace :v1 do
