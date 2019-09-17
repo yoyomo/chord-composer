@@ -39,3 +39,5 @@ client/.idea/misc.xml
 !client/src/setupProxy.js
 vendor/**/*
 
+.env
+kordpose-firebase-adminsdk.json

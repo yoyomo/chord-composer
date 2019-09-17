@@ -38,7 +38,6 @@ export const initialState = {
   pathParts: [] as PathPart[],
   headers: {} as {[k: string]: string},
 
-  // TODO request data from backend & display plan information
   stripe: {
     object: undefined as stripe.Stripe | void,
     publishableKey: undefined as string | void,
