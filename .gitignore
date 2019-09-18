@@ -40,4 +40,7 @@ client/.idea/misc.xml
 vendor/**/*
 
 .env
+kordpose-497be-b38ec911bb39.json
 kordpose-firebase-adminsdk.json
+firebase-debug.log
+firestore-debug.log

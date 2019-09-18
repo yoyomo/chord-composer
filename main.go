@@ -3,21 +3,18 @@ package main
 import (
 	"fmt"
 	"log"
-	"regexp"
-	"strings"
 
-	"net/http"
-	"os"
-	"io/ioutil"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/subosito/gotenv"
+	"io/ioutil"
+	"net/http"
+	"os"
 
-	"golang.org/x/net/context"
-	firebase "firebase.google.com/go"
-	"google.golang.org/api/option"
-	"google.golang.org/api/iterator"
 	"cloud.google.com/go/firestore"
+	firebase "firebase.google.com/go"
+	"golang.org/x/net/context"
+	"google.golang.org/api/iterator"
 )
 
 func init() {
@@ -28,46 +25,57 @@ var ctx context.Context
 var client *firestore.Client
 
 type User struct {
-	First		string 	`firestore:"first,omitempty"`
-	Middle	string 	`firestore:"middle,omitempty"`
-	Last		string 	`firestore:"last,omitempty"`
-	Born		int 		`firestore:"born,omitempty"`
+	First  string `firestore:"first,omitempty"`
+	Middle string `firestore:"middle,omitempty"`
+	Last   string `firestore:"last,omitempty"`
+	Born   int    `firestore:"born,omitempty"`
 }
 
-func createUser(w http.ResponseWriter, r *http.Request) {
-	reqBody, err := ioutil.ReadAll(r.Body)
-	logFatal(err)
+func resourceType(resource string) interface{}{
 
-	var newUser User
+	switch resource {
+	case "users":
+		return *new(User)
+	}
 
-	json.Unmarshal(reqBody, &newUser)
+	return nil
+}
 
-	_, _, err = client.Collection("users").Add(ctx, newUser)
-	logFatal(err)
+func commonMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	})
+}
 
-	w.WriteHeader(http.StatusCreated)
+func resources(resource string, router *mux.Router) {
 
-	json.NewEncoder(w).Encode(newUser)
+	router.HandleFunc("/"+resource, create(resource)).Methods("POST")
+	router.HandleFunc("/"+resource, index(resource)).Methods("GET")
+	router.HandleFunc("/"+resource+"/{id}", get(resource)).Methods("GET")
+	router.HandleFunc("/"+resource+"/{id}", update(resource)).Methods("PATCH")
+	router.HandleFunc("/"+resource+"/{id}", delete(resource)).Methods("DELETE")
 
 }
 
-type ResourceType struct {
-	User User
-	NotUser User
+func create(resource string) func (w http.ResponseWriter, r *http.Request) {
+	return func (w http.ResponseWriter, r *http.Request) {
+
+		reqBody, err := ioutil.ReadAll(r.Body)
+		logFatal(err)
+
+		newData := resourceType(resource)
+
+		json.Unmarshal(reqBody, &newData)
+
+		_, _, err = client.Collection(resource).Add(ctx, newData)
+		logFatal(err)
+
+		w.WriteHeader(http.StatusCreated)
+
+		json.NewEncoder(w).Encode(newData)
+	}
 }
-
-func resourceType(resource string) {
-	fmt.Println(string(strings.ToUpper(resource)[0])+resource[1:len(resource)-1])
-
-	firstRE := regexp.MustCompile("^([a-z])")
-	secondRE := regexp.MustCompile("([a-z]+)([^s])")
-	thirdRE := regexp.MustCompile("(s$)")
-
-	fmt.Println(firstRE.FindString(resource))
-	fmt.Println(secondRE.FindString(resource[1:]))
-	fmt.Println(thirdRE.FindString(resource))
-}
-
 
 func get(resource string) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -76,8 +84,7 @@ func get(resource string) func(w http.ResponseWriter, r *http.Request) {
 		dsnap, err := client.Collection(resource).Doc(resourceID).Get(ctx)
 		logFatal(err)
 
-		resourceType(resource)
-		var data User
+		data := resourceType(resource)
 		dsnap.DataTo(&data)
 		dsnap.Data()
 
@@ -87,7 +94,8 @@ func get(resource string) func(w http.ResponseWriter, r *http.Request) {
 
 func index(resource string) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var users []User
+		var datas []interface{}
+
 		iter := client.Collection(resource).Documents(ctx)
 		for {
 			doc, err := iter.Next()
@@ -98,37 +106,41 @@ func index(resource string) func(w http.ResponseWriter, r *http.Request) {
 				log.Fatalf("Failed to iterate: %v", err)
 			}
 
-			var user User
-			doc.DataTo(&user)
+			data := resourceType(resource)
+			doc.DataTo(&data)
 
-			users = append(users, user)
+			datas = append(datas, data)
 		}
 
-		json.NewEncoder(w).Encode(users)
+		json.NewEncoder(w).Encode(datas)
 	}
 }
 
-func updateUser(w http.ResponseWriter, r *http.Request) {
+func update(resource string) func (w http.ResponseWriter, r *http.Request){
+	return func (w http.ResponseWriter, r *http.Request) {
 
-	reqBody, err := ioutil.ReadAll(r.Body)
-	logFatal(err)
+		reqBody, err := ioutil.ReadAll(r.Body)
+		logFatal(err)
 
-	userID := mux.Vars(r)["id"]
+		resourceID := mux.Vars(r)["id"]
 
-	var updatedUser User
+		updatedData := resourceType(resource)
 
-	json.Unmarshal(reqBody, &updatedUser)
+		json.Unmarshal(reqBody, &updatedData)
 
-	_, err = client.Collection("users").Doc(userID).Set(ctx, updatedUser, firestore.MergeAll)
-	logFatal(err)
+		_, err = client.Collection(resource).Doc(resourceID).Set(ctx, updatedData, firestore.MergeAll)
+		logFatal(err)
 
-	json.NewEncoder(w).Encode(updatedUser)
+		json.NewEncoder(w).Encode(updatedData)
+	}
 }
 
-func deleteUser(w http.ResponseWriter, r *http.Request) {
-	userID := mux.Vars(r)["id"]
-	_, err := client.Collection("users").Doc(userID).Delete(ctx)
-	logFatal(err)
+func delete(resource string) func(w http.ResponseWriter, r *http.Request){
+	return func(w http.ResponseWriter, r *http.Request) {
+		resourceID := mux.Vars(r)["id"]
+		_, err := client.Collection(resource).Doc(resourceID).Delete(ctx)
+		logFatal(err)
+	}
 }
 
 func logFatal(err error) {
@@ -137,19 +149,22 @@ func logFatal(err error) {
 	}
 }
 
-func resources(resource string, router *mux.Router) {
-	router.HandleFunc("/"+resource, createUser).Methods("POST")
-	router.HandleFunc("/"+resource, index("users")).Methods("GET")
-	router.HandleFunc("/"+resource+"/{id}", get("users")).Methods("GET")
-	router.HandleFunc("/"+resource+"/{id}", updateUser).Methods("PATCH")
-	router.HandleFunc("/"+resource+"/{id}", deleteUser).Methods("DELETE")
-}
-
-func main() {
-
-	sa := option.WithCredentialsFile("kordpose-firebase-adminsdk.json")
+func setupFirestore(){
 	ctx = context.Background()
-	app, err := firebase.NewApp(ctx, nil, sa)
+
+	var firestoreURL string
+	var conf *firebase.Config
+
+	switch os.Getenv("GO_ENV"){
+	case "production":
+		firestoreURL = os.Getenv("FIRESTORE_PROJECT_ID")
+		conf = &firebase.Config{ProjectID: firestoreURL}
+	case "development":
+		firestoreURL = os.Getenv("FIRESTORE_EMULATOR_URL")
+		conf = &firebase.Config{ProjectID: "(default)", DatabaseURL: firestoreURL}
+	}
+
+	app, err := firebase.NewApp(ctx, conf)
 	logFatal(err)
 
 	client, err = app.Firestore(ctx)
@@ -157,13 +172,34 @@ func main() {
 
 	defer client.Close()
 
-	router := mux.NewRouter().StrictSlash(true)
+	fmt.Println("Firestore:", firestoreURL)
 
-	resourceType("users")
+}
+
+func setupRouter() *mux.Router {
+
+	router := mux.NewRouter().StrictSlash(true)
+	router.Use(commonMiddleware)
 
 	resources("users", router)
 
+	return router
+}
+
+func startServer() {
+	router := setupRouter()
+
 	port := os.Getenv("GO_SERVER_PORT")
-	fmt.Println("Go Server listening at port: ", port)
+
+	fmt.Println("Go Server listening at port:", port)
+
 	log.Fatal(http.ListenAndServe(":"+port, router))
+}
+
+func main() {
+
+	setupFirestore()
+
+	startServer()
+
 }
