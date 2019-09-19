@@ -68,13 +68,26 @@ export const errorOnSignUp = (errorMessage: string): ErrorOnSignUpAction => {
   };
 };
 
+export interface ChooseStripePlanAction {
+  type: "choose-stripe-plan"
+  stripePlanId: string
+}
+
+export const chooseStripePlan = (stripePlanId: string): ChooseStripePlanAction => {
+  return {
+    type: "choose-stripe-plan",
+    stripePlanId
+  }
+};
+
 
 export type LogInActions =
   | SignInAction
   | SignOutAction
   | GoSignUpAction
   | SignUpAction
-  | ErrorOnSignUpAction;
+  | ErrorOnSignUpAction
+  | ChooseStripePlanAction;
 
 
 export interface ResponseType {
@@ -133,7 +146,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state.toggles = {...state.toggles};
           state.toggles.showLogInModal = false;
 
-          effects = effects.concat(historyPush({pathname: '/chords'}));
+          effects = effects.concat(historyPush({pathname: 'home/chords'}));
         } else {
           state = {...state};
           state.loginPage = {...state.loginPage};
@@ -148,7 +161,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state.loginPage.success = {...state.loginPage.success};
           state.loginPage.success.signUp = "A confirmation email was sent to you. Please confirm your email.";
           state.loginPage.errors = initialState.loginPage.errors;
-          effects = effects.concat(historyPush({pathname: '/chords'}));
+          effects = effects.concat(historyPush({pathname: '/home/chords'}));
 
         } else {
           state = {...state};
@@ -172,8 +185,15 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         state.stripe.publishableKey = stripeData.publishable_key;
 
         state.stripe.plans = stripeData.plans;
+        state.stripe.chosenPlanID = stripeData.plans[0].id;
         effects = effects.concat(getStripe(state.stripe.publishableKey));
       }
+      break;
+
+    case "choose-stripe-plan":
+      state = {...state};
+      state.stripe = {...state.stripe};
+      state.stripe.chosenPlanID = action.stripePlanId;
       break;
 
     case "sign-in": {

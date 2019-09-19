@@ -5,6 +5,7 @@ import {ChordMapper} from "./chord-mapper";
 import {State} from "../../../state";
 import {Action} from "../../../core/root-reducer";
 import {ChordKeySelector} from "./chord-key-selector";
+import {Page} from "../../../components/page";
 
 
 export function ChordsPage(dispatch: (action: Action) => void) {
@@ -16,12 +17,12 @@ export function ChordsPage(dispatch: (action: Action) => void) {
 
   return (state: State) => {
     return (
-      <div className="w-100 h-100 flex flex-column overflow-hidden">
+      <Page>
         {ChordToolsContent(state)}
         {ChordKeySelectorContent(state)}
         {ChordCanvasContent(state)}
         {ChordMapperContent(state)}
-      </div>
+      </Page>
     );
   }
 }

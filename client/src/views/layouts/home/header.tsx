@@ -77,7 +77,7 @@ export function Header(dispatch: (action: Action) => void) {
               (8)
             </div>
             {state.toggles.showLogInModal &&
-            <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1 absolute bg-white"}>
+            <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1 absolute bg-white nl6"}>
               {state.loggedInUser ?
                   UserInfoModalContent(state)
                 :

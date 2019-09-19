@@ -5,6 +5,7 @@ import {ChordAndLyricResource} from "../../../resources/song-resource";
 import {Input} from "../../../components/input";
 import {inputChangeDispatcher} from "../../../reducers/input-reducer";
 import {addChordAndLyric} from "../../../reducers/song-page-reducer";
+import {Page} from "../../../components/page";
 
 export function SongPage(dispatch: (action: Action) => void) {
 
@@ -14,7 +15,7 @@ export function SongPage(dispatch: (action: Action) => void) {
 
   return (state: State) => {
     return (
-      <div className="w-100 h-100 flex flex-column overflow-hidden">
+      <Page>
         {state.newSong ?
           <div>
             <div>
@@ -29,7 +30,7 @@ export function SongPage(dispatch: (action: Action) => void) {
 
             <div>
               Song
-              {state.newSong.chordsAndLyrics && state.newSong.chordsAndLyrics.map((chordAndLyric, i )=> {
+              {state.newSong.chordsAndLyrics && state.newSong.chordsAndLyrics.map((chordAndLyric, i) => {
                 return <div key={`chord-and-lyric-${i}`}>
                   <div>
                     {chordAndLyric.chord}
@@ -48,7 +49,7 @@ export function SongPage(dispatch: (action: Action) => void) {
           : <div/>
         }
 
-      </div>
+      </Page>
     );
   }
 }

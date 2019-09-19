@@ -43,7 +43,7 @@ export const initialState = {
     object: undefined as stripe.Stripe | void,
     publishableKey: undefined as string | void,
     plans: [] as StripePlanResource[],
-    chosenPlanID: undefined as StripePlanResource | void,
+    chosenPlanID: undefined as string | void,
   },
 
   inputs: {
@@ -53,6 +53,7 @@ export const initialState = {
 
   toggles: {
     showLogInModal: false,
+    showSettingsModal: false,
   },
 
   loginPage: {

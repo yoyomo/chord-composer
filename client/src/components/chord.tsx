@@ -63,7 +63,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
       return;
     }
 
-    this.props.chord.pitchClass.map(noteIndex => {
+    this.props.chord.notes.map(noteIndex => {
       return playSound(noteIndex, this.props.notes, this.props.audioContext, this.props.waveType);
     });
   };

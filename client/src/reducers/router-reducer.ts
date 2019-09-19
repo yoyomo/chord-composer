@@ -2,14 +2,13 @@ import {historyPush, navigationReducer, PathLocation} from "../core/services/nav
 import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {Effect} from "../core/services/service";
-import {getStripe} from "../core/services/stripe-service";
 import {AuthHeaders} from "./login-reducer";
 import {getCookie} from "../utils/cookies";
 import {requestAjax} from "../core/services/ajax-service";
 import {ApiV1UsersPath, StripePath} from "../resources/routes";
 import {getLoggedInUserRequestName} from "./footer-reducer";
 
-export type PathPart = 'home' | 'sign-up' | 'chords' | 'song'
+export type PathPart = '' | 'home' | 'sign-up' | 'chords' | 'song'
 
 export function routerReducer(state: State,
                               location: PathLocation): ReductionWithEffect<State> {
@@ -32,7 +31,7 @@ export function routerReducer(state: State,
     case "sign-up":
       if (state.loggedInUser) {
         nextPathParts = ["home"];
-        effects = effects.concat(historyPush({pathname: "chords"}));
+        effects = effects.concat(historyPush({pathname: "home"}));
       }
 
       break;

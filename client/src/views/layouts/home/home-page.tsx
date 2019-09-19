@@ -5,6 +5,7 @@ import {State} from "../../../state";
 import {Action} from "../../../core/root-reducer";
 import {ChordsPage} from "../chords/chords-page";
 import {SongPage} from "../song/song-page";
+import {Page} from "../../../components/page";
 
 
 export function HomePage(dispatch: (action: Action) => void) {
@@ -16,12 +17,12 @@ export function HomePage(dispatch: (action: Action) => void) {
 
   return (state: State) => {
     return (
-        <div className="w-100 h-100 flex flex-column overflow-hidden">
-          {HeaderContent(state)}
-          {state.pathParts[1] === "chords" && ChordPageContent(state)}
-          {state.pathParts[1] === "song" && SongPageContent(state)}
-          {FooterContent(state)}
-        </div>
+      <Page>
+        {HeaderContent(state)}
+        {state.pathParts[1] === "chords" && ChordPageContent(state)}
+        {state.pathParts[1] === "song" && SongPageContent(state)}
+        {FooterContent(state)}
+      </Page>
     );
   }
 }

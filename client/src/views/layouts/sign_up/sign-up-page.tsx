@@ -2,9 +2,11 @@ import * as React from "react";
 import {State} from "../../../state";
 import {Action} from "../../../core/root-reducer";
 import {inputChangeDispatcher} from "../../../reducers/input-reducer";
-import {errorOnSignUp, signUp} from "../../../reducers/login-reducer";
+import {chooseStripePlan, errorOnSignUp, signUp} from "../../../reducers/login-reducer";
 import {CardElement, Elements, injectStripe, ReactStripeElements, StripeProvider} from "react-stripe-elements";
 import {Input} from "../../../components/input";
+import {HeaderTitle} from "../../../components/header-title";
+import {Page} from "../../../components/page";
 
 
 export interface SignUpFormProps extends ReactStripeElements.InjectedStripeProps {
@@ -60,36 +62,61 @@ export function SignUpPage(dispatch: (action: Action) => void) {
   const dispatcher = {
     signUp: (token_id: string) => dispatch(signUp(token_id)),
     error: (errorMessage: string) => dispatch(errorOnSignUp(errorMessage)),
+    choosePlan: (stripePlanId: string) => dispatch(chooseStripePlan(stripePlanId)),
   };
 
   return (state: State) => {
     return (
-      <div className={"w-100 h-100 flex flex-column overflow-hidden"}>
-        <div className="w-100 bg-light-gray tc">
-          <div className="ma2 pa2 f4 gray b">
-            K O R D P O S E
-          </div>
-        </div>
+      <Page>
+        <HeaderTitle/>
 
-        <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1"}>
+        <div className={"ma3 pa3 ba br3 w6 b--light-gray shadow-1"}>
           <div className={"db ma2"}>
-            Email:
+            <div>
+              Email:
+            </div>
             <Input type="email" value={state.inputs.email} onChange={inputChangeDispatcher(dispatch, "email")}/>
           </div>
           <div className={"db ma2"}>
-            Password:
+            <div>
+              Password:
+            </div>
             <Input type="password" value={state.inputs.password}
                    onChange={inputChangeDispatcher(dispatch, "password")}/>
           </div>
           <div className={"db ma2"}>
-            Confirm Password:
+            <div>
+              Confirm Password:
+            </div>
             <Input type="password" value={state.inputs.confirmPassword}
                    onChange={inputChangeDispatcher(dispatch, "confirmPassword")}/>
           </div>
           {state.stripe.object && state.stripe.publishableKey && state.stripe.plans.length > 0 && <div>
             {state.stripe.plans.map(stripePlan => {
-              return <div>
-                {stripePlan.amount} + {stripePlan.currency}
+              let symbol = "";
+              let amount = stripePlan.amount;
+              switch (stripePlan.currency) {
+                case "usd":
+                  symbol = "$";
+                  amount = amount / 100;
+                  break;
+              }
+              return <div
+                onClick={() => dispatcher.choosePlan(stripePlan.id)}
+                className={"db ba b--light-gray ma2 pa2 br2 tc hover-bg-light-gray pointer " + (state.stripe.chosenPlanID === stripePlan.id ? "bg-light-gray" : "")}>
+                <div>
+                  Monthly
+                  <div className={"di gray ma1"}>
+                    {stripePlan.interval_count} x {stripePlan.interval}
+                  </div>
+                </div>
+                <div>
+                  {symbol}{amount}
+                  <div className={"di gray ma1"}>
+                    {stripePlan.currency}
+                  </div>
+                </div>
+
               </div>
             })
             }
@@ -102,7 +129,7 @@ export function SignUpPage(dispatch: (action: Action) => void) {
           </div>
           }
         </div>
-      </div>
+      </Page>
     );
   }
 }
