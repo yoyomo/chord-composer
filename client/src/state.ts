@@ -66,6 +66,8 @@ export const initialState = {
     }
   },
 
+  loadingRequests: {} as {[k:string]: boolean},
+
   songs: [] as SongResource[],
   newSong: {id: undefined as unknown as number, user_id: "", title: "", author: "", chordsAndLyrics: [], created_at: null as unknown as string} as SongResource,
 

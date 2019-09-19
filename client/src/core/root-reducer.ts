@@ -15,6 +15,7 @@ import {reduceStripe, StripeActions} from "../reducers/stripe-reducer";
 import {reduceToggle, ToggleAction} from "../reducers/toggle-reducer";
 import {ChordMapperActions, reduceChordMapper} from "../reducers/chord-mapper-reducer";
 import {reduceSongPage, SongPageActions} from "../reducers/song-page-reducer";
+import {reduceCompleteRequest} from "../reducers/complete-request-reducer";
 
 const subReducer = subReducersFor<State>();
 const computed = computedFor<State>();
@@ -37,6 +38,7 @@ export type Action =
 
 export const rootReducer = (state: State, action: Action) => {
   return reducerChain(state, action)
+    .apply(reduceCompleteRequest)
     .apply(reduceNavigation)
     .apply(subReducer("inputs", reduceInputs))
     .apply(subReducer("toggles", reduceToggle))

@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 2019_08_21_085405) do
     t.inet "last_sign_in_ip"
     t.json "tokens"
     t.string "username"
-    t.string "email"
+    t.string "email", null: false
     t.text "favorite_chords", default: [], array: true
     t.string "stripe_customer_id"
     t.string "stripe_subscription_id"

@@ -1,7 +1,6 @@
 import * as React from "react";
 import {State} from "../../../state";
 import {Action} from "../../../core/root-reducer";
-import {ChordAndLyricResource} from "../../../resources/song-resource";
 import {Input} from "../../../components/input";
 import {inputChangeDispatcher} from "../../../reducers/input-reducer";
 import {addChordAndLyric} from "../../../reducers/song-page-reducer";

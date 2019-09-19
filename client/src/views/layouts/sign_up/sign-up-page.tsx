@@ -2,17 +2,25 @@ import * as React from "react";
 import {State} from "../../../state";
 import {Action} from "../../../core/root-reducer";
 import {inputChangeDispatcher} from "../../../reducers/input-reducer";
-import {chooseStripePlan, errorOnSignUp, signUp} from "../../../reducers/login-reducer";
+import {
+  chooseStripePlan,
+  errorOnSignUp,
+  signUp,
+  userSignUpRequesName
+} from "../../../reducers/login-reducer";
 import {CardElement, Elements, injectStripe, ReactStripeElements, StripeProvider} from "react-stripe-elements";
 import {Input} from "../../../components/input";
 import {HeaderTitle} from "../../../components/header-title";
 import {Page} from "../../../components/page";
+import {stringifyRequestName} from "../../../reducers/complete-request-reducer";
+import {Loading} from "../../../components/loading";
 
 
 export interface SignUpFormProps extends ReactStripeElements.InjectedStripeProps {
   onSubmit: (token_id: string) => void
   onError: (errorMessage: string) => void
   errors: string[]
+  isLoadingRequest: boolean
 }
 
 class SignUpForm extends React.Component<SignUpFormProps> {
@@ -50,6 +58,9 @@ class SignUpForm extends React.Component<SignUpFormProps> {
           <div className={"dib ma2 bg-light-blue white br4 pa2 pointer"} onClick={this.submit}>
             Sign Up
           </div>
+          {this.props.isLoadingRequest &&
+            <Loading/>
+          }
         </div>
       </div>
     )
@@ -104,28 +115,51 @@ export function SignUpPage(dispatch: (action: Action) => void) {
               return <div
                 onClick={() => dispatcher.choosePlan(stripePlan.id)}
                 className={"db ba b--light-gray ma2 pa2 br2 tc hover-bg-light-gray pointer " + (state.stripe.chosenPlanID === stripePlan.id ? "bg-light-gray" : "")}>
-                <div>
-                  Monthly
-                  <div className={"di gray ma1"}>
-                    {stripePlan.interval_count} x {stripePlan.interval}
-                  </div>
-                </div>
+
                 <div>
                   {symbol}{amount}
                   <div className={"di gray ma1"}>
                     {stripePlan.currency}
+                  </div>
+                  / {stripePlan.interval}
+                </div>
+
+                <div className={"ma2"}/>
+                <div className={"f7"}>
+                  Includes:
+                  <div>
+                    ・Access to all chords
+                  </div>
+                  <div>
+                    ・Access to all variations of chords
+                  </div>
+                  <div>
+                    ・Saving draft chords
+                  </div>
+
+                  <div className={"ma2"}/>
+                  <div>
+                    Soon:
+                    <div>
+                      ・Create and Save songs
+                    </div>
+                    <div>
+                      ・Saving synthesizer parameters
+                    </div>
                   </div>
                 </div>
 
               </div>
             })
             }
-            <StripeProvider apiKey={state.stripe.publishableKey}>
-              <Elements>
-                <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error}
-                                  errors={state.loginPage.errors.signUp}/>
-              </Elements>
-            </StripeProvider>
+              <StripeProvider apiKey={state.stripe.publishableKey}>
+                  <Elements>
+                      <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error}
+                                        errors={state.loginPage.errors.signUp}
+                                        isLoadingRequest={state.loadingRequests[stringifyRequestName([userSignUpRequesName])]}
+                      />
+                  </Elements>
+              </StripeProvider>
           </div>
           }
         </div>
