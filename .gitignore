@@ -5,37 +5,37 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
-/.bundle
+/api/.bundle
 
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
-!/log/.keep
-!/tmp/.keep
+/api/log/*
+/api/tmp/*
+!/api/log/.keep
+!/api/tmp/.keep
 
 # Ignore uploaded files in development
-/storage/*
-!/storage/.keep
+/api/storage/*
+!/api/storage/.keep
 
-.byebug_history
+/api/.byebug_history
 
 # Ignore master key for decrypting credentials and more.
-/config/master.key
-/config/credentials.yml.enc
+/api/config/master.key
+/api/config/credentials.yml.enc
 
 /client/node_modules/**/*
-.expo/*
-npm-debug.*
-*.jks
-*.p12
-*.key
-*.mobileprovision
+/api.expo/*
+/client/npm-debug.*
+/api/*.jks
+/api/*.p12
+/api/*.key
+/api/*.mobileprovision
 /client/.idea/*
 /client/.idea/**/*
 /client/.idea/workspace.xml
-client/.idea/misc.xml
+/client/.idea/misc.xml
 .idea/*
 **/*.js
 !client/src/setupProxy.js
-vendor/**/*
+/api/vendor/**/*
 

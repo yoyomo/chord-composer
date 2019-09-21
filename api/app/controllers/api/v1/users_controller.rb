@@ -40,6 +40,7 @@ class Api::V1::UsersController < APIController
   end
 
   def user_params
-    params.require(:user).permit(:stripe_customer_id, :stripe_subscription_id, :stripe_plan_id, :stripe_token_id, :username, :email, favorite_chords: [])
+    params.require(:user).permit(:stripe_customer_id, :stripe_subscription_id, :stripe_plan_id, :stripe_token_id,
+                                 :username, :email, :password, favorite_chords: [])
   end
 end
