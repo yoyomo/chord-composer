@@ -1,9 +1,10 @@
-var proxy = require('http-proxy-middleware');
-module.exports = function(app) {
-  var apiRoutes = ['api','auth','stripe'];
-  var apiPath = 'http://localhost:3001/';
+let proxy = require('http-proxy-middleware');
+
+module.exports = (app) => {
+  const apiRoutes = ['api','stripe'];
+  const apiPath = 'http://localhost:3001/';
 
   apiRoutes.map( function (apiRoute) {
-    app.use(proxy('/'+apiRoute, { target: apiPath }));
+    app.use(proxy('/' + apiRoute, { target: apiPath }));
   });
 };

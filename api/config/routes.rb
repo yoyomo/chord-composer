@@ -5,7 +5,13 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
 
-      resources :users
+      resources :users do
+        collection do
+          put "confirm_email"
+          put "sign_in"
+        end
+      end
+
       resources :songs
 
     end

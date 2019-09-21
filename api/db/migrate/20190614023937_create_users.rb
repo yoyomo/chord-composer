@@ -16,7 +16,8 @@ class CreateUsers < ActiveRecord::Migration[5.2]
 
       ## Database authenticatable
       t.string :password_digest, null: false, default: ""
-
+      t.string :confirmation_token
+      t.datetime :confirmation_expires_at
 
       t.timestamps
     end

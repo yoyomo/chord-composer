@@ -34,6 +34,8 @@ ActiveRecord::Schema.define(version: 2019_08_21_085405) do
     t.string "stripe_plan_id"
     t.string "stripe_token_id"
     t.string "password_digest", default: "", null: false
+    t.string "confirmation_token"
+    t.datetime "confirmation_expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true

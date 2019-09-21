@@ -1,6 +1,11 @@
 class User < ApplicationRecord
   has_secure_password
 
+  def send_confirmation_email
+    self.update!(confirmation_token: SecureRandom.hex, confirmation_expires_at: 30.minutes.from_now)
+    UserMailer.with(user: self).confirm_email.deliver_now
+  end
+
   def confirm
 
     user = resource

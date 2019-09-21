@@ -1,7 +1,7 @@
 import {initialState, State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {parseHTTPHeadersToJSON, requestAjax} from "../core/services/ajax-service";
-import {AuthSignIn, AuthSignOut, AuthSignUp, AuthValidateToken} from "../resources/routes";
+import {AuthConfirmEmail, AuthSignIn, AuthSignOut, AuthSignUp} from "../resources/routes";
 import {historyPush} from "../core/services/navigation-service";
 import {ResourceType} from "../resources/resource";
 import {UserResource} from "../resources/user-resource";
@@ -128,7 +128,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       if (action.name[0] === userSignInRequesName) {
         if (action.success) {
           effects = effects.concat(requestAjax([validateTokenRequestName], {
-            url: AuthValidateToken,
+            url: AuthConfirmEmail,
             method: "GET",
             headers: parseHTTPHeadersToJSON(action.headers)
           }));
@@ -199,7 +199,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
     case "sign-in": {
       effects.push(requestAjax([userSignInRequesName],
         {
-          url: AuthSignIn, method: "POST", headers: {},
+          url: AuthSignIn, method: "PUT", headers: {},
           json: {
             email: state.inputs.email,
             password: state.inputs.password
