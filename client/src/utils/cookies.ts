@@ -3,9 +3,9 @@ export const getCookie = (name: string): string | void => {
   return match ? match[1] : undefined;
 };
 
-export const setCookie = (name: string, value: string, unixTime: number) => {
+export const setCookie = (name: string, value: string, expiryDays = 365) => {
   let d = new Date();
-  d.setTime(1000 * unixTime);
+  d.setTime(1000 * 60 * 60 * 24 * expiryDays);
   let expires = "expires=" + d.toUTCString();
 
   document.cookie = name + "=" + value + ";" + expires + ";path=/";

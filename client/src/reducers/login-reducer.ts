@@ -1,7 +1,7 @@
 import {initialState, State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {parseHTTPHeadersToJSON, requestAjax} from "../core/services/ajax-service";
-import {AuthConfirmEmail, AuthSignIn, AuthSignOut, AuthSignUp} from "../resources/routes";
+import {AuthGenerateNewAccessToken, AuthResendConfirmationEmail, AuthSignIn, AuthSignUp} from "../resources/routes";
 import {historyPush} from "../core/services/navigation-service";
 import {ResourceType} from "../resources/resource";
 import {UserResource} from "../resources/user-resource";
@@ -58,13 +58,13 @@ export const signUp = (token_id: string): SignUpAction => {
 
 export interface ErrorOnSignUpAction {
   type: "error-on-sign-up"
-  errorMessage: string
+  error: ResponseError
 }
 
-export const errorOnSignUp = (errorMessage: string): ErrorOnSignUpAction => {
+export const errorOnSignUp = (error: ResponseError): ErrorOnSignUpAction => {
   return {
     type: "error-on-sign-up",
-    errorMessage
+    error
   };
 };
 
@@ -80,6 +80,25 @@ export const chooseStripePlan = (stripePlanId: string): ChooseStripePlanAction =
   }
 };
 
+export interface GenerateNewAccessTokenAction {
+  type: "generate-new-access-token"
+}
+
+export const generateNewAccessToken = (): GenerateNewAccessTokenAction => {
+  return {
+    type: "generate-new-access-token",
+  }
+};
+
+export interface ResendConfirmationEmailAction {
+  type: "resend-confirmation-email"
+}
+
+export const resendConfirmationEmail = (): ResendConfirmationEmailAction => {
+  return {
+    type: "resend-confirmation-email",
+  }
+};
 
 export type LogInActions =
   | SignInAction
@@ -87,32 +106,61 @@ export type LogInActions =
   | GoSignUpAction
   | SignUpAction
   | ErrorOnSignUpAction
-  | ChooseStripePlanAction;
+  | ChooseStripePlanAction
+  | GenerateNewAccessTokenAction
+  | ResendConfirmationEmailAction;
 
 
 export interface ResponseType {
   status: string
   data: ResourceType
-  errors: string[]
+  errors: ResponseError[]
 }
 
-export const AuthHeaders = ["access-token", "token-type", "client", "expiry", "uid"];
+export type ResponseErrorType = "sign_in" | "confirmation" | "email" | "password" | "confirm_password" | "stripe_card"
 
-export const setUser = (state: State, headers: string, userData: UserResource | void): State => {
+export interface ResponseError  {
+  type: ResponseErrorType
+  message: string
+}
+
+
+export const AuthHeaders = ["kordpose_session"];
+
+export const setUser = (state: State, headers: string, userData: UserResource): State => {
   state = {...state};
   state.loggedInUser = userData;
   state.headers = parseHTTPHeadersToJSON(headers);
 
-  state.savedChords = (state.loggedInUser && parseMMLChords(state.chordRules, state.loggedInUser.favorite_chords)) || [];
+  state.savedChords = parseMMLChords(state.chordRules, state.loggedInUser.favorite_chords);
 
   for (let key in state.headers) {
     if (AuthHeaders.indexOf(key) !== -1) {
-      setCookie(key, state.headers[key], Number(state.headers["expiry"]));
+      setCookie(key, state.headers[key]);
     } else {
       delete state.headers[key];
     }
   }
-  setCookie("id", (state.loggedInUser && state.loggedInUser.id.toString()) || "", Number(state.headers["expiry"]));
+
+  return state;
+};
+
+export const resetUser = (state: State): State => {
+  state = {...state};
+  state.loggedInUser = undefined;
+
+  state.savedChords = [];
+
+  state.headers = {...state.headers};
+
+  for (let key in state.headers) {
+    state.headers[key] = "";
+    if (AuthHeaders.indexOf(key) !== -1) {
+      setCookie(key, state.headers[key]);
+    } else {
+      delete state.headers[key];
+    }
+  }
 
   return state;
 };
@@ -125,13 +173,12 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       if (!action.response) break;
       let response = JSON.parse(action.response) as ResponseType;
 
-      if (action.name[0] === userSignInRequesName) {
+      if (action.name[0] === userSignInRequestName) {
         if (action.success) {
-          effects = effects.concat(requestAjax([validateTokenRequestName], {
-            url: AuthConfirmEmail,
-            method: "GET",
-            headers: parseHTTPHeadersToJSON(action.headers)
-          }));
+          state = {...state};
+          state = setUser(state, action.headers, response.data as UserResource);
+          state.toggles = {...state.toggles};
+          state.toggles.showLogInModal = false;
         } else {
           state = {...state};
           state.loginPage = {...state.loginPage};
@@ -139,12 +186,15 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state.loginPage.errors.signIn = response.errors;
           state.loginPage.success = initialState.loginPage.success;
         }
-      } else if (action.name[0] === validateTokenRequestName) {
+      } else if (action.name[0] === confirmEmailRequestName) {
         if (action.success) {
           state = {...state};
-          state = setUser(state, action.headers, response.data as UserResource);
           state.toggles = {...state.toggles};
-          state.toggles.showLogInModal = false;
+          state.toggles.showLogInModal = true;
+
+          state.loginPage = {...state.loginPage};
+          state.loginPage.success = {...state.loginPage.success};
+          state.loginPage.success.signUp = "Account Confirmed! Try logging in now";
 
           effects = effects.concat(historyPush({pathname: 'home/chords'}));
         } else {
@@ -153,7 +203,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state.loginPage.errors = {...state.loginPage.errors};
           state.loginPage.errors.signIn = response.errors
         }
-      } else if (action.name[0] === userSignUpRequesName) {
+      } else if (action.name[0] === userSignUpRequestName) {
 
         if (action.success) {
           state = {...state};
@@ -167,16 +217,12 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state = {...state};
           state.loginPage = {...state.loginPage};
           state.loginPage.errors = {...state.loginPage.errors};
-          state.loginPage.errors.signUp = (response.errors as any).full_messages || response.errors;
+          state.loginPage.errors.signUp = response.errors;
           state.loginPage.success = initialState.loginPage.success;
         }
       } else if (action.name[0] === getLoggedInUserRequestName) {
         if (action.success) {
-          state = setUser(state, action.headers, response.data as UserResource);
-        }
-      } else if (action.name[0] === userSignOutRequesName) {
-        if (action.success) {
-          state = setUser(state, action.headers, undefined);
+          state = setUser(state, action.headers, response.data);
         }
       } else if(action.name[0] === getStripePublishableKeyRequestName) {
         let stripeData = response.data as StripeResource;
@@ -197,7 +243,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       break;
 
     case "sign-in": {
-      effects.push(requestAjax([userSignInRequesName],
+      effects.push(requestAjax([userSignInRequestName],
         {
           url: AuthSignIn, method: "PUT", headers: {},
           json: {
@@ -210,10 +256,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
     }
 
     case "sign-out": {
-      effects.push(requestAjax([userSignOutRequesName],
-        {
-          url: AuthSignOut, method: "DELETE", headers: state.headers
-        }));
+      state = resetUser(state);
       break;
     }
 
@@ -225,24 +268,24 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       state.loginPage.errors.signUp = [];
 
       if (!state.inputs.email) {
-        state.loginPage.errors.signUp.push("Email is required");
+        state.loginPage.errors.signUp.push({type: "email", message: "Email is required"});
       }
 
       if (!state.inputs.password) {
-        state.loginPage.errors.signUp.push("Password is required");
+        state.loginPage.errors.signUp.push({type:"password", message: "Password is required"});
       }
 
       if (state.inputs.password !== state.inputs.confirmPassword) {
-        state.loginPage.errors.signUp.push("Password mismatch");
+        state.loginPage.errors.signUp.push({type: "confirm_password", message: "Password mismatch"});
       }
 
       if (!action.token_id) {
-        state.loginPage.errors.signUp.push("Must insert valid card");
+        state.loginPage.errors.signUp.push({type: "stripe_card", message: "Must insert valid card"});
       }
 
       if (state.loginPage.errors.signUp.length === 0) {
 
-        effects.push(requestAjax([userSignUpRequesName],
+        effects.push(requestAjax([userSignUpRequestName],
           {
             url: AuthSignUp, method: "POST", headers: state.headers,
             json: {
@@ -263,7 +306,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       state = {...state};
       state.loginPage = {...state.loginPage};
       state.loginPage.errors = {...state.loginPage.errors};
-      state.loginPage.errors.signUp = [action.errorMessage];
+      state.loginPage.errors.signUp = [action.error];
 
       break;
     }
@@ -273,13 +316,25 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       break;
     }
 
+    case "generate-new-access-token":
+      effects.push(requestAjax([userGenerateNewAccessTokenRequestName],
+        {
+          url: AuthResendConfirmationEmail, method: "PUT", headers: state.headers,
+        }));
+      break;
+
+    case "resend-confirmation-email":
+
+      break;
+
+
 
   }
 
   return {state, effects};
 };
 
-export const validateTokenRequestName = "validate-token";
-export const userSignInRequesName = "user-sign-in";
-export const userSignOutRequesName = "user-sign-out";
-export const userSignUpRequesName = "user-sign-up";
+export const confirmEmailRequestName = "confirm-email";
+export const userSignInRequestName = "user-sign-in";
+export const userSignUpRequestName = "user-sign-up";
+export const userGenerateNewAccessTokenRequestName = "user-generate-new-access-token";

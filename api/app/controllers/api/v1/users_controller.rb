@@ -1,6 +1,8 @@
 class Api::V1::UsersController < APIController
   before_action :set_user, only: [:show, :update, :destroy]
 
+  skip_before_action :authenticate_user!, only: [:confirm_email, :sign_in]
+
   def index
     @users = User.all
 
@@ -33,6 +35,10 @@ class Api::V1::UsersController < APIController
     @user.destroy
   end
 
+  def resend_confirmation_email
+    @user.send_confirmation_email
+  end
+
   def confirm_email
     token = params[:confirmation_token]
     email = params[:email]
@@ -54,7 +60,7 @@ class Api::V1::UsersController < APIController
 
       render json: {data: user}
     else
-      render json: {errors: [{type: "confirmation_not_valid",
+      render json: {errors: [{type: "confirmation",
                               message: "Confirmation token is invalid or has expired"}]},
              status: :unprocessable_entity
     end
@@ -67,12 +73,32 @@ class Api::V1::UsersController < APIController
     user = User.find_by(email: email)
 
     if user.authenticate(password)
+
+      render json: {errors: [{type: "confirmation",
+                              message: "A confirmation email has already been sent to "+user.email+
+                                  ". Please go to your email account and confirm."}]},
+             status: :unprocessable_entity if user.confirmed_at.nil?
+
+
+      token = user.access_token
+      if token.nil?
+        token = SecureRandom.hex
+        user.update!(token: token)
+      end
+
+      response.set_header('kordpose_session', token)
+
       render json: {data: user}
     else
-      render json: {errors: [{type: "sign_in_invalid",
+      render json: {errors: [{type: "sign_in",
                               message: "Invalid email or password"}]},
              status: :unprocessable_entity
     end
+  end
+
+  def generate_new_access_token
+    @user.update!(access_token: SecureRandom.hex)
+    render json: {data: @user}
   end
 
   private

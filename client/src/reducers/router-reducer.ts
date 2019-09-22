@@ -2,10 +2,10 @@ import {historyPush, navigationReducer, PathLocation} from "../core/services/nav
 import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {Effect} from "../core/services/service";
-import {AuthHeaders} from "./login-reducer";
+import {AuthHeaders, confirmEmailRequestName} from "./login-reducer";
 import {getCookie} from "../utils/cookies";
-import {requestAjax} from "../core/services/ajax-service";
-import {ApiV1UsersPath, StripePath} from "../resources/routes";
+import {parseHTTPHeadersToJSON, requestAjax} from "../core/services/ajax-service";
+import {ApiV1UsersPath, AuthConfirmEmail, StripePath} from "../resources/routes";
 import {getLoggedInUserRequestName} from "./footer-reducer";
 
 export type PathPart = '' | 'home' | 'sign-up' | 'chords' | 'song'
@@ -67,14 +67,12 @@ export function routerReducer(state: State,
       parameters.map(param => {
         let [key, value] = param.split('=');
 
-        if (key === "account_confirmation_success" && value) {
-          state = {...state};
-          state.toggles = {...state.toggles};
-          state.toggles.showLogInModal = true;
-
-          state.loginPage = {...state.loginPage};
-          state.loginPage.success = {...state.loginPage.success};
-          state.loginPage.success.signUp = "Account Confirmed! Try logging in now";
+        if (key === "confirmation_token" && value) {
+          effects = effects.concat(requestAjax([confirmEmailRequestName], {
+            url: AuthConfirmEmail,
+            method: "PUT",
+            headers: state.headers
+          }));
         }
         return param;
       });

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {State} from "../../../state";
-import {signOut} from "../../../reducers/login-reducer";
+import {generateNewAccessToken, signOut} from "../../../reducers/login-reducer";
 import {Action} from "../../../core/root-reducer";
 import {HeaderTitle} from "../../../components/header-title";
 import {toggleDispatcher} from "../../../reducers/toggle-reducer";
@@ -10,6 +10,10 @@ import {inputChangeDispatcher} from "../../../reducers/input-reducer";
 export function UserInfoModal(dispatch: (action: Action) => void) {
   const dispatcher = {
     signOut: () => dispatch(signOut()),
+    generateNewAccessToken: () => dispatch(generateNewAccessToken()),
+    changeEmail: () => dispatch(changeEmail()),
+    changePassword: () => dispatch(changePassword()),
+    cancelSubscription: () => dispatch(cancelSubscription()),
   };
 
   return (state: State) => {
@@ -20,9 +24,9 @@ export function UserInfoModal(dispatch: (action: Action) => void) {
 
         {state.toggles.showSettingsModal ?
           <form>
-            {state.loginPage.errors.signIn && state.loginPage.errors.signIn.map(errorMessage => {
-              return <div className={"red"} key={"sign-in-error_" + errorMessage}>
-                {errorMessage}
+            {state.loginPage.errors.signIn && state.loginPage.errors.signIn.map(error => {
+              return <div className={"red"} key={"sign-in-error_" + error.type}>
+                {error.message}
               </div>
             })}
             {state.loginPage.success.signUp && <div className={"green"}> {state.loginPage.success.signUp} </div>}

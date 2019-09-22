@@ -4,6 +4,7 @@ import {UserResource} from "./resources/user-resource";
 import {PathPart} from "./reducers/router-reducer";
 import {SongResource} from "./resources/song-resource";
 import {StripePlanResource} from "./resources/stripe-resource";
+import {ResponseError} from "./reducers/login-reducer";
 
 let AudioContext = (window as any).AudioContext // Default
   || (window as any).webkitAudioContext // Safari and old versions of Chrome
@@ -61,8 +62,8 @@ export const initialState = {
       signUp: "" as string
     },
     errors: {
-      signIn: [] as string[],
-      signUp: [] as string[]
+      signIn: [] as ResponseError[],
+      signUp: [] as ResponseError[]
     }
   },
 

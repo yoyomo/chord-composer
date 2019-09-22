@@ -4,9 +4,9 @@ import {Action} from "../../../core/root-reducer";
 import {inputChangeDispatcher} from "../../../reducers/input-reducer";
 import {
   chooseStripePlan,
-  errorOnSignUp,
+  errorOnSignUp, ResponseError,
   signUp,
-  userSignUpRequesName
+  userSignUpRequestName
 } from "../../../reducers/login-reducer";
 import {CardElement, Elements, injectStripe, ReactStripeElements, StripeProvider} from "react-stripe-elements";
 import {Input} from "../../../components/input";
@@ -18,8 +18,8 @@ import {Loading} from "../../../components/loading";
 
 export interface SignUpFormProps extends ReactStripeElements.InjectedStripeProps {
   onSubmit: (token_id: string) => void
-  onError: (errorMessage: string) => void
-  errors: string[]
+  onError: (error: ResponseError) => void
+  errors: ResponseError[]
   isLoadingRequest: boolean
 }
 
@@ -38,7 +38,7 @@ class SignUpForm extends React.Component<SignUpFormProps> {
       this.props.onSubmit(token.id);
     } else if (error && error.message) {
       console.error(error);
-      this.props.onError(error.message);
+      this.props.onError({type: "stripe_card", message: error.message});
     }
 
   }
@@ -50,8 +50,8 @@ class SignUpForm extends React.Component<SignUpFormProps> {
           <CardElement/>
         </div>
         {this.props.errors.map(errorMessage => {
-          return <div className={"red"} key={"sign-up-error_" + errorMessage}>
-            {errorMessage}
+          return <div className={"red"} key={"sign-up-error_" + errorMessage.type}>
+            {errorMessage.message}
           </div>
         })}
         <div className={"db ma2"}>
@@ -72,7 +72,7 @@ export const StripeSignUpForm = injectStripe(SignUpForm);
 export function SignUpPage(dispatch: (action: Action) => void) {
   const dispatcher = {
     signUp: (token_id: string) => dispatch(signUp(token_id)),
-    error: (errorMessage: string) => dispatch(errorOnSignUp(errorMessage)),
+    error: (error: ResponseError) => dispatch(errorOnSignUp(error)),
     choosePlan: (stripePlanId: string) => dispatch(chooseStripePlan(stripePlanId)),
   };
 
@@ -156,7 +156,7 @@ export function SignUpPage(dispatch: (action: Action) => void) {
                   <Elements>
                       <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error}
                                         errors={state.loginPage.errors.signUp}
-                                        isLoadingRequest={state.loadingRequests[stringifyRequestName([userSignUpRequesName])]}
+                                        isLoadingRequest={state.loadingRequests[stringifyRequestName([userSignUpRequestName])]}
                       />
                   </Elements>
               </StripeProvider>

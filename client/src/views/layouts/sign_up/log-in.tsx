@@ -1,7 +1,7 @@
 import * as React from "react";
 import {State} from "../../../state";
 import {inputChangeDispatcher} from "../../../reducers/input-reducer";
-import {goSignUp, signIn} from "../../../reducers/login-reducer";
+import {goSignUp, resendConfirmationEmail, signIn} from "../../../reducers/login-reducer";
 import {Action} from "../../../core/root-reducer";
 import {Input} from "../../../components/input";
 
@@ -15,11 +15,11 @@ export function LogIn(dispatch: (action: Action) => void) {
   return (state: State) => {
     return (
       <form>
-        {state.loginPage.errors.signIn && state.loginPage.errors.signIn.map(errorMessage => {
+        {state.loginPage.errors.signIn && state.loginPage.errors.signIn.map(error => {
 
-          return <div className={"red"} key={"sign-in-error_" + errorMessage}>
-            {errorMessage}
-            {errorMessage.indexOf("A confirmation email was sent to your account at") !== -1 ?
+          return <div className={"red"} key={"sign-in-error_" + error.type}>
+            {error.message}
+            {error.type === "confirmation" ?
               <div onClick={dispatcher.resendConfirmationEmail} className={"pointer blue"}>
                 Resend confirmation email
               </div>
