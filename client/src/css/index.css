@@ -7,6 +7,7 @@
 @import url(_colors.css);
 @import url(_shadows.css);
 @import url(_animations.css);
+@import url(_strokes.css);
 
 body {
   margin: 0;

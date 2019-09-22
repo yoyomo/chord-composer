@@ -4,7 +4,7 @@ import {ReductionWithEffect} from "../core/reducers";
 import {Effect} from "../core/services/service";
 import {AuthHeaders, confirmEmailRequestName} from "./login-reducer";
 import {getCookie} from "../utils/cookies";
-import {parseHTTPHeadersToJSON, requestAjax} from "../core/services/ajax-service";
+import {requestAjax} from "../core/services/ajax-service";
 import {ApiV1UsersPath, AuthConfirmEmail, StripePath} from "../resources/routes";
 import {getLoggedInUserRequestName} from "./footer-reducer";
 
@@ -49,9 +49,9 @@ export function routerReducer(state: State,
         state.headers[header] = value;
         return value;
       });
-      let userId = getCookie("id");
 
-      if(userId && Object.keys(state.headers).length === AuthHeaders.length) {
+      let userId = state.headers["id"];
+      if (userId && Object.keys(state.headers).length === AuthHeaders.length) {
         effects.push(requestAjax([getLoggedInUserRequestName], {
           url: `${ApiV1UsersPath}/${userId}`, method: "GET", headers: state.headers
         }));
@@ -64,18 +64,32 @@ export function routerReducer(state: State,
       if (parameters.length === 0) break;
 
       parameters[0] = parameters[0].split('?')[1];
+      let confirmationToken = "";
+      let email = "";
       parameters.map(param => {
         let [key, value] = param.split('=');
 
         if (key === "confirmation_token" && value) {
-          effects = effects.concat(requestAjax([confirmEmailRequestName], {
-            url: AuthConfirmEmail,
-            method: "PUT",
-            headers: state.headers
-          }));
+          confirmationToken = value
+        } else if (key === "email" && value) {
+          email = value;
         }
         return param;
       });
+
+      if (confirmationToken && email) {
+        effects = effects.concat(requestAjax([confirmEmailRequestName], {
+          url: AuthConfirmEmail,
+          method: "PUT",
+          headers: state.headers,
+          json: {
+            user: {
+              confirmation_token: confirmationToken,
+              email: email
+            }
+          }
+        }));
+      }
 
 
       break;

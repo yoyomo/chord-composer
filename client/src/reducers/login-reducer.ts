@@ -1,4 +1,4 @@
-import {initialState, State} from "../state";
+import {initialState, State, Toggles} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {parseHTTPHeadersToJSON, requestAjax} from "../core/services/ajax-service";
 import {AuthGenerateNewAccessToken, AuthResendConfirmationEmail, AuthSignIn, AuthSignUp} from "../resources/routes";
@@ -13,6 +13,8 @@ import {parseMMLChords} from "../utils/mml-utils";
 import {getStripePublishableKeyRequestName} from "./router-reducer";
 import {StripeResource} from "../resources/stripe-resource";
 import {getStripe} from "../core/services/stripe-service";
+import {setTimer} from "../core/services/timer-service";
+import {toggle} from "./toggle-reducer";
 
 export interface SignInAction {
   type: "sign-in"
@@ -124,8 +126,8 @@ export interface ResponseError  {
   message: string
 }
 
-
-export const AuthHeaders = ["kordpose_session"];
+export const EMAIL_REGEXP = /^[\w+\-.]+@[a-z\d\-.]+\.[a-z]+$/;
+export const AuthHeaders = ["kordpose-session", "id"];
 
 export const setUser = (state: State, headers: string, userData: UserResource): State => {
   state = {...state};
@@ -179,6 +181,17 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state = setUser(state, action.headers, response.data as UserResource);
           state.toggles = {...state.toggles};
           state.toggles.showLogInModal = false;
+          state.loginPage = {...state.loginPage};
+          state.loginPage.success = initialState.loginPage.success;
+          state.loginPage.errors = initialState.loginPage.errors;
+          state.inputs = {...state.inputs};
+          state.inputs.email = "";
+          state.inputs.password = "";
+          state.inputs.confirmPassword = "";
+
+          state.toggles.showSuccessfulLogInModal = true;
+
+          effects = effects.concat(setTimer(toggle<Toggles>("showSuccessfulLogInModal", false), 1500))
         } else {
           state = {...state};
           state.loginPage = {...state.loginPage};
@@ -201,12 +214,17 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           state = {...state};
           state.loginPage = {...state.loginPage};
           state.loginPage.errors = {...state.loginPage.errors};
-          state.loginPage.errors.signIn = response.errors
+          state.loginPage.errors.signIn = response.errors;
+          state.toggles = {...state.toggles};
+          state.toggles.showLogInModal = true;
         }
       } else if (action.name[0] === userSignUpRequestName) {
 
         if (action.success) {
           state = {...state};
+          state.toggles = {...state.toggles};
+          state.toggles.showLogInModal = true;
+
           state.loginPage = {...state.loginPage};
           state.loginPage.success = {...state.loginPage.success};
           state.loginPage.success.signUp = "A confirmation email was sent to you. Please confirm your email.";
@@ -247,8 +265,10 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         {
           url: AuthSignIn, method: "PUT", headers: {},
           json: {
-            email: state.inputs.email,
-            password: state.inputs.password
+            user: {
+              email: state.inputs.email,
+              password: state.inputs.password
+            }
           }
         }));
 
@@ -269,10 +289,14 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
       if (!state.inputs.email) {
         state.loginPage.errors.signUp.push({type: "email", message: "Email is required"});
+      } else if (!EMAIL_REGEXP.test(state.inputs.email)) {
+        state.loginPage.errors.signUp.push({type: "email", message: "Email is invalid"});
       }
 
       if (!state.inputs.password) {
         state.loginPage.errors.signUp.push({type:"password", message: "Password is required"});
+      } else if(state.inputs.password.length < state.minimumPasswordLength) {
+        state.loginPage.errors.signUp.push({type:"password", message: "Password minimum length is "+ state.minimumPasswordLength});
       }
 
       if (state.inputs.password !== state.inputs.confirmPassword) {
@@ -289,10 +313,12 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           {
             url: AuthSignUp, method: "POST", headers: state.headers,
             json: {
-              email: state.inputs.email,
-              password: state.inputs.password,
-              stripe_plan_id: state.stripe.chosenPlanID,
-              stripe_token_id: action.token_id
+              user: {
+                email: state.inputs.email,
+                password: state.inputs.password,
+                stripe_plan_id: state.stripe.chosenPlanID,
+                stripe_token_id: action.token_id
+              }
             }
           }));
       }
@@ -319,12 +345,21 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
     case "generate-new-access-token":
       effects.push(requestAjax([userGenerateNewAccessTokenRequestName],
         {
-          url: AuthResendConfirmationEmail, method: "PUT", headers: state.headers,
+          url: AuthGenerateNewAccessToken, method: "PUT", headers: state.headers,
         }));
       break;
 
     case "resend-confirmation-email":
-
+      effects.push(requestAjax([resendConfirmationEmailRequestName],
+        {
+          url: AuthResendConfirmationEmail, method: "PUT", headers: state.headers,
+          json: {
+            user: {
+              email: state.inputs.email,
+              password: state.inputs.password,
+            }
+          }
+        }));
       break;
 
 
@@ -337,4 +372,5 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 export const confirmEmailRequestName = "confirm-email";
 export const userSignInRequestName = "user-sign-in";
 export const userSignUpRequestName = "user-sign-up";
+export const resendConfirmationEmailRequestName = "resend-confirmation-email";
 export const userGenerateNewAccessTokenRequestName = "user-generate-new-access-token";

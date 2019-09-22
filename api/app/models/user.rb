@@ -1,6 +1,12 @@
 class User < ApplicationRecord
   has_secure_password
 
+  PASSWORD_REQUIREMENTS = /\A(?=.{6,})/x
+  EMAIL_REQUIREMENTS = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+
+  validates :password, allow_nil: true, format: PASSWORD_REQUIREMENTS
+  validates :email, uniqueness: true, format: EMAIL_REQUIREMENTS
+
   def send_confirmation_email
     self.update!(confirmation_token: SecureRandom.hex, confirmation_expires_at: 30.minutes.from_now)
     UserMailer.with(user: self).confirm_email.deliver_now

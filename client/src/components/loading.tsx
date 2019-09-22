@@ -1,7 +1,8 @@
 import * as React from "react";
+import {ClassAndChildren} from "../core/reducers";
 
-export function Loading() {
-  return <div className="lds-ring">
+export function Loading(props: ClassAndChildren) {
+  return <div className={"lds-ring " + props.className}>
     <div/>
     <div/>
     <div/>

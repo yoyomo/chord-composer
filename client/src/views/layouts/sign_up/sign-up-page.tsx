@@ -14,6 +14,7 @@ import {HeaderTitle} from "../../../components/header-title";
 import {Page} from "../../../components/page";
 import {stringifyRequestName} from "../../../reducers/complete-request-reducer";
 import {Loading} from "../../../components/loading";
+import {SVGCheckMark} from "../../../components/svgs";
 
 
 export interface SignUpFormProps extends ReactStripeElements.InjectedStripeProps {
@@ -43,6 +44,7 @@ class SignUpForm extends React.Component<SignUpFormProps> {
 
   }
 
+
   render() {
     return (
       <div>
@@ -55,11 +57,16 @@ class SignUpForm extends React.Component<SignUpFormProps> {
           </div>
         })}
         <div className={"db ma2"}>
-          <div className={"dib ma2 bg-light-blue white br4 pa2 pointer"} onClick={this.submit}>
-            Sign Up
-          </div>
-          {this.props.isLoadingRequest &&
-            <Loading/>
+          {this.props.isLoadingRequest ?
+            <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
+              Signing Up
+              <Loading className={"mh2"}/>
+            </div>
+            :
+            <div className={`dib ma2 br4 pa2 pointer bg-blue white`}
+                 onClick={this.submit}>
+              Sign Up
+            </div>
           }
         </div>
       </div>
@@ -101,9 +108,13 @@ export function SignUpPage(dispatch: (action: Action) => void) {
             </div>
             <Input type="password" value={state.inputs.confirmPassword}
                    onChange={inputChangeDispatcher(dispatch, "confirmPassword")}/>
+            {state.inputs.password && state.inputs.password === state.inputs.confirmPassword &&
+            <SVGCheckMark className={"stroke-green"}/>
+            }
           </div>
           {state.stripe.object && state.stripe.publishableKey && state.stripe.plans.length > 0 && <div>
             {state.stripe.plans.map(stripePlan => {
+
               let symbol = "";
               let amount = stripePlan.amount;
               switch (stripePlan.currency) {
@@ -112,7 +123,8 @@ export function SignUpPage(dispatch: (action: Action) => void) {
                   amount = amount / 100;
                   break;
               }
-              return <div
+
+              return <div key={"stripe-plan-"+stripePlan.id}
                 onClick={() => dispatcher.choosePlan(stripePlan.id)}
                 className={"db ba b--light-gray ma2 pa2 br2 tc hover-bg-light-gray pointer " + (state.stripe.chosenPlanID === stripePlan.id ? "bg-light-gray" : "")}>
 

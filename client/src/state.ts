@@ -38,6 +38,7 @@ export const initialState = {
   loggedInUser: undefined as UserResource | void,
   pathParts: [] as PathPart[],
   headers: {} as {[k: string]: string},
+  minimumPasswordLength: 6,
 
   // TODO request data from backend & display plan information
   stripe: {
@@ -54,6 +55,7 @@ export const initialState = {
 
   toggles: {
     showLogInModal: false,
+    showSuccessfulLogInModal: false,
     showSettingsModal: false,
   },
 

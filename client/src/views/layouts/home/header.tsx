@@ -76,7 +76,7 @@ export function Header(dispatch: (action: Action) => void) {
             <div className={"db pointer"} onClick={toggleDispatcher(dispatch,"showLogInModal")}>
               (8)
             </div>
-            {state.toggles.showLogInModal &&
+            {(state.toggles.showLogInModal || state.toggles.showSuccessfulLogInModal) &&
             <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1 absolute bg-white nl6"}>
               {state.loggedInUser ?
                   UserInfoModalContent(state)
