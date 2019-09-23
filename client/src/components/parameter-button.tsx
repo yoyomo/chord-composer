@@ -8,7 +8,7 @@ export interface ParameterButtonProps extends ClassAndChildren {
 
 export const ParameterButton = (props: ParameterButtonProps) => {
   return (
-      <div className={`${props.disabled ? 'bg-light-gray gray' : 'bg-gray light-gray'} br2 pointer ${props.className}`} onClick={() => {
+      <div className={`${props.disabled ? 'bg-light-gray gray  svg-gray' : 'bg-gray light-gray svg-light-gray'} br2 pointer ${props.className}`} onClick={() => {
         if (!props.disabled){
           props.onClick();
         }

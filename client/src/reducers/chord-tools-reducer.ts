@@ -22,7 +22,7 @@ export const increaseOctave = (): IncreaseOctaveAction => {
   };
 };
 
-export const MAXIMUM_OCTAVE = 5;
+export const MAXIMUM_OCTAVE = 4;
 export const MINIMUM_OCTAVE = 0;
 
 export type ChordToolsActions =

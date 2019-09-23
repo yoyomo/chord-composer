@@ -109,7 +109,7 @@ export function SignUpPage(dispatch: (action: Action) => void) {
             <Input type="password" value={state.inputs.confirmPassword}
                    onChange={inputChangeDispatcher(dispatch, "confirmPassword")}/>
             {state.inputs.password && state.inputs.password === state.inputs.confirmPassword &&
-            <SVGCheckMark className={"stroke-green"}/>
+            <SVGCheckMark className={"svg-green"}/>
             }
           </div>
           {state.stripe.object && state.stripe.publishableKey && state.stripe.plans.length > 0 && <div>

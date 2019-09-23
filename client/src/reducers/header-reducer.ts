@@ -82,7 +82,7 @@ export const reduceHeader = (state: State, action: Action): ReductionWithEffect<
     }
 
     case "go-to-home-page": {
-      effects = effects.concat(historyPush({pathname: action.page}));
+      effects = effects.concat(historyPush({pathname: "/home/" + action.page}));
       break;
     }
 

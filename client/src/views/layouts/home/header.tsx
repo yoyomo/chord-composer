@@ -6,12 +6,21 @@ import {
   toggleSound
 } from "../../../reducers/header-reducer";
 import {ClassAndChildren} from "../../../core/reducers";
-import {Parameter} from "../../../components/parameter";
 import {Action} from "../../../core/root-reducer";
 import {LogIn} from "../sign_up/log-in";
 import {toggleDispatcher} from "../../../reducers/toggle-reducer";
 import {UserInfoModal} from "./user-info";
 import {PathPart} from "../../../reducers/router-reducer";
+import {
+  SVGChords,
+  SVGSawtooth,
+  SVGSine, SVGSong,
+  SVGSoundOff,
+  SVGSoundOn,
+  SVGSquare,
+  SVGTriangle,
+  SVGUser
+} from "../../../components/svgs";
 
 export function Header(dispatch: (action: Action) => void) {
 
@@ -31,7 +40,7 @@ export function Header(dispatch: (action: Action) => void) {
   const WaveType = (props: WaveTypeProps) => {
     let isSelected = props.waveType === props.currentWaveType;
     return (
-        <div className={`dib ma1 pointer ${isSelected ? "light-blue" : ""}`}
+        <div className={`dib ma1 pointer ${isSelected ? " svg-light-blue" : ""}`}
              onClick={() => dispatcher.selectWaveType(props.waveType)}>
           {props.children}
         </div>
@@ -43,38 +52,39 @@ export function Header(dispatch: (action: Action) => void) {
 
   return (state: State) => {
     return (
-        <div className={"h3 w-100 bg-light-gray flex flex-row items-stretch"}>
-          <Parameter title={"Wave"}>
+        <div className={"h3 w-100 bg-light-gray flex flex-row items-stretch  svg-dim-gray"}>
+          <div className={"ma2 pa2 dark-gray"}>
             <WaveType waveType={"sine"} currentWaveType={state.waveType}>
-              S
+              <SVGSine/>
             </WaveType>
             <WaveType waveType={"triangle"} currentWaveType={state.waveType}>
-              >
+              <SVGTriangle/>
             </WaveType>
             <WaveType waveType={"sawtooth"} currentWaveType={state.waveType}>
-              M
+              <SVGSawtooth/>
             </WaveType>
             <WaveType waveType={"square"} currentWaveType={state.waveType}>
-              コ
+              <SVGSquare/>
             </WaveType>
-          </Parameter>
+          </div>
 
-          <Parameter title={"Base Frequency"}>
-            <input type={"number"} className={"bg-transparent border-less color-inherit tc pointer"}
+          <div className={"ma2 pa2 dark-gray"}>
+            <input type={"number"} className={"bg-transparent border-less w3 color-inherit tc pointer"}
                    value={state.baseFrequency}
                    onChange={(e) => dispatcher.changeBaseFrequency(parseInt(e.target.value))}/>
-          </Parameter>
+            Hz
+          </div>
 
-          <Parameter title={"Sound"}>
+          <div className={"ma2 pa2 dark-gray"}>
             <div className={`dib ma1 pointer ${state.soundOn ? "light-blue" : ""}`}
                  onClick={dispatcher.toggleSound}>
-              {"<(("}
+              {state.soundOn ? <SVGSoundOn/> : <SVGSoundOff/>}
             </div>
-          </Parameter>
+          </div>
 
-          <div className={"ma2 pa2 dark-gray tc"}>
+          <div className={"ma2 pa2 dark-gray"}>
             <div className={"db pointer"} onClick={toggleDispatcher(dispatch,"showLogInModal")}>
-              (8)
+              <SVGUser/>
             </div>
             {(state.toggles.showLogInModal || state.toggles.showSuccessfulLogInModal) &&
             <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1 absolute bg-white nl6"}>
@@ -87,15 +97,16 @@ export function Header(dispatch: (action: Action) => void) {
             }
           </div>
 
-          <div className={"ma2 pa2 dark-gray tc"}>
-            <div className={`db pointer ${state.pathParts[1] === 'chords' ? "light-blue" : ""}`} onClick={() => dispatcher.goToHomePage("chords")}>
-              [;]
+          <div className={"ma2 pa2 dark-gray"}>
+            <div className={`pointer ${state.pathParts[1] === 'chords' ? "svg-light-blue" : ""}`} onClick={() => dispatcher.goToHomePage("chords")}>
+              <SVGChords/>
             </div>
+          </div>
 
-            <div className={`db pointer ${state.pathParts[1] === 'song' ? "light-blue" : ""}`} onClick={() => dispatcher.goToHomePage("song")}>
-              [...]
+          <div className={"ma2 pa2 dark-gray"}>
+            <div className={`pointer ${state.pathParts[1] === 'song' ? "svg-light-blue" : ""}`} onClick={() => dispatcher.goToHomePage("song")}>
+              <SVGSong/>
             </div>
-
           </div>
 
         </div>
