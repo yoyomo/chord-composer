@@ -6,26 +6,6 @@ import {calculateMML} from "../utils/mml-utils";
 import {Action} from "../core/root-reducer";
 import {Effect} from "../core/services/service";
 
-export interface ShowVariationsAction {
-  type: "show-variations"
-}
-
-export const showVariations = (): ShowVariationsAction => {
-  return {
-    type: "show-variations",
-  };
-};
-
-export interface HideVariationsAction {
-  type: "hide-variations"
-}
-
-export const hideVariations = (): HideVariationsAction => {
-  return {
-    type: "hide-variations",
-  };
-};
-
 export interface SaveChordAction {
   type: "save-chord"
 }
@@ -59,8 +39,6 @@ export const selectSavedChord = (savedChordIndex: number): SelectSavedChordActio
 };
 
 export type FooterActions =
-  ShowVariationsAction
-  | HideVariationsAction
   | SaveChordAction
   | RemoveSavedChordAction
   | SelectSavedChordAction;
@@ -69,24 +47,6 @@ export const reduceFooter = (state: State, action: Action): ReductionWithEffect<
   let effects: Effect[] = [];
 
   switch (action.type) {
-
-    case "show-variations": {
-      state = {...state};
-      state.showingVariations = {...state.showingVariations};
-      if (!state.selectedGridChord) break;
-      state.showingVariations[state.selectedGridChord.chordRuleIndex] = true;
-      break;
-    }
-
-    case "hide-variations": {
-      state = {...state};
-      state.showingVariations = {...state.showingVariations};
-      if (!state.selectedGridChord) break;
-      (state.showingVariations[state.selectedGridChord.chordRuleIndex] = false);
-
-      break;
-    }
-
     case "save-chord": {
       state = {...state};
       state.savedChords = state.savedChords.slice();

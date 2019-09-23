@@ -118,11 +118,6 @@ export const mapKeysToChord = (state: State): State => {
       let baseKey = KEYS[baseKeyIndex];
       state.suggestedKeyIndexes.push(baseKeyIndex);
 
-      if (variation > 0) {
-        state.showingVariations = {...state.showingVariations};
-        state.showingVariations[chordRuleIndex] = true;
-      }
-
       state.suggestedGridChords = state.suggestedGridChords.slice();
       for (let octave = MINIMUM_OCTAVE; octave <= MAXIMUM_OCTAVE; octave++) {
         let chordNotes = scalePitchClass(pitchClass.map(pitch => pitch + keyIndexes[0] + octave * KEYS.length));

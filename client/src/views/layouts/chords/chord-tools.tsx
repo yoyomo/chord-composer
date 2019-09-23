@@ -1,7 +1,6 @@
 import React from "react";
 import {State} from "../../../state";
 import {ParameterButton} from "../../../components/parameter-button";
-import {hideVariations, showVariations} from "../../../reducers/footer-reducer";
 import {decreaseOctave, increaseOctave, MAXIMUM_OCTAVE, MINIMUM_OCTAVE} from "../../../reducers/chord-tools-reducer";
 import {Action} from "../../../core/root-reducer";
 import {SVGMinus, SVGOctave, SVGPlus} from "../../../components/svgs";
@@ -11,8 +10,6 @@ export function ChordTools(dispatch: (action: Action) => void) {
   let dispatcher = {
     decreaseOctave: () => dispatch(decreaseOctave()),
     increaseOctave: () => dispatch(increaseOctave()),
-    showVariations: () => dispatch(showVariations()),
-    hideVariations: () => dispatch(hideVariations()),
   };
 
   let octaves: number[] = [];
@@ -36,24 +33,6 @@ export function ChordTools(dispatch: (action: Action) => void) {
                          onClick={dispatcher.increaseOctave}>
           <SVGPlus/>
         </ParameterButton>
-
-        <div className={"ma2 pa2 dark-gray tc"}>
-          {state.selectedGridChord ?
-            <div className={"pointer"}>
-              {state.showingVariations[state.selectedGridChord.chordRuleIndex] ?
-                <ParameterButton className={"ma1"} onClick={dispatcher.hideVariations}>
-                  hide
-                </ParameterButton>
-                :
-                <ParameterButton className={"ma1"} onClick={dispatcher.showVariations}>
-                  show
-                </ParameterButton>
-              }
-            </div>
-            :
-            <div>(select chord)</div>
-          }
-        </div>
 
       </div>
     );

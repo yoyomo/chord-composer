@@ -19,25 +19,25 @@ export class ChordElement extends React.Component<ChordElementProps> {
 
   render() {
     return (
-        <div
-            className={`${this.props.chord.variation === 0 ? "bg-gray light-gray" : "bg-light-gray dark-gray"}
+      <div
+        className={`${this.props.chord.variation === 0 ? "bg-gray light-gray" : "bg-light-gray dark-gray"}
             ${this.props.isSelected ? 'shadow-2-skyblue' : ''}
             ${this.props.isSuggested ? 'shadow-2-red' : ''}
-             w3 h3 white dib tc v-mid pointer ma2 pt3 br3 `}
-            style={{backgroundColor: this.getColor()}}
-            onMouseDown={this.handleClick}
-            onMouseUp={this.handleClickEnd}
-            onTouchStart={this.handleClick}
-        >
-          <div className="">
-            {this.props.chord.baseKey + this.props.chord.symbol}
-          </div>
-          {this.props.chord.variation > 0 &&
-          <div>
-            {this.props.chord.variation}
-          </div>
-          }
+             w3 h3 dib tc v-mid pointer ma2 pt3 br3`}
+        // style={{backgroundColor: this.getColor()}}
+        onMouseDown={this.handleClick}
+        onMouseUp={this.handleClickEnd}
+        onTouchStart={this.handleClick}
+      >
+        <div className="">
+          {this.props.chord.baseKey + this.props.chord.symbol}
         </div>
+        {this.props.chord.variation > 0 &&
+        <div>
+          {this.props.chord.variation}
+        </div>
+        }
+      </div>
     );
   }
 

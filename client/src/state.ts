@@ -26,7 +26,6 @@ export const initialState = {
   octave: 2,
   chordRules: BASE_CHORD_RULES as ChordRuleType[],
   chordGrid: [] as ChordType[],
-  showingVariations: {} as ToggleMap,
   selectedGridChord: undefined as ChordType | void,
   suggestedGridChords: [] as ChordType[],
   suggestedKeyIndexes: [] as number[],

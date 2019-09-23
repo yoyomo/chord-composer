@@ -27,24 +27,6 @@ export const reduceChordCanvas = (state: State, action: Action): ReductionWithEf
       state.selectedKeyIndex = keyIndex;
       break;
     }
-
-    case "show-variations": {
-      if (!state.selectedGridChord) break;
-      state = {...state};
-      state.showingVariations = {...state.showingVariations};
-      if (!state.selectedGridChord) break;
-      state.showingVariations[state.selectedGridChord.chordRuleIndex] = true;
-      break;
-    }
-
-    case "hide-variations": {
-      state = {...state};
-      state.showingVariations = {...state.showingVariations};
-      if (!state.selectedGridChord) break;
-      state.showingVariations[state.selectedGridChord.chordRuleIndex] = false;
-      break;
-    }
-
   }
 
   return {state};

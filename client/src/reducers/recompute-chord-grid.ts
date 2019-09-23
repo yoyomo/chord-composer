@@ -28,7 +28,6 @@ export const recomputeChordGrid = memoizeBySomeProperties({
   chordRules: initialState.chordRules,
   selectedKeyIndex: initialState.selectedKeyIndex,
   octave: initialState.octave,
-  showingVariations: initialState.showingVariations,
 }, (state): ChordType[] => {
 
   if (state.selectedKeyIndex === undefined) return [];
@@ -59,31 +58,29 @@ export const recomputeChordGrid = memoizeBySomeProperties({
 
     chordGrid.push(baseChord);
 
-    if (state.showingVariations[chordRuleIndex]) {
 
-      let chordNotes = baseChord.notes.slice();
+    let baseChordNotes = baseChord.notes.slice();
 
-      for (variation = 1; variation < chordNotes.length; variation++) {
-        let firstPitch = chordNotes[0];
+    for (variation = 1; variation < baseChordNotes.length; variation++) {
+      let firstPitch = baseChordNotes[0];
 
-        while (firstPitch < chordNotes[chordNotes.length - 1]) {
-          firstPitch += KEYS.length;
-        }
-
-        chordNotes = chordNotes.slice(1).concat(firstPitch);
-
-        if (chordNotes[0] >= state.octave * KEYS.length + KEYS.length){
-          chordNotes = chordNotes.map(note => note - KEYS.length);
-        }
-
-        let chordVariation: ChordType = {
-          ...baseChord,
-          notes: chordNotes.slice(),
-          variation: variation,
-        };
-
-        chordGrid.push(chordVariation);
+      while (firstPitch < baseChordNotes[baseChordNotes.length - 1]) {
+        firstPitch += KEYS.length;
       }
+
+      baseChordNotes = baseChordNotes.slice(1).concat(firstPitch);
+
+      if (baseChordNotes[0] >= state.octave * KEYS.length + KEYS.length) {
+        baseChordNotes = baseChordNotes.map(note => note - KEYS.length);
+      }
+
+      let chordVariation: ChordType = {
+        ...baseChord,
+        notes: baseChordNotes.slice(),
+        variation: variation,
+      };
+
+      chordGrid.push(chordVariation);
     }
 
     return baseChord;
