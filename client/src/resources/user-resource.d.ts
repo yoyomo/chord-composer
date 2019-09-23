@@ -3,10 +3,7 @@ export interface UserResource {
   username: string
   email: string
   favorite_chords: string[]
+  access_token: string
 
-  allow_password_change: boolean
   created_at: string
-  provider: string
-  uid: string
-  updated_at: string
 }

@@ -4,17 +4,14 @@ import {generateNewAccessToken, signOut} from "../../../reducers/login-reducer";
 import {Action} from "../../../core/root-reducer";
 import {HeaderTitle} from "../../../components/header-title";
 import {toggleDispatcher} from "../../../reducers/toggle-reducer";
-import {Input} from "../../../components/input";
-import {inputChangeDispatcher} from "../../../reducers/input-reducer";
+import {AccountSettings} from "./account-settings";
 
 export function UserInfoModal(dispatch: (action: Action) => void) {
   const dispatcher = {
     signOut: () => dispatch(signOut()),
-    generateNewAccessToken: () => dispatch(generateNewAccessToken()),
-    // changeEmail: () => dispatch(changeEmail()),
-    // changePassword: () => dispatch(changePassword()),
-    // cancelSubscription: () => dispatch(cancelSubscription()),
   };
+
+  const AccountSettingsContent = AccountSettings(dispatch);
 
   return (state: State) => {
     return (
@@ -27,42 +24,7 @@ export function UserInfoModal(dispatch: (action: Action) => void) {
           </div>
           :
           state.toggles.showSettingsModal ?
-            <form>
-              {state.loginPage.errors.signIn && state.loginPage.errors.signIn.map(error => {
-                return <div className={"red"} key={"sign-in-error_" + error.type}>
-                  {error.message}
-                </div>
-              })}
-              {state.loginPage.success.signUp && <div className={"green"}> {state.loginPage.success.signUp} </div>}
-              <div className={"db ma2"}>
-                <div>
-                  Email:
-                </div>
-                <Input type="email" value={state.inputs.email} onChange={inputChangeDispatcher(dispatch, "email")}/>
-              </div>
-              <div className={"db ma2"}>
-                <div>
-                  Password:
-                </div>
-                <Input type="password" value={state.inputs.password}
-                       onChange={inputChangeDispatcher(dispatch, "password")}/>
-              </div>
-              <div className={"db ma2"}>
-                <div>
-                  Confirm Password:
-                </div>
-                <Input type="password" value={state.inputs.confirmPassword}
-                       onChange={inputChangeDispatcher(dispatch, "confirmPassword")}/>
-              </div>
-              <div className={"db ma2"}>
-                <div className={"dib ma2 bg-light-gray dark-gray br4 pa2 pointer"} onClick={dispatcher.cancelSettings}>
-                  Cancel
-                </div>
-                <div className={"dib ma2 bg-light-blue white br4 pa2 pointer"} onClick={dispatcher.saveSettings}>
-                  Save
-                </div>
-              </div>
-            </form>
+            AccountSettingsContent(state)
             :
             <div>
               <div className={"pointer b--light-gray hover-bg-black-10 pa2"}

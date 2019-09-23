@@ -1,7 +1,13 @@
 import {initialState, State, Toggles} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {parseHTTPHeadersToJSON, requestAjax} from "../core/services/ajax-service";
-import {AuthGenerateNewAccessToken, AuthResendConfirmationEmail, AuthSignIn, AuthSignUp} from "../resources/routes";
+import {
+  ApiV1UsersPath,
+  AuthGenerateNewAccessToken,
+  AuthResendConfirmationEmail,
+  AuthSignIn,
+  AuthSignUp
+} from "../resources/routes";
 import {historyPush} from "../core/services/navigation-service";
 import {ResourceType} from "../resources/resource";
 import {UserResource} from "../resources/user-resource";
@@ -102,6 +108,26 @@ export const resendConfirmationEmail = (): ResendConfirmationEmailAction => {
   }
 };
 
+export interface ChangeEmailAction {
+  type: "change-email"
+}
+
+export const changeEmail = (): ChangeEmailAction => {
+  return {
+    type: "change-email",
+  }
+};
+
+export interface ChangePasswordAction {
+  type: "change-password"
+}
+
+export const changePassword = (): ChangePasswordAction => {
+  return {
+    type: "change-password",
+  }
+};
+
 export type LogInActions =
   | SignInAction
   | SignOutAction
@@ -110,7 +136,9 @@ export type LogInActions =
   | ErrorOnSignUpAction
   | ChooseStripePlanAction
   | GenerateNewAccessTokenAction
-  | ResendConfirmationEmailAction;
+  | ResendConfirmationEmailAction
+  | ChangeEmailAction
+  | ChangePasswordAction;
 
 
 export interface ResponseType {
@@ -342,13 +370,6 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       break;
     }
 
-    case "generate-new-access-token":
-      effects.push(requestAjax([userGenerateNewAccessTokenRequestName],
-        {
-          url: AuthGenerateNewAccessToken, method: "PUT", headers: state.headers,
-        }));
-      break;
-
     case "resend-confirmation-email":
       effects.push(requestAjax([resendConfirmationEmailRequestName],
         {
@@ -362,7 +383,28 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         }));
       break;
 
+    case "generate-new-access-token":
+      effects.push(requestAjax([generateNewAccessTokenRequestName],
+        {
+          url: AuthGenerateNewAccessToken, method: "PUT", headers: state.headers,
+        }));
+      break;
 
+    case "change-email":
+      if(!state.loggedInUser) break;
+      effects.push(requestAjax([changeEmailRequestName],
+        {
+          url: ApiV1UsersPath + '/' + state.loggedInUser.id, method: "PUT", headers: state.headers,
+        }));
+      break;
+
+    case "change-password":
+      if(!state.loggedInUser) break;
+      effects.push(requestAjax([changePasswordRequestName],
+        {
+          url: ApiV1UsersPath + '/' + state.loggedInUser.id, method: "PUT", headers: state.headers,
+        }));
+      break;
 
   }
 
@@ -373,4 +415,6 @@ export const confirmEmailRequestName = "confirm-email";
 export const userSignInRequestName = "user-sign-in";
 export const userSignUpRequestName = "user-sign-up";
 export const resendConfirmationEmailRequestName = "resend-confirmation-email";
-export const userGenerateNewAccessTokenRequestName = "user-generate-new-access-token";
+export const generateNewAccessTokenRequestName = "user-generate-new-access-token";
+export const changeEmailRequestName = "change-email";
+export const changePasswordRequestName = "change-password";

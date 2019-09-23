@@ -18,6 +18,13 @@ const loginPageInputs = {
   confirmPassword: "",
 };
 
+const accountSettingsInputs = {
+  newEmail: "",
+  oldPassword: "",
+  newPassword: "",
+  confirmNewPassword: "",
+};
+
 export const initialState = {
   audioContext: AudioContext && new AudioContext(),
   notes: [] as number[],
@@ -50,12 +57,17 @@ export const initialState = {
   inputs: {
     lyric: "",
     ...loginPageInputs,
+    ...accountSettingsInputs,
   },
 
   toggles: {
     showLogInModal: false,
     showSuccessfulLogInModal: false,
     showSettingsModal: false,
+    changeEmail: false,
+    changePassword: false,
+    changeAccessToken: false,
+    changeSubscription: false,
   },
 
   loginPage: {
@@ -64,7 +76,8 @@ export const initialState = {
     },
     errors: {
       signIn: [] as ResponseError[],
-      signUp: [] as ResponseError[]
+      signUp: [] as ResponseError[],
+      changeAccountSettings: [] as ResponseError[]
     }
   },
 

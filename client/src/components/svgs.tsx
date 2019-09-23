@@ -142,9 +142,16 @@ export const SVGSong = (props: SVGProps) => {
 
 export const SVGOctave = (props: SVGProps) => {
   return <svg width={12} height={12} {...props}
-  id="octave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 74.81 74.81"><title>octave</title>
+              id="octave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 74.81 74.81"><title>octave</title>
     <circle cx="37.41" cy="37.41" r="36.03" strokeMiterlimit="10" strokeWidth="2.75"/>
   </svg>
 };
 
+export const SVGBack = (props: SVGProps) => {
+  return <svg width={12} height={12} {...props}
+              id="back" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72.68 115.75"><title>back</title>
+    <polyline points="69.38 3.75 7.59 58.13 69.38 111.98" fill="#fff" stroke="#000" strokeMiterlimit="10"
+              strokeWidth="10"/>
+  </svg>
+};
 

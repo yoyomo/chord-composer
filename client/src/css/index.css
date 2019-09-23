@@ -8,6 +8,7 @@
 @import url(_shadows.css);
 @import url(_animations.css);
 @import url(_svgs.css);
+@import url(_word-break.css);
 
 body {
   margin: 0;

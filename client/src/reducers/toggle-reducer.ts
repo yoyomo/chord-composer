@@ -1,5 +1,6 @@
 import {ReductionWithEffect} from "../core/reducers";
 import {Action} from "../core/root-reducer";
+import {Toggles} from "../state";
 
 export interface Toggle<T = ToggleMap> {
   type: 'toggle',
@@ -11,14 +12,14 @@ export function toggle<T = ToggleMap>(target: Extract<keyof T, string>, on = und
   return {type: "toggle", on, target};
 }
 
-export function toggleDispatcher<T = ToggleMap>(dispatch: (a: Toggle<T>) => void,
-                                                target: Extract<keyof T, string>,
+export function toggleDispatcher(dispatch: (a: Toggle<Toggles>) => void,
+                                                target: Extract<keyof Toggles, string>,
                                                 on = undefined as boolean | void) {
   return (e?: { stopPropagation: () => void }) => {
     if (e) {
       e.stopPropagation();
     }
-    dispatch(toggle<T>(target, on));
+    dispatch(toggle<Toggles>(target, on));
   }
 }
 
