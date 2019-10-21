@@ -9,8 +9,10 @@ Rails.application.routes.draw do
         collection do
           put "confirm_email"
           put "sign_in"
-          put "generate_new_access_token"
           put "resend_confirmation_email"
+        end
+        member do
+          put "generate_new_access_token"
         end
       end
 

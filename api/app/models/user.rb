@@ -8,8 +8,17 @@ class User < ApplicationRecord
   validates :email, uniqueness: true, format: EMAIL_REQUIREMENTS
 
   def send_confirmation_email
-    self.update!(confirmation_token: SecureRandom.hex, confirmation_expires_at: 30.minutes.from_now)
-    UserMailer.with(user: self).confirm_email.deliver_now
+    update_user
+    UserMailer.with(user: self).confirm_email.deliver_later
+  end
+
+  def send_confirmation_change_of_email
+    update_user
+    UserMailer.with(user: self).confirm_change_of_email.deliver_later
+  end
+
+  def update_user
+    self.update!(confirmation_token: SecureRandom.hex, confirmation_expires_at: 30.minutes.from_now, confirmed_at: nil)
   end
 
   def confirm

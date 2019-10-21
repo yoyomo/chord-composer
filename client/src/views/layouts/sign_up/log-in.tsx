@@ -23,7 +23,7 @@ export function LogIn(dispatch: (action: Action) => void) {
     let isResendingConfirmationEmail = state.loadingRequests[stringifyRequestName([resendConfirmationEmailRequestName])];
     return (
       <form>
-        {state.loginPage.errors.signIn && state.loginPage.errors.signIn.map(error => {
+        {state.errors.signIn && state.errors.signIn.map(error => {
 
           return <div className={"red"} key={"sign-in-error_" + error.type}>
             {error.message}
@@ -44,7 +44,7 @@ export function LogIn(dispatch: (action: Action) => void) {
             }
           </div>
         })}
-        {state.loginPage.success.signUp && <div className={"green"}> {state.loginPage.success.signUp} </div>}
+        {state.success.signUp && <div className={"green"}> {state.success.signUp} </div>}
         <div className={"db ma2"}>
           <div>
             Email:

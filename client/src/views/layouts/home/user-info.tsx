@@ -1,6 +1,6 @@
 import * as React from "react";
 import {State} from "../../../state";
-import {generateNewAccessToken, signOut} from "../../../reducers/login-reducer";
+import {signOut} from "../../../reducers/login-reducer";
 import {Action} from "../../../core/root-reducer";
 import {HeaderTitle} from "../../../components/header-title";
 import {toggleDispatcher} from "../../../reducers/toggle-reducer";
