@@ -5,11 +5,12 @@ import (
 	"log"
 
 	"encoding/json"
-	"github.com/gorilla/mux"
-	"github.com/subosito/gotenv"
 	"io/ioutil"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/mux"
+	"github.com/subosito/gotenv"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -31,7 +32,7 @@ type User struct {
 	Born   int    `firestore:"born,omitempty"`
 }
 
-func resourceType(resource string) interface{}{
+func resourceType(resource string) interface{} {
 
 	switch resource {
 	case "users":
@@ -58,8 +59,8 @@ func resources(resource string, router *mux.Router) {
 
 }
 
-func create(resource string) func (w http.ResponseWriter, r *http.Request) {
-	return func (w http.ResponseWriter, r *http.Request) {
+func create(resource string) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 
 		reqBody, err := ioutil.ReadAll(r.Body)
 		logFatal(err)
@@ -116,8 +117,8 @@ func index(resource string) func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func update(resource string) func (w http.ResponseWriter, r *http.Request){
-	return func (w http.ResponseWriter, r *http.Request) {
+func update(resource string) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 
 		reqBody, err := ioutil.ReadAll(r.Body)
 		logFatal(err)
@@ -135,7 +136,7 @@ func update(resource string) func (w http.ResponseWriter, r *http.Request){
 	}
 }
 
-func delete(resource string) func(w http.ResponseWriter, r *http.Request){
+func delete(resource string) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		resourceID := mux.Vars(r)["id"]
 		_, err := client.Collection(resource).Doc(resourceID).Delete(ctx)
@@ -149,13 +150,13 @@ func logFatal(err error) {
 	}
 }
 
-func setupFirestore(){
+func setupFirestore() {
 	ctx = context.Background()
 
 	var firestoreURL string
 	var conf *firebase.Config
 
-	switch os.Getenv("GO_ENV"){
+	switch os.Getenv("GO_ENV") {
 	case "production":
 		firestoreURL = os.Getenv("FIRESTORE_PROJECT_ID")
 		conf = &firebase.Config{ProjectID: firestoreURL}
