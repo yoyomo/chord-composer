@@ -47,10 +47,14 @@ export function Header(dispatch: (action: Action) => void) {
     )
   };
 
-  let LogInContent = LogIn(dispatch);
-  let UserInfoModalContent = UserInfoModal(dispatch);
+  const LogInContent = LogIn(dispatch);
+  const UserInfoModalContent = UserInfoModal(dispatch);
+
 
   return (state: State) => {
+
+    const showUserModal = state.toggles.showLogInModal || state.toggles.showSuccessfulLogInModal;
+
     return (
         <div className={"h3 w-100 bg-light-gray flex flex-row items-stretch  svg-dim-gray"}>
           <div className={"ma2 pa2 dark-gray"}>
@@ -76,17 +80,17 @@ export function Header(dispatch: (action: Action) => void) {
           </div>
 
           <div className={"ma2 pa2 dark-gray"}>
-            <div className={`dib ma1 pointer ${state.soundOn ? "light-blue" : ""}`}
+            <div className={`dib ma1 pointer`}
                  onClick={dispatcher.toggleSound}>
               {state.soundOn ? <SVGSoundOn/> : <SVGSoundOff/>}
             </div>
           </div>
 
           <div className={"ma2 pa2 dark-gray"}>
-            <div className={"db pointer"} onClick={toggleDispatcher(dispatch,"showLogInModal")}>
+            <div className={`db pointer ${showUserModal ? "svg-light-blue" : "svg-dim-gray"}`} onClick={toggleDispatcher(dispatch,"showLogInModal")}>
               <SVGUser/>
             </div>
-            {(state.toggles.showLogInModal || state.toggles.showSuccessfulLogInModal) &&
+            {showUserModal &&
             <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1 absolute bg-white nl6"}>
               {state.loggedInUser ?
                   UserInfoModalContent(state)
