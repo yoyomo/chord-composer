@@ -15,14 +15,6 @@ export function routerReducer(state: State,
   let effects: Effect[] = [];
   state = {...state};
 
-  if (!state.stripe.publishableKey || state.stripe.plans.length === 0) {
-    effects = effects.concat(requestAjax([getStripePublishableKeyRequestName], {
-      headers: state.headers,
-      url: StripePath + '/data',
-      method: 'GET'
-    }));
-  }
-
   let nextPathParts: PathPart[] = location.pathname.split("/").slice(1) as PathPart[];
   if (!nextPathParts[0]) nextPathParts[0] = "home";
 
@@ -32,6 +24,14 @@ export function routerReducer(state: State,
       if (state.loggedInUser) {
         nextPathParts = ["home"];
         effects = effects.concat(historyPush({pathname: "home"}));
+      }
+
+      if (!state.stripe.publishableKey || state.stripe.plans.length === 0) {
+        effects = effects.concat(requestAjax([getStripePublishableKeyRequestName], {
+          headers: state.headers,
+          url: StripePath + '/data',
+          method: 'GET'
+        }));
       }
 
       break;
