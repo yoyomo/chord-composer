@@ -13,9 +13,13 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.string :stripe_token_id
 
       t.string :password_digest, null: false, default: ""
+
       t.string :confirmation_token
       t.datetime :confirmation_expires_at
       t.datetime :confirmed_at
+
+      t.string :reset_password_token
+      t.datetime :reset_password_expires_at
 
       t.string :access_token
 

@@ -10,6 +10,8 @@ Rails.application.routes.draw do
           put "confirm_email"
           put "sign_in"
           put "resend_confirmation_email"
+          put "forgot_password"
+          put "reset_password"
         end
         member do
           put "generate_new_access_token"

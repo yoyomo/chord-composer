@@ -160,6 +160,15 @@ export function AccountSettings(dispatch: (action: Action) => void) {
                   {state.loggedInUser ? state.loggedInUser.access_token : ""}
                 </div>
               </div>
+              <div className={"pointer pa2 bt b--light-gray hover-bg-light-gray"}
+                   onClick={toggleDispatcher(dispatch, "changeAccessToken")}>
+                <div>
+                  Update Subscription
+                </div>
+                <div className={"gray"}>
+                  {state.loggedInUser ? state.loggedInUser.stripe_plan_id : ""}
+                </div>
+              </div>
             </div>
           }
 

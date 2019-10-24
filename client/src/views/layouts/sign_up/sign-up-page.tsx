@@ -15,6 +15,7 @@ import {Page} from "../../../components/page";
 import {stringifyRequestName} from "../../../reducers/complete-request-reducer";
 import {Loading} from "../../../components/loading";
 import {SVGCheckMark} from "../../../components/svgs";
+import {StripePlans} from "./stripe-plans";
 
 
 export interface SignUpFormProps extends ReactStripeElements.InjectedStripeProps {
@@ -83,6 +84,8 @@ export function SignUpPage(dispatch: (action: Action) => void) {
     choosePlan: (stripePlanId: string) => dispatch(chooseStripePlan(stripePlanId)),
   };
 
+  const StripePlansContent = StripePlans(dispatch);
+
   return (state: State) => {
     return (
       <Page>
@@ -112,58 +115,8 @@ export function SignUpPage(dispatch: (action: Action) => void) {
             <SVGCheckMark className={"svg-green"}/>
             }
           </div>
-          {state.stripe.object && state.stripe.publishableKey && state.stripe.plans.length > 0 && <div>
-            {state.stripe.plans.map(stripePlan => {
-
-              let symbol = "";
-              let amount = stripePlan.amount;
-              switch (stripePlan.currency) {
-                case "usd":
-                  symbol = "$";
-                  amount = amount / 100;
-                  break;
-              }
-
-              return <div key={"stripe-plan-"+stripePlan.id}
-                onClick={() => dispatcher.choosePlan(stripePlan.id)}
-                className={"db ba b--light-gray ma2 pa2 br2 tc hover-bg-light-gray pointer " + (state.stripe.chosenPlanID === stripePlan.id ? "bg-light-gray" : "")}>
-
-                <div>
-                  {symbol}{amount}
-                  <div className={"di gray ma1"}>
-                    {stripePlan.currency}
-                  </div>
-                  / {stripePlan.interval}
-                </div>
-
-                <div className={"ma2"}/>
-                <div className={"f7"}>
-                  Includes:
-                  <div>
-                    ・Access to all chords
-                  </div>
-                  <div>
-                    ・Access to all variations of chords
-                  </div>
-                  <div>
-                    ・Saving draft chords
-                  </div>
-
-                  <div className={"ma2"}/>
-                  <div>
-                    Soon:
-                    <div>
-                      ・Create and Save songs
-                    </div>
-                    <div>
-                      ・Saving synthesizer parameters
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            })
-            }
+          {state.stripe.object && state.stripe.publishableKey && <div>
+            {StripePlansContent(state)}
               <StripeProvider apiKey={state.stripe.publishableKey}>
                   <Elements>
                       <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error}

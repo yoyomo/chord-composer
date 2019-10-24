@@ -146,7 +146,7 @@ export interface ResponseType {
   errors: ResponseError[]
 }
 
-export type ResponseErrorType = "sign_in" | "confirmation" | "email" | "password" | "confirm_password" | "stripe_card"
+export type ResponseErrorType = "sign_in" | "confirmation" | "email" | "password" | "confirm_password" | "stripe_card" | "forgot_password"
 
 export interface ResponseError {
   type: ResponseErrorType
@@ -480,6 +480,8 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           url: ApiV1UsersPath + '/' + state.loggedInUser.id + "/generate_new_access_token", method: "PUT", headers: state.headers,
         }));
       break;
+
+
 
   }
 

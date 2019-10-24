@@ -16,7 +16,8 @@ export function LogIn(dispatch: (action: Action) => void) {
   const dispatcher = {
     signIn: () => dispatch(signIn()),
     goSignUp: () => dispatch(goSignUp()),
-    resendConfirmationEmail: () => dispatch(resendConfirmationEmail())
+    resendConfirmationEmail: () => dispatch(resendConfirmationEmail()),
+    //forgotPassword: () => dispatch(forgotPassword()),
   };
 
   return (state: State) => {
@@ -27,7 +28,7 @@ export function LogIn(dispatch: (action: Action) => void) {
 
           return <div className={"red"} key={"sign-in-error_" + error.type}>
             {error.message}
-            {error.type === "confirmation" ?
+            {error.type === "confirmation" && (
               <div>
                 {isResendingConfirmationEmail ?
                   <div className={`dib ma2 br4 pa2 bg-white gray`}>
@@ -40,8 +41,12 @@ export function LogIn(dispatch: (action: Action) => void) {
                   </div>
                 }
               </div>
-              : null
-            }
+            )}
+            {error.type === 'sign_in' && (
+              <div className="gray pointer f7" onClick={dispatcher.forgotPassword}>
+                Forgot your password?
+              </div>
+            )}
           </div>
         })}
         {state.success.signUp && <div className={"green"}> {state.success.signUp} </div>}
