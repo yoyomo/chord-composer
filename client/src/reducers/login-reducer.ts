@@ -3,7 +3,6 @@ import {ReductionWithEffect} from "../core/reducers";
 import {parseHTTPHeadersToJSON, requestAjax} from "../core/services/ajax-service";
 import {
   ApiV1UsersPath,
-  AuthGenerateNewAccessToken,
   AuthResendConfirmationEmail,
   AuthSignIn,
   AuthSignUp
@@ -149,7 +148,7 @@ export interface ResponseType {
 
 export type ResponseErrorType = "sign_in" | "confirmation" | "email" | "password" | "confirm_password" | "stripe_card"
 
-export interface ResponseError  {
+export interface ResponseError {
   type: ResponseErrorType
   message: string
 }
@@ -203,82 +202,148 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       if (!action.response) break;
       let response = JSON.parse(action.response) as ResponseType;
 
-      if (action.name[0] === userSignInRequestName) {
-        if (action.success) {
-          state = {...state};
-          state = setUser(state, action.headers, response.data as UserResource);
-          state.toggles = {...state.toggles};
-          state.toggles.showLogInModal = false;
-          state.loginPage = {...state.loginPage};
-          state.loginPage.success = initialState.loginPage.success;
-          state.loginPage.errors = initialState.loginPage.errors;
-          state.inputs = {...state.inputs};
-          state.inputs.email = "";
-          state.inputs.password = "";
-          state.inputs.confirmPassword = "";
+      switch (action.name[0]) {
+        case userSignInRequestName: {
+          if (action.success) {
+            state = {...state};
+            state = setUser(state, action.headers, response.data as UserResource);
+            state.toggles = {...state.toggles};
+            state.toggles.showLogInModal = false;
+            state.success = initialState.success;
+            state.errors = initialState.errors;
+            state.inputs = {...state.inputs};
+            state.inputs.email = "";
+            state.inputs.password = "";
+            state.inputs.confirmPassword = "";
 
-          state.toggles.showSuccessfulLogInModal = true;
+            state.toggles.showSuccessfulLogInModal = true;
 
-          effects = effects.concat(setTimer(toggle<Toggles>("showSuccessfulLogInModal", false), 1500))
-        } else {
-          state = {...state};
-          state.loginPage = {...state.loginPage};
-          state.loginPage.errors = {...state.loginPage.errors};
-          state.loginPage.errors.signIn = response.errors;
-          state.loginPage.success = initialState.loginPage.success;
+            effects = effects.concat(setTimer(toggle<Toggles>("showSuccessfulLogInModal", false), 1500))
+          } else {
+            state = {...state};
+            state.errors = {...state.errors};
+            state.errors.signIn = response.errors;
+            state.success = initialState.success;
+          }
+          break;
         }
-      } else if (action.name[0] === confirmEmailRequestName) {
-        if (action.success) {
-          state = {...state};
-          state.toggles = {...state.toggles};
-          state.toggles.showLogInModal = true;
+        case confirmEmailRequestName: {
+          if (action.success) {
+            state = {...state};
+            state.toggles = {...state.toggles};
+            state.toggles.showLogInModal = true;
 
-          state.loginPage = {...state.loginPage};
-          state.loginPage.success = {...state.loginPage.success};
-          state.loginPage.success.signUp = "Account Confirmed! Try logging in now";
+            state.success = {...state.success};
+            state.success.signUp = "Account Confirmed! Try logging in now";
 
-          effects = effects.concat(historyPush({pathname: 'home/chords'}));
-        } else {
-          state = {...state};
-          state.loginPage = {...state.loginPage};
-          state.loginPage.errors = {...state.loginPage.errors};
-          state.loginPage.errors.signIn = response.errors;
-          state.toggles = {...state.toggles};
-          state.toggles.showLogInModal = true;
+            effects = effects.concat(historyPush({pathname: 'home/chords'}));
+          } else {
+            state = {...state};
+            state.errors = {...state.errors};
+            state.errors.signIn = response.errors;
+            state.toggles = {...state.toggles};
+            state.toggles.showLogInModal = true;
+          }
+          break;
         }
-      } else if (action.name[0] === userSignUpRequestName) {
+        case userSignUpRequestName: {
 
-        if (action.success) {
-          state = {...state};
-          state.toggles = {...state.toggles};
-          state.toggles.showLogInModal = true;
+          if (action.success) {
+            state = {...state};
+            state.toggles = {...state.toggles};
+            state.toggles.showLogInModal = true;
 
-          state.loginPage = {...state.loginPage};
-          state.loginPage.success = {...state.loginPage.success};
-          state.loginPage.success.signUp = "A confirmation email was sent to you. Please confirm your email.";
-          state.loginPage.errors = initialState.loginPage.errors;
-          effects = effects.concat(historyPush({pathname: '/home/chords'}));
+            state.success = {...state.success};
+            state.success.signUp = "A confirmation email was sent to you. Please confirm your email.";
+            state.errors = initialState.errors;
+            effects = effects.concat(historyPush({pathname: '/home/chords'}));
 
-        } else {
-          state = {...state};
-          state.loginPage = {...state.loginPage};
-          state.loginPage.errors = {...state.loginPage.errors};
-          state.loginPage.errors.signUp = response.errors;
-          state.loginPage.success = initialState.loginPage.success;
+          } else {
+            state = {...state};
+            state.errors = {...state.errors};
+            state.errors.signUp = response.errors;
+            state.success = initialState.success;
+          }
+
+          break;
         }
-      } else if (action.name[0] === getLoggedInUserRequestName) {
-        if (action.success) {
-          state = setUser(state, action.headers, response.data);
+        case getLoggedInUserRequestName: {
+          if (action.success) {
+            state = {...state};
+            state.loggedInUser = response.data;
+          }
+          break;
         }
-      } else if(action.name[0] === getStripePublishableKeyRequestName) {
-        let stripeData = response.data as StripeResource;
-        state = {...state};
-        state.stripe = {...state.stripe};
-        state.stripe.publishableKey = stripeData.publishable_key;
+        case  getStripePublishableKeyRequestName: {
+          let stripeData = response.data as StripeResource;
+          state = {...state};
+          state.stripe = {...state.stripe};
+          state.stripe.publishableKey = stripeData.publishable_key;
 
-        state.stripe.plans = stripeData.plans;
-        state.stripe.chosenPlanID = stripeData.plans[0].id;
-        effects = effects.concat(getStripe(state.stripe.publishableKey));
+          state.stripe.plans = stripeData.plans;
+          state.stripe.chosenPlanID = stripeData.plans[0].id;
+          effects = effects.concat(getStripe(state.stripe.publishableKey));
+          break;
+        }
+
+        case changeEmailRequestName: {
+          if (action.success) {
+            state = {...state};
+            state.loggedInUser = response.data;
+
+            state.success = {...state.success};
+            state.success.signUp = "Email has changed successfully. A confirmation email has been sent to your new email. Please confirm.";
+
+            state = resetUser(state);
+          } else {
+            state = {...state};
+            state.errors = {...state.errors};
+            state.errors.changeAccountSettings = response.errors;
+            state.success = initialState.success;
+          }
+          break;
+        }
+        case changePasswordRequestName: {
+          if (action.success) {
+            state = {...state};
+            state.loggedInUser = response.data;
+
+            state.success = {...state.success};
+            state.success.changeAccountSettings = "Passwords have been changed successfully";
+            state.errors.changeAccountSettings = initialState.errors.changeAccountSettings;
+
+            state.inputs = {...state.inputs};
+            state.inputs.oldPassword = "";
+            state.inputs.newPassword = "";
+            state.inputs.confirmNewPassword = "";
+
+          } else {
+            state = {...state};
+            state.errors = {...state.errors};
+            state.errors.changeAccountSettings = response.errors;
+            state.success = initialState.success;
+          }
+          break;
+        }
+
+        case generateNewAccessTokenRequestName: {
+          if (action.success) {
+            state = setUser(state, action.headers, response.data);
+
+            state = {...state};
+            state.success = {...state.success};
+            state.success.changeAccountSettings = "Generated new access token";
+            state.errors.changeAccountSettings = initialState.errors.changeAccountSettings;
+
+
+          } else {
+            state = {...state};
+            state.errors = {...state.errors};
+            state.errors.changeAccountSettings = response.errors;
+            state.success = initialState.success;
+          }
+          break;
+        }
       }
       break;
 
@@ -309,33 +374,11 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
     }
 
     case "sign-up": {
+      state = validateEmail(state, "signUp", "email");
+      state = validatePasswords(state, "signUp", "password", "confirmPassword");
+      state = validateStripeCard(state, action.token_id, "signUp");
 
-      state = {...state};
-      state.loginPage = {...state.loginPage};
-      state.loginPage.errors = {...state.loginPage.errors};
-      state.loginPage.errors.signUp = [];
-
-      if (!state.inputs.email) {
-        state.loginPage.errors.signUp.push({type: "email", message: "Email is required"});
-      } else if (!EMAIL_REGEXP.test(state.inputs.email)) {
-        state.loginPage.errors.signUp.push({type: "email", message: "Email is invalid"});
-      }
-
-      if (!state.inputs.password) {
-        state.loginPage.errors.signUp.push({type:"password", message: "Password is required"});
-      } else if(state.inputs.password.length < state.minimumPasswordLength) {
-        state.loginPage.errors.signUp.push({type:"password", message: "Password minimum length is "+ state.minimumPasswordLength});
-      }
-
-      if (state.inputs.password !== state.inputs.confirmPassword) {
-        state.loginPage.errors.signUp.push({type: "confirm_password", message: "Password mismatch"});
-      }
-
-      if (!action.token_id) {
-        state.loginPage.errors.signUp.push({type: "stripe_card", message: "Must insert valid card"});
-      }
-
-      if (state.loginPage.errors.signUp.length === 0) {
+      if (state.errors.signUp.length === 0) {
 
         effects.push(requestAjax([userSignUpRequestName],
           {
@@ -358,9 +401,8 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
     case "error-on-sign-up": {
 
       state = {...state};
-      state.loginPage = {...state.loginPage};
-      state.loginPage.errors = {...state.loginPage.errors};
-      state.loginPage.errors.signUp = [action.error];
+      state.errors = {...state.errors};
+      state.errors.signUp = [action.error];
 
       break;
     }
@@ -383,26 +425,59 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         }));
       break;
 
-    case "generate-new-access-token":
-      effects.push(requestAjax([generateNewAccessTokenRequestName],
-        {
-          url: AuthGenerateNewAccessToken, method: "PUT", headers: state.headers,
-        }));
+    case "toggle":
+      if (action.target === "changeEmail") {
+        state = {...state};
+        state.inputs = {...state.inputs};
+        state.inputs.email = (state.loggedInUser && state.loggedInUser.email) || "";
+      }
       break;
 
     case "change-email":
-      if(!state.loggedInUser) break;
+
+      state = validateEmail(state, "changeAccountSettings", "newEmail");
+
+      if (!state.loggedInUser) break;
+
+      if (state.errors.changeAccountSettings.length > 0) break;
       effects.push(requestAjax([changeEmailRequestName],
         {
           url: ApiV1UsersPath + '/' + state.loggedInUser.id, method: "PUT", headers: state.headers,
+          json: {
+            user: {email: state.inputs.newEmail}
+          }
         }));
       break;
 
     case "change-password":
-      if(!state.loggedInUser) break;
+      state = validatePasswords(state, "changeAccountSettings", "newPassword", "confirmNewPassword");
+
+      if (!state.inputs.oldPassword) {
+        state.errors.changeAccountSettings.push({type: "password", message: "Current password is required"});
+      }
+
+      if (!state.loggedInUser) break;
+
+      if (state.errors.changeAccountSettings.length > 0) break;
+
       effects.push(requestAjax([changePasswordRequestName],
         {
           url: ApiV1UsersPath + '/' + state.loggedInUser.id, method: "PUT", headers: state.headers,
+          json: {
+            user: {
+              password: state.inputs.newPassword,
+              old_password: state.inputs.oldPassword
+            }
+          }
+        }));
+      break;
+
+    case "generate-new-access-token":
+      if (!state.loggedInUser) break;
+
+      effects.push(requestAjax([generateNewAccessTokenRequestName],
+        {
+          url: ApiV1UsersPath + '/' + state.loggedInUser.id + "/generate_new_access_token", method: "PUT", headers: state.headers,
         }));
       break;
 
@@ -410,6 +485,59 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
   return {state, effects};
 };
+
+function validateEmail<Error extends Extract<keyof typeof initialState.errors, string>,
+  Inputs extends Extract<keyof typeof initialState.inputs, string>>
+(state: State, errorType: Error, emailType: Inputs): State {
+  state = {...state};
+  state.errors = {...state.errors};
+  state.errors[errorType] = [];
+
+  if (!state.inputs[emailType]) {
+    state.errors[errorType].push({type: "email", message: "Email is required"});
+  } else if (!EMAIL_REGEXP.test(state.inputs[emailType])) {
+    state.errors[errorType].push({type: "email", message: "Email is invalid"});
+  }
+
+  return state;
+}
+
+function validatePasswords<Error extends Extract<keyof typeof initialState.errors, string>,
+  Inputs extends Extract<keyof typeof initialState.inputs, string>>
+(state: State, errorType: Error, password: Inputs, confirmPassword: Inputs): State {
+  state = {...state};
+  state.errors = {...state.errors};
+  state.errors[errorType] = [];
+
+  if (!state.inputs[password]) {
+    state.errors[errorType].push({type: "password", message: "Password is required"});
+  } else if (state.inputs[password].length < state.minimumPasswordLength) {
+    state.errors[errorType].push({
+      type: "password",
+      message: "Password minimum length is " + state.minimumPasswordLength
+    });
+  }
+
+  if (state.inputs[password] !== state.inputs[confirmPassword]) {
+    state.errors[errorType].push({type: "confirm_password", message: "Password mismatch"});
+  }
+
+  return state;
+}
+
+function validateStripeCard<Error extends Extract<keyof typeof initialState.errors, string>>
+(state: State, tokenId: string, errorType: keyof typeof state.errors): State {
+  state = {...state};
+  state.errors = {...state.errors};
+  state.errors[errorType] = [];
+
+  if (!tokenId) {
+    state.errors[errorType].push({type: "stripe_card", message: "Must insert valid card"});
+  }
+
+  return state;
+}
+
 
 export const confirmEmailRequestName = "confirm-email";
 export const userSignInRequestName = "user-sign-in";

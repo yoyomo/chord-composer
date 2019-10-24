@@ -10,7 +10,7 @@ let AudioContext = (window as any).AudioContext // Default
   || (window as any).webkitAudioContext // Safari and old versions of Chrome
   || false;
 
-export type ToggleMap = {[k: number]: boolean}
+export type ToggleMap = { [k: number]: boolean }
 
 const loginPageInputs = {
   email: "",
@@ -43,10 +43,9 @@ export const initialState = {
   selectedSavedChord: undefined as number | void,
   loggedInUser: undefined as UserResource | void,
   pathParts: [] as PathPart[],
-  headers: {} as {[k: string]: string},
+  headers: {} as { [k: string]: string },
   minimumPasswordLength: 6,
 
-  // TODO request data from backend & display plan information
   stripe: {
     object: undefined as stripe.Stripe | void,
     publishableKey: undefined as string | void,
@@ -70,21 +69,27 @@ export const initialState = {
     changeSubscription: false,
   },
 
-  loginPage: {
-    success: {
-      signUp: "" as string
-    },
-    errors: {
-      signIn: [] as ResponseError[],
-      signUp: [] as ResponseError[],
-      changeAccountSettings: [] as ResponseError[]
-    }
+  success: {
+    signUp: "" as string,
+    changeAccountSettings: "" as string
+  },
+  errors: {
+    signIn: [] as ResponseError[],
+    signUp: [] as ResponseError[],
+    changeAccountSettings: [] as ResponseError[]
   },
 
-  loadingRequests: {} as {[k:string]: boolean},
+  loadingRequests: {} as { [k: string]: boolean },
 
   songs: [] as SongResource[],
-  newSong: {id: undefined as unknown as number, user_id: "", title: "", author: "", chordsAndLyrics: [], created_at: null as unknown as string} as SongResource,
+  newSong: {
+    id: undefined as unknown as number,
+    user_id: "",
+    title: "",
+    author: "",
+    chordsAndLyrics: [],
+    created_at: null as unknown as string
+  } as SongResource,
 
 };
 

@@ -20,8 +20,8 @@ export function ChordGrid(dispatch: (action: Action) => void) {
           state.chordGrid.map((chord, i) => {
             if (chord.variation !== 0) return null;
             let variations = state.chordGrid.slice(i+1, i + chord.pitchClass.length);
-            return <div>
-              <ChordElement key={"chord-" + chordIdentifier(chord)}
+            return <div key={"chord-" + chordIdentifier(chord)}>
+              <ChordElement
                             chord={chord}
                             notes={state.notes}
                             audioContext={state.audioContext}

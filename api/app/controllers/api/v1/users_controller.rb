@@ -1,6 +1,6 @@
 class Api::V1::UsersController < APIController
 
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [:show, :update, :destroy, :generate_new_access_token]
 
   skip_before_action :authenticate_user!, only: [:create, :confirm_email, :sign_in, :resend_confirmation_email]
 
@@ -27,7 +27,20 @@ class Api::V1::UsersController < APIController
   end
 
   def update
+    prev_email = @user.email
+
+    old_password = params[:user][:old_password]
+
+    if old_password && !@user.authenticate(old_password)
+      return render json: {errors: [{type: "update", message: "Incorrect password"}]}, status: :unprocessable_entity
+    end
+
     if @user.update(user_params)
+
+      if @user.email != prev_email
+        @user.send_confirmation_change_of_email
+      end
+
       render json: {data: @user}
     else
       render json: {errors: [{type: "update", message: @user.errors.messages.to_s}]}, status: :unprocessable_entity
@@ -59,19 +72,26 @@ class Api::V1::UsersController < APIController
     email = user_params[:email]
     user = User.find_by(email: email, confirmation_token: token)
 
-    if user && user.confirmation_expires_at > Time.now && !user.stripe_token_id.nil? && !user.stripe_plan_id.nil?
+    if user && user.confirmed_at.nil? && user.confirmation_expires_at > Time.now
 
-      customer = Stripe::Customer.create({
+      user.update!(confirmed_at: Time.now)
+
+      if !user.stripe_token_id.nil? && !user.stripe_plan_id.nil? && user.stripe_customer_id.nil? && user.stripe_subscription_id.nil?
+
+        customer = Stripe::Customer.create({
                                              email: user.email,
                                              source: user.stripe_token_id
-                                         })
+                                           })
 
-      subscription = Stripe::Subscription.create({
+        subscription = Stripe::Subscription.create({
                                                      customer: customer.id,
                                                      items: [{plan: user.stripe_plan_id}]
-                                                 })
+                                                   })
 
-      user.update!(confirmed_at: Time.now, stripe_customer_id: customer.id, stripe_subscription_id: subscription.id)
+        user.update!(stripe_customer_id: customer.id, stripe_subscription_id: subscription.id)
+
+      end
+
 
       render json: {data: user}
     else
@@ -91,9 +111,9 @@ class Api::V1::UsersController < APIController
 
       if user.confirmed_at.nil?
         return render json: {errors: [{type: "confirmation",
-                                message: "A confirmation email has already been sent to " + user.email +
-                                    ". Please go to your email account and confirm."}]},
-               status: :unprocessable_entity
+                                       message: "A confirmation email has already been sent to " + user.email +
+                                         ". Please go to your email account and confirm."}]},
+                      status: :unprocessable_entity
       end
 
 
@@ -116,6 +136,10 @@ class Api::V1::UsersController < APIController
 
   def generate_new_access_token
     @user.update!(access_token: SecureRandom.hex)
+
+    response.set_header('kordpose-session', @user.access_token)
+    response.set_header('id', @user.id)
+
     render json: {data: @user}
   end
 

@@ -167,7 +167,7 @@ export function SignUpPage(dispatch: (action: Action) => void) {
               <StripeProvider apiKey={state.stripe.publishableKey}>
                   <Elements>
                       <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error}
-                                        errors={state.loginPage.errors.signUp}
+                                        errors={state.errors.signUp}
                                         isLoadingRequest={state.loadingRequests[stringifyRequestName([userSignUpRequestName])]}
                       />
                   </Elements>

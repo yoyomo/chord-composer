@@ -26,7 +26,7 @@ export function ChordTools(dispatch: (action: Action) => void) {
         </ParameterButton>
         <div className={"pv2 dark-gray"}>
           {octaves.map(octave => {
-            return <SVGOctave className={`ma1 ${octave === state.octave ? "svg-green-yellow" : "svg-gray fill-none"}`}/>
+            return <SVGOctave key={`octave-${octave}`} className={`ma1 ${octave === state.octave ? "svg-green-yellow" : "svg-gray fill-none"}`}/>
           })}
         </div>
         <ParameterButton className={"w2 h2 pa2 ma2"} disabled={state.octave === MAXIMUM_OCTAVE}
