@@ -24,11 +24,11 @@ class User < ApplicationRecord
 
   def send_reset_password_link
     update_user_reset_password
-    UserMailer.with(user: self).forgot_password.deliver_later
+    UserMailer.with(user: self).reset_password.deliver_later
   end
 
   def update_user_reset_password
-    self.update!(forgot_password_token: SecureRandom.hex, forgot_password_expires_at: 30.minutes.from_now)
+    self.update!(reset_password_token: SecureRandom.hex, reset_password_expires_at: 30.minutes.from_now)
   end
 
   def confirm

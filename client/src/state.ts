@@ -67,6 +67,7 @@ export const initialState = {
     changePassword: false,
     changeAccessToken: false,
     changeSubscription: false,
+    isResettingPassword: false,
   },
 
   success: {
@@ -77,6 +78,9 @@ export const initialState = {
     signIn: [] as ResponseError[],
     signUp: [] as ResponseError[],
     changeAccountSettings: [] as ResponseError[]
+  },
+  alerts: {
+    signIn: "" as string
   },
 
   loadingRequests: {} as { [k: string]: boolean },

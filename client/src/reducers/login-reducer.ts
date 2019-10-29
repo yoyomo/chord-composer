@@ -127,6 +127,16 @@ export const changePassword = (): ChangePasswordAction => {
   }
 };
 
+export interface ForgotPasswordAction {
+  type: "forgot-password"
+}
+
+export const forgotPassword = (): ForgotPasswordAction => {
+  return {
+    type: "forgot-password",
+  }
+};
+
 export type LogInActions =
   | SignInAction
   | SignOutAction
@@ -137,7 +147,8 @@ export type LogInActions =
   | GenerateNewAccessTokenAction
   | ResendConfirmationEmailAction
   | ChangeEmailAction
-  | ChangePasswordAction;
+  | ChangePasswordAction
+  | ForgotPasswordAction;
 
 
 export interface ResponseType {
@@ -146,7 +157,7 @@ export interface ResponseType {
   errors: ResponseError[]
 }
 
-export type ResponseErrorType = "sign_in" | "confirmation" | "email" | "password" | "confirm_password" | "stripe_card" | "forgot_password"
+export type ResponseErrorType = "sign_in" | "confirmation" | "email" | "password" | "confirm_password" | "stripe_card" | "forgot_password" | "reset_password"
 
 export interface ResponseError {
   type: ResponseErrorType
@@ -344,6 +355,14 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           }
           break;
         }
+
+        case forgotPasswordRequestName: {
+          if (action.success) {
+            state = {...state};
+            state.alerts = {...state.alerts};
+            state.alerts.signIn = "An email has been sent to reset your password.";
+          }
+        }
       }
       break;
 
@@ -481,7 +500,22 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         }));
       break;
 
+    case "forgot-password":
 
+      state = validateEmail(state, "signIn", "email");
+
+      if (state.errors.signIn.length > 0) break;
+
+      effects.push(requestAjax([forgotPasswordRequestName],
+        {
+          url: ApiV1UsersPath + "/forgot_password", method: "PUT", headers: state.headers,
+          json: {
+            user: {
+              email: state.inputs.email
+            }
+          }
+        }));
+      break;
 
   }
 
@@ -548,3 +582,4 @@ export const resendConfirmationEmailRequestName = "resend-confirmation-email";
 export const generateNewAccessTokenRequestName = "user-generate-new-access-token";
 export const changeEmailRequestName = "change-email";
 export const changePasswordRequestName = "change-password";
+export const forgotPasswordRequestName = "forgot-password";

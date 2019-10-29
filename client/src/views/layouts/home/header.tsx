@@ -7,7 +7,7 @@ import {
 } from "../../../reducers/header-reducer";
 import {ClassAndChildren} from "../../../core/reducers";
 import {Action} from "../../../core/root-reducer";
-import {LogIn} from "../sign_up/log-in";
+import {LogIn} from "../log-in/log-in";
 import {toggleDispatcher} from "../../../reducers/toggle-reducer";
 import {UserInfoModal} from "./user-info";
 import {PathPart} from "../../../reducers/router-reducer";

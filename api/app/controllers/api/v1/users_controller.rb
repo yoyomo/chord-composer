@@ -168,10 +168,10 @@ class Api::V1::UsersController < APIController
       if user.update(password: password, reset_password_expires_at: Time.now)
         render json: {data: user}
       else
-        render json: {errors: [{type: "forgot_password", message: @user.errors.messages.to_s}]}, status: :unprocessable_entity
+        render json: {errors: [{type: "reset_password", message: @user.errors.messages.to_s}]}, status: :unprocessable_entity
       end
     else
-      render json: {errors: [{type: "forgot_password",
+      render json: {errors: [{type: "reset_password",
                               message: "Reset Password Token is invalid or has expired"}]},
              status: :unprocessable_entity
     end

@@ -66,6 +66,7 @@ export function routerReducer(state: State,
       parameters[0] = parameters[0].split('?')[1];
       let confirmationToken = "";
       let email = "";
+      let resetPasswordToken = "";
       parameters.map(param => {
         let [key, value] = param.split('=');
 
@@ -73,22 +74,36 @@ export function routerReducer(state: State,
           confirmationToken = value
         } else if (key === "email" && value) {
           email = value;
+        } else if (key === "reset_password_token" && value){
+          resetPasswordToken = value;
         }
         return param;
       });
 
-      if (confirmationToken && email) {
-        effects = effects.concat(requestAjax([confirmEmailRequestName], {
-          url: AuthConfirmEmail,
-          method: "PUT",
-          headers: state.headers,
-          json: {
-            user: {
-              confirmation_token: confirmationToken,
-              email: email
+      if(email) {
+        if (confirmationToken) {
+          effects = effects.concat(requestAjax([confirmEmailRequestName], {
+            url: AuthConfirmEmail,
+            method: "PUT",
+            headers: state.headers,
+            json: {
+              user: {
+                confirmation_token: confirmationToken,
+                email: email
+              }
             }
-          }
-        }));
+          }));
+        } else if(resetPasswordToken) {
+
+          state = {...state};
+          state.toggles = {...state.toggles};
+          state.toggles.isResettingPassword = true;
+          state.inputs = {...state.inputs};
+          state.inputs.email = email;
+
+          state.toggles.showLogInModal = true;
+
+        }
       }
 
 

@@ -7,6 +7,7 @@ export interface InputProps extends ClassAndChildren{
   value: string
   onChange: (e: EventInput) => void
   autoComplete?: string
+  disabled?: boolean
 }
 
 export const Input = (props: InputProps) => {
