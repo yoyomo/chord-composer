@@ -1,17 +1,17 @@
-import {Action} from "../../../core/root-reducer";
-import {Loading} from "../../../components/loading";
-import {Input} from "../../../components/input";
-import {inputChangeDispatcher} from "../../../reducers/input-reducer";
+import {Action} from "../../core/root-reducer";
+import {Loading} from "../../components/loading";
+import {Input} from "../../components/input";
+import {inputChangeDispatcher} from "../../reducers/input-reducer";
 import * as React from "react";
-import {State} from "../../../state";
-import {stringifyRequestName} from "../../../reducers/complete-request-reducer";
+import {State} from "../../state";
+import {stringifyRequestName} from "../../reducers/complete-request-reducer";
 import {
   forgotPassword,
   goSignUp,
   resendConfirmationEmail,
   resendConfirmationEmailRequestName,
   signIn
-} from "../../../reducers/login-reducer";
+} from "../../reducers/login-reducer";
 
 export function SignIn(dispatch: (action: Action) => void) {
 

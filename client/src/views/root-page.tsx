@@ -1,6 +1,6 @@
 import React from "react";
 import {State} from "../state";
-import {HomePage} from "./layouts/home/home-page";
+import {HomePage} from "./home/home-page";
 import {SignUpPage} from "./layouts/sign_up/sign-up-page";
 import {Action} from "../core/root-reducer";
 

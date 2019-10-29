@@ -1,8 +1,8 @@
-import {Action} from "../../../core/root-reducer";
-import {selectKey} from "../../../reducers/chord-grid-reducer";
-import {KEYS} from "../../../reducers/recompute-chord-grid";
-import {State} from "../../../state";
-import {NoteKey} from "../../../components/note-key";
+import {Action} from "../../core/root-reducer";
+import {selectKey} from "../../reducers/chord-grid-reducer";
+import {KEYS} from "../../reducers/recompute-chord-grid";
+import {State} from "../../state";
+import {NoteKey} from "../../components/note-key";
 import React from "react";
 
 export function ChordKeySelector(dispatch: (action: Action) => void) {

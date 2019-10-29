@@ -1,9 +1,9 @@
 import * as React from "react";
-import {State} from "../../../state";
-import {signOut} from "../../../reducers/login-reducer";
-import {Action} from "../../../core/root-reducer";
-import {HeaderTitle} from "../../../components/header-title";
-import {toggleDispatcher} from "../../../reducers/toggle-reducer";
+import {State} from "../../state";
+import {signOut} from "../../reducers/login-reducer";
+import {Action} from "../../core/root-reducer";
+import {HeaderTitle} from "../../components/header-title";
+import {toggleDispatcher} from "../../reducers/toggle-reducer";
 import {AccountSettings} from "./account-settings";
 
 export function UserInfoModal(dispatch: (action: Action) => void) {

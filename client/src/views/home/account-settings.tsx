@@ -1,18 +1,18 @@
 import * as React from "react";
-import {State, Toggles} from "../../../state";
+import {State, Toggles} from "../../state";
 import {
   changeEmail,
   changeEmailRequestName,
   changePassword, changePasswordRequestName,
   generateNewAccessToken, generateNewAccessTokenRequestName
-} from "../../../reducers/login-reducer";
-import {Action} from "../../../core/root-reducer";
-import {Input} from "../../../components/input";
-import {inputChangeDispatcher} from "../../../reducers/input-reducer";
-import {toggleDispatcher} from "../../../reducers/toggle-reducer";
-import {SVGBack} from "../../../components/svgs";
-import {Loading} from "../../../components/loading";
-import {stringifyRequestName} from "../../../reducers/complete-request-reducer";
+} from "../../reducers/login-reducer";
+import {Action} from "../../core/root-reducer";
+import {Input} from "../../components/input";
+import {inputChangeDispatcher} from "../../reducers/input-reducer";
+import {toggleDispatcher} from "../../reducers/toggle-reducer";
+import {SVGBack} from "../../components/svgs";
+import {Loading} from "../../components/loading";
+import {stringifyRequestName} from "../../reducers/complete-request-reducer";
 
 export function AccountSettings(dispatch: (action: Action) => void) {
   const dispatcher = {

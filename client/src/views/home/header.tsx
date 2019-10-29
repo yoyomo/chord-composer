@@ -1,16 +1,16 @@
 import React from "react";
-import {State} from "../../../state";
+import {State} from "../../state";
 import {
   changeBaseFrequency, goToHomePage,
   selectWaveType,
   toggleSound
-} from "../../../reducers/header-reducer";
-import {ClassAndChildren} from "../../../core/reducers";
-import {Action} from "../../../core/root-reducer";
+} from "../../reducers/header-reducer";
+import {ClassAndChildren} from "../../core/reducers";
+import {Action} from "../../core/root-reducer";
 import {LogIn} from "../log-in/log-in";
-import {toggleDispatcher} from "../../../reducers/toggle-reducer";
+import {toggleDispatcher} from "../../reducers/toggle-reducer";
 import {UserInfoModal} from "./user-info";
-import {PathPart} from "../../../reducers/router-reducer";
+import {PathPart} from "../../reducers/router-reducer";
 import {
   SVGChords,
   SVGSawtooth,
@@ -20,7 +20,7 @@ import {
   SVGSquare,
   SVGTriangle,
   SVGUser
-} from "../../../components/svgs";
+} from "../../components/svgs";
 
 export function Header(dispatch: (action: Action) => void) {
 

@@ -1,9 +1,9 @@
 import React from "react";
-import {State} from "../../../state";
-import {ParameterButton} from "../../../components/parameter-button";
-import {decreaseOctave, increaseOctave, MAXIMUM_OCTAVE, MINIMUM_OCTAVE} from "../../../reducers/chord-tools-reducer";
-import {Action} from "../../../core/root-reducer";
-import {SVGMinus, SVGOctave, SVGPlus} from "../../../components/svgs";
+import {State} from "../../state";
+import {ParameterButton} from "../../components/parameter-button";
+import {decreaseOctave, increaseOctave, MAXIMUM_OCTAVE, MINIMUM_OCTAVE} from "../../reducers/chord-tools-reducer";
+import {Action} from "../../core/root-reducer";
+import {SVGMinus, SVGOctave, SVGPlus} from "../../components/svgs";
 
 export function ChordTools(dispatch: (action: Action) => void) {
 

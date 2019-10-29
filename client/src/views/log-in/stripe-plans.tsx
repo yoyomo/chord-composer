@@ -1,9 +1,9 @@
 import * as React from "react";
-import {State} from "../../../state";
-import {Action} from "../../../core/root-reducer";
+import {State} from "../../state";
+import {Action} from "../../core/root-reducer";
 import {
   chooseStripePlan,
-} from "../../../reducers/login-reducer";
+} from "../../reducers/login-reducer";
 
 
 export function StripePlans(dispatch: (action: Action) => void) {

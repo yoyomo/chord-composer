@@ -1,9 +1,9 @@
 import React from "react";
-import {State} from "../../../state";
-import {KEYS} from "../../../reducers/recompute-chord-grid";
-import {Action} from "../../../core/root-reducer";
-import {ChordMapperKeys, toggleChordMapperKey} from "../../../reducers/chord-mapper-reducer";
-import {playSound} from "../../../utils/sound-utils";
+import {State} from "../../state";
+import {KEYS} from "../../reducers/recompute-chord-grid";
+import {Action} from "../../core/root-reducer";
+import {ChordMapperKeys, toggleChordMapperKey} from "../../reducers/chord-mapper-reducer";
+import {playSound} from "../../utils/sound-utils";
 
 export const SelectedKey = () => {
   return <div className={"bg-light-red w2 h2 pa2 br-100"}/>

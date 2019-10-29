@@ -1,15 +1,15 @@
 import React from "react";
-import {State} from "../../../state";
+import {State} from "../../state";
 import {
   removeSavedChord,
   saveChord,
   selectSavedChord,
-} from "../../../reducers/footer-reducer";
-import {ParameterButton} from "../../../components/parameter-button";
-import {ChordElement} from "../../../components/chord";
-import {chordIdentifier} from "../../../reducers/recompute-chord-grid";
-import {Action} from "../../../core/root-reducer";
-import {SVGMinus, SVGPlus} from "../../../components/svgs";
+} from "../../reducers/footer-reducer";
+import {ParameterButton} from "../../components/parameter-button";
+import {ChordElement} from "../../components/chord";
+import {chordIdentifier} from "../../reducers/recompute-chord-grid";
+import {Action} from "../../core/root-reducer";
+import {SVGMinus, SVGPlus} from "../../components/svgs";
 
 
 export function Footer(dispatch: (action: Action) => void) {

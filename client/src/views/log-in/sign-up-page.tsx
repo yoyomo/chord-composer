@@ -1,20 +1,20 @@
 import * as React from "react";
-import {State} from "../../../state";
-import {Action} from "../../../core/root-reducer";
-import {inputChangeDispatcher} from "../../../reducers/input-reducer";
+import {State} from "../../state";
+import {Action} from "../../core/root-reducer";
+import {inputChangeDispatcher} from "../../reducers/input-reducer";
 import {
   chooseStripePlan,
   errorOnSignUp, ResponseError,
   signUp,
   userSignUpRequestName
-} from "../../../reducers/login-reducer";
+} from "../../reducers/login-reducer";
 import {CardElement, Elements, injectStripe, ReactStripeElements, StripeProvider} from "react-stripe-elements";
-import {Input} from "../../../components/input";
-import {HeaderTitle} from "../../../components/header-title";
-import {Page} from "../../../components/page";
-import {stringifyRequestName} from "../../../reducers/complete-request-reducer";
-import {Loading} from "../../../components/loading";
-import {SVGCheckMark} from "../../../components/svgs";
+import {Input} from "../../components/input";
+import {HeaderTitle} from "../../components/header-title";
+import {Page} from "../../components/page";
+import {stringifyRequestName} from "../../reducers/complete-request-reducer";
+import {Loading} from "../../components/loading";
+import {SVGCheckMark} from "../../components/svgs";
 import {StripePlans} from "./stripe-plans";
 
 

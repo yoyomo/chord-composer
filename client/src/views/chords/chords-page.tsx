@@ -2,10 +2,10 @@ import * as React from "react";
 import {ChordTools} from "./chord-tools";
 import {ChordGrid} from "./chord-grid";
 import {ChordMapper} from "./chord-mapper";
-import {State} from "../../../state";
-import {Action} from "../../../core/root-reducer";
+import {State} from "../../state";
+import {Action} from "../../core/root-reducer";
 import {ChordKeySelector} from "./chord-key-selector";
-import {Page} from "../../../components/page";
+import {Page} from "../../components/page";
 
 
 export function ChordsPage(dispatch: (action: Action) => void) {

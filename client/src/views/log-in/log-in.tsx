@@ -1,6 +1,6 @@
 import * as React from "react";
-import {State} from "../../../state";
-import {Action} from "../../../core/root-reducer";
+import {State} from "../../state";
+import {Action} from "../../core/root-reducer";
 import {SignIn} from "./sign-in";
 import {ResetPassword} from "./reset-password";
 

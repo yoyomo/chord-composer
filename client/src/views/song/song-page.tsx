@@ -1,10 +1,10 @@
 import * as React from "react";
-import {State} from "../../../state";
-import {Action} from "../../../core/root-reducer";
-import {Input} from "../../../components/input";
-import {inputChangeDispatcher} from "../../../reducers/input-reducer";
-import {addChordAndLyric} from "../../../reducers/song-page-reducer";
-import {Page} from "../../../components/page";
+import {State} from "../../state";
+import {Action} from "../../core/root-reducer";
+import {Input} from "../../components/input";
+import {inputChangeDispatcher} from "../../reducers/input-reducer";
+import {addChordAndLyric} from "../../reducers/song-page-reducer";
+import {Page} from "../../components/page";
 
 export function SongPage(dispatch: (action: Action) => void) {
 
