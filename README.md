@@ -1,24 +1,32 @@
-# README
+# Kordpose
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Development
 
-Things you may want to cover:
+### Installment
 
-* Ruby version
+```bash
+git clone git@github.com:yoyomo/kordpose.git
+cd kordpose
+```
 
-* System dependencies
+```bash
+cd api
+bundle
+```
 
-* Configuration
+```bash
+cd client
+npm install
+```
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+### Running
+```bash
+hivemind Procfile.Dev 
+```
+or
+```bash
+cd api && rails s
+```
+```bash
+cd client && npm start
+```
