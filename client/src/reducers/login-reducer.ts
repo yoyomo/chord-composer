@@ -1,27 +1,27 @@
-import {initialState, State, Toggles} from "../state";
-import {ReductionWithEffect} from "../core/reducers";
-import {parseHTTPHeadersToJSON, requestAjax} from "../core/services/ajax-service";
+import { initialState, State, Toggles } from "../state";
+import { ReductionWithEffect } from "../core/reducers";
+import { parseHTTPHeadersToJSON, requestAjax } from "../core/services/ajax-service";
 import {
   ApiV1UsersPath,
   AuthResendConfirmationEmail,
   AuthSignIn,
   AuthSignUp
 } from "../resources/routes";
-import {historyPush} from "../core/services/navigation-service";
-import {ResourceType} from "../resources/resource";
-import {UserResource} from "../resources/user-resource";
-import {Action} from "../core/root-reducer";
-import {Effect} from "../core/services/service";
-import {setCookie} from "../utils/cookies";
-import {getLoggedInUserRequestName} from "./footer-reducer";
-import {parseMMLChords} from "../utils/mml-utils";
-import {getStripePublishableKeyRequestName} from "./router-reducer";
-import {StripeResource} from "../resources/stripe-resource";
-import {getStripe} from "../core/services/stripe-service";
-import {setTimer} from "../core/services/timer-service";
-import {toggle} from "./toggle-reducer";
+import { historyPush } from "../core/services/navigation-service";
+import { ResourceType } from "../resources/resource";
+import { UserResource } from "../resources/user-resource";
+import { Action } from "../core/root-reducer";
+import { Effect } from "../core/services/service";
+import { setCookie } from "../utils/cookies";
+import { getLoggedInUserRequestName } from "./footer-reducer";
+import { parseMMLChords } from "../utils/mml-utils";
+import { getStripePublishableKeyRequestName } from "./router-reducer";
+import { StripeResource } from "../resources/stripe-resource";
+import { getStripe } from "../core/services/stripe-service";
+import { setTimer } from "../core/services/timer-service";
+import { toggle } from "./toggle-reducer";
 
-export interface SignInAction {
+export type SignInAction = {
   type: "sign-in"
 }
 
@@ -31,7 +31,7 @@ export const signIn = (): SignInAction => {
   };
 };
 
-export interface SignOutAction {
+export type SignOutAction = {
   type: "sign-out"
 }
 
@@ -41,7 +41,7 @@ export const signOut = (): SignOutAction => {
   };
 };
 
-export interface GoSignUpAction {
+export type GoSignUpAction = {
   type: "go-sign-up"
 }
 
@@ -51,7 +51,7 @@ export const goSignUp = (): GoSignUpAction => {
   };
 };
 
-export interface SignUpAction {
+export type SignUpAction = {
   type: "sign-up"
   token_id: string
 }
@@ -63,7 +63,7 @@ export const signUp = (token_id: string): SignUpAction => {
   };
 };
 
-export interface ErrorOnSignUpAction {
+export type ErrorOnSignUpAction = {
   type: "error-on-sign-up"
   error: ResponseError
 }
@@ -75,7 +75,7 @@ export const errorOnSignUp = (error: ResponseError): ErrorOnSignUpAction => {
   };
 };
 
-export interface ChooseStripePlanAction {
+export type ChooseStripePlanAction = {
   type: "choose-stripe-plan"
   stripePlanId: string
 }
@@ -87,7 +87,7 @@ export const chooseStripePlan = (stripePlanId: string): ChooseStripePlanAction =
   }
 };
 
-export interface GenerateNewAccessTokenAction {
+export type GenerateNewAccessTokenAction = {
   type: "generate-new-access-token"
 }
 
@@ -97,7 +97,7 @@ export const generateNewAccessToken = (): GenerateNewAccessTokenAction => {
   }
 };
 
-export interface ResendConfirmationEmailAction {
+export type ResendConfirmationEmailAction = {
   type: "resend-confirmation-email"
 }
 
@@ -107,7 +107,7 @@ export const resendConfirmationEmail = (): ResendConfirmationEmailAction => {
   }
 };
 
-export interface ChangeEmailAction {
+export type ChangeEmailAction = {
   type: "change-email"
 }
 
@@ -117,7 +117,7 @@ export const changeEmail = (): ChangeEmailAction => {
   }
 };
 
-export interface ChangePasswordAction {
+export type ChangePasswordAction = {
   type: "change-password"
 }
 
@@ -127,7 +127,7 @@ export const changePassword = (): ChangePasswordAction => {
   }
 };
 
-export interface ForgotPasswordAction {
+export type ForgotPasswordAction = {
   type: "forgot-password"
 }
 
@@ -137,13 +137,23 @@ export const forgotPassword = (): ForgotPasswordAction => {
   }
 };
 
-export interface ResetPasswordAction {
+export type ResetPasswordAction = {
   type: "reset-password"
 }
 
 export const resetPassword = (): ResetPasswordAction => {
   return {
     type: "reset-password",
+  }
+};
+
+export type ChangeSubscriptionAction = {
+  type: "change-subscription"
+}
+
+export const changeSubscription = (): ChangeSubscriptionAction => {
+  return {
+    type: "change-subscription",
   }
 };
 
@@ -159,7 +169,8 @@ export type LogInActions =
   | ChangeEmailAction
   | ChangePasswordAction
   | ForgotPasswordAction
-  | ResetPasswordAction;
+  | ResetPasswordAction
+  | ChangeSubscriptionAction;
 
 
 export interface ResponseType {
@@ -170,7 +181,7 @@ export interface ResponseType {
 
 export type ResponseErrorType = "sign_in" | "confirmation" | "email" | "password" | "confirm_password" | "stripe_card" | "forgot_password" | "reset_password"
 
-export interface ResponseError {
+export type ResponseError = {
   type: ResponseErrorType
   message: string
 }
@@ -179,7 +190,7 @@ export const EMAIL_REGEXP = /^[\w+\-.]+@[a-z\d\-.]+\.[a-z]+$/;
 export const AuthHeaders = ["kordpose-session", "id"];
 
 export const setUser = (state: State, headers: string, userData: UserResource): State => {
-  state = {...state};
+  state = { ...state };
   state.loggedInUser = userData;
   state.headers = parseHTTPHeadersToJSON(headers);
 
@@ -197,12 +208,12 @@ export const setUser = (state: State, headers: string, userData: UserResource): 
 };
 
 export const resetUser = (state: State): State => {
-  state = {...state};
+  state = { ...state };
   state.loggedInUser = undefined;
 
   state.savedChords = [];
 
-  state.headers = {...state.headers};
+  state.headers = { ...state.headers };
 
   for (let key in state.headers) {
     state.headers[key] = "";
@@ -227,13 +238,13 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       switch (action.name[0]) {
         case userSignInRequestName: {
           if (action.success) {
-            state = {...state};
+            state = { ...state };
             state = setUser(state, action.headers, response.data as UserResource);
-            state.toggles = {...state.toggles};
+            state.toggles = { ...state.toggles };
             state.toggles.showLogInModal = false;
             state.success = initialState.success;
             state.errors = initialState.errors;
-            state.inputs = {...state.inputs};
+            state.inputs = { ...state.inputs };
             state.inputs.email = "";
             state.inputs.password = "";
             state.inputs.confirmPassword = "";
@@ -242,8 +253,8 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
             effects = effects.concat(setTimer(toggle<Toggles>("showSuccessfulLogInModal", false), 1500))
           } else {
-            state = {...state};
-            state.errors = {...state.errors};
+            state = { ...state };
+            state.errors = { ...state.errors };
             state.errors.signIn = response.errors;
             state.success = initialState.success;
           }
@@ -251,19 +262,19 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         }
         case confirmEmailRequestName: {
           if (action.success) {
-            state = {...state};
-            state.toggles = {...state.toggles};
+            state = { ...state };
+            state.toggles = { ...state.toggles };
             state.toggles.showLogInModal = true;
 
-            state.success = {...state.success};
+            state.success = { ...state.success };
             state.success.signUp = "Account Confirmed! Try logging in now";
 
-            effects = effects.concat(historyPush({pathname: 'home/chords'}));
+            effects = effects.concat(historyPush({ pathname: 'home/chords' }));
           } else {
-            state = {...state};
-            state.errors = {...state.errors};
+            state = { ...state };
+            state.errors = { ...state.errors };
             state.errors.signIn = response.errors;
-            state.toggles = {...state.toggles};
+            state.toggles = { ...state.toggles };
             state.toggles.showLogInModal = true;
           }
           break;
@@ -271,18 +282,18 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         case userSignUpRequestName: {
 
           if (action.success) {
-            state = {...state};
-            state.toggles = {...state.toggles};
+            state = { ...state };
+            state.toggles = { ...state.toggles };
             state.toggles.showLogInModal = true;
 
-            state.success = {...state.success};
+            state.success = { ...state.success };
             state.success.signUp = "A confirmation email was sent to you. Please confirm your email.";
             state.errors = initialState.errors;
-            effects = effects.concat(historyPush({pathname: '/home/chords'}));
+            effects = effects.concat(historyPush({ pathname: '/home/chords' }));
 
           } else {
-            state = {...state};
-            state.errors = {...state.errors};
+            state = { ...state };
+            state.errors = { ...state.errors };
             state.errors.signUp = response.errors;
             state.success = initialState.success;
           }
@@ -291,15 +302,15 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         }
         case getLoggedInUserRequestName: {
           if (action.success) {
-            state = {...state};
+            state = { ...state };
             state.loggedInUser = response.data;
           }
           break;
         }
-        case  getStripePublishableKeyRequestName: {
+        case getStripePublishableKeyRequestName: {
           let stripeData = response.data as StripeResource;
-          state = {...state};
-          state.stripe = {...state.stripe};
+          state = { ...state };
+          state.stripe = { ...state.stripe };
           state.stripe.publishableKey = stripeData.publishable_key;
 
           state.stripe.plans = stripeData.plans;
@@ -310,16 +321,16 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
         case changeEmailRequestName: {
           if (action.success) {
-            state = {...state};
+            state = { ...state };
             state.loggedInUser = response.data;
 
-            state.success = {...state.success};
+            state.success = { ...state.success };
             state.success.signUp = "Email has changed successfully. A confirmation email has been sent to your new email. Please confirm.";
 
             state = resetUser(state);
           } else {
-            state = {...state};
-            state.errors = {...state.errors};
+            state = { ...state };
+            state.errors = { ...state.errors };
             state.errors.changeAccountSettings = response.errors;
             state.success = initialState.success;
           }
@@ -327,21 +338,21 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         }
         case changePasswordRequestName: {
           if (action.success) {
-            state = {...state};
+            state = { ...state };
             state.loggedInUser = response.data;
 
-            state.success = {...state.success};
+            state.success = { ...state.success };
             state.success.changeAccountSettings = "Passwords have been changed successfully";
             state.errors.changeAccountSettings = initialState.errors.changeAccountSettings;
 
-            state.inputs = {...state.inputs};
+            state.inputs = { ...state.inputs };
             state.inputs.oldPassword = "";
             state.inputs.newPassword = "";
             state.inputs.confirmNewPassword = "";
 
           } else {
-            state = {...state};
-            state.errors = {...state.errors};
+            state = { ...state };
+            state.errors = { ...state.errors };
             state.errors.changeAccountSettings = response.errors;
             state.success = initialState.success;
           }
@@ -352,16 +363,16 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
           if (action.success) {
             state = setUser(state, action.headers, response.data);
 
-            state = {...state};
-            state.success = {...state.success};
+            state = { ...state };
+            state.success = { ...state.success };
             state.success.changeAccountSettings = "Generated new access token";
-            state.errors = {...state.errors};
+            state.errors = { ...state.errors };
             state.errors.changeAccountSettings = initialState.errors.changeAccountSettings;
 
 
           } else {
-            state = {...state};
-            state.errors = {...state.errors};
+            state = { ...state };
+            state.errors = { ...state.errors };
             state.errors.changeAccountSettings = response.errors;
             state.success = initialState.success;
           }
@@ -370,8 +381,8 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
         case forgotPasswordRequestName: {
           if (action.success) {
-            state = {...state};
-            state.alerts = {...state.alerts};
+            state = { ...state };
+            state.alerts = { ...state.alerts };
             state.alerts.signIn = "An email has been sent to reset your password.";
           }
           break;
@@ -379,18 +390,18 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
         case resetPasswordRequestName: {
           if (action.success) {
-            state = {...state};
-            state.toggles = {...state.toggles};
+            state = { ...state };
+            state.toggles = { ...state.toggles };
             state.toggles.isResettingPassword = false;
-            state.errors = {...state.errors};
+            state.errors = { ...state.errors };
             state.errors.changeAccountSettings = initialState.errors.changeAccountSettings;
 
-            state.success = {...state.success};
+            state.success = { ...state.success };
             state.success.changeAccountSettings = "Password reset successfully! Please try logging in now";
 
           } else {
-            state = {...state};
-            state.errors = {...state.errors};
+            state = { ...state };
+            state.errors = { ...state.errors };
             state.errors.changeAccountSettings = response.errors;
             state.success = initialState.success;
           }
@@ -400,8 +411,8 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       break;
 
     case "choose-stripe-plan":
-      state = {...state};
-      state.stripe = {...state.stripe};
+      state = { ...state };
+      state.stripe = { ...state.stripe };
       state.stripe.chosenPlanID = action.stripePlanId;
       break;
 
@@ -452,15 +463,15 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
     case "error-on-sign-up": {
 
-      state = {...state};
-      state.errors = {...state.errors};
+      state = { ...state };
+      state.errors = { ...state.errors };
       state.errors.signUp = [action.error];
 
       break;
     }
 
     case "go-sign-up": {
-      effects.push(historyPush({pathname: '/sign-up'}));
+      effects.push(historyPush({ pathname: '/sign-up' }));
       break;
     }
 
@@ -479,8 +490,8 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
     case "toggle":
       if (action.target === "changeEmail") {
-        state = {...state};
-        state.inputs = {...state.inputs};
+        state = { ...state };
+        state.inputs = { ...state.inputs };
         state.inputs.email = (state.loggedInUser && state.loggedInUser.email) || "";
       }
       break;
@@ -496,7 +507,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         {
           url: ApiV1UsersPath + '/' + state.loggedInUser.id, method: "PUT", headers: state.headers,
           json: {
-            user: {email: state.inputs.newEmail}
+            user: { email: state.inputs.newEmail }
           }
         }));
       break;
@@ -505,7 +516,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
       state = validatePasswords(state, "changeAccountSettings", "newPassword", "confirmNewPassword");
 
       if (!state.inputs.oldPassword) {
-        state.errors.changeAccountSettings.push({type: "password", message: "Current password is required"});
+        state.errors.changeAccountSettings.push({ type: "password", message: "Current password is required" });
       }
 
       if (!state.loggedInUser) break;
@@ -570,20 +581,20 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
 
   }
 
-  return {state, effects};
+  return { state, effects };
 };
 
 function validateEmail<Error extends Extract<keyof typeof initialState.errors, string>,
   Inputs extends Extract<keyof typeof initialState.inputs, string>>
-(state: State, errorType: Error, emailType: Inputs): State {
-  state = {...state};
-  state.errors = {...state.errors};
+  (state: State, errorType: Error, emailType: Inputs): State {
+  state = { ...state };
+  state.errors = { ...state.errors };
   state.errors[errorType] = [];
 
   if (!state.inputs[emailType]) {
-    state.errors[errorType].push({type: "email", message: "Email is required"});
+    state.errors[errorType].push({ type: "email", message: "Email is required" });
   } else if (!EMAIL_REGEXP.test(state.inputs[emailType])) {
-    state.errors[errorType].push({type: "email", message: "Email is invalid"});
+    state.errors[errorType].push({ type: "email", message: "Email is invalid" });
   }
 
   return state;
@@ -591,13 +602,13 @@ function validateEmail<Error extends Extract<keyof typeof initialState.errors, s
 
 function validatePasswords<Error extends Extract<keyof typeof initialState.errors, string>,
   Inputs extends Extract<keyof typeof initialState.inputs, string>>
-(state: State, errorType: Error, password: Inputs, confirmPassword: Inputs): State {
-  state = {...state};
-  state.errors = {...state.errors};
+  (state: State, errorType: Error, password: Inputs, confirmPassword: Inputs): State {
+  state = { ...state };
+  state.errors = { ...state.errors };
   state.errors[errorType] = [];
 
   if (!state.inputs[password]) {
-    state.errors[errorType].push({type: "password", message: "Password is required"});
+    state.errors[errorType].push({ type: "password", message: "Password is required" });
   } else if (state.inputs[password].length < state.minimumPasswordLength) {
     state.errors[errorType].push({
       type: "password",
@@ -606,20 +617,20 @@ function validatePasswords<Error extends Extract<keyof typeof initialState.error
   }
 
   if (state.inputs[password] !== state.inputs[confirmPassword]) {
-    state.errors[errorType].push({type: "confirm_password", message: "Password mismatch"});
+    state.errors[errorType].push({ type: "confirm_password", message: "Password mismatch" });
   }
 
   return state;
 }
 
 function validateStripeCard<Error extends Extract<keyof typeof initialState.errors, string>>
-(state: State, tokenId: string, errorType: keyof typeof state.errors): State {
-  state = {...state};
-  state.errors = {...state.errors};
+  (state: State, tokenId: string, errorType: keyof typeof state.errors): State {
+  state = { ...state };
+  state.errors = { ...state.errors };
   state.errors[errorType] = [];
 
   if (!tokenId) {
-    state.errors[errorType].push({type: "stripe_card", message: "Must insert valid card"});
+    state.errors[errorType].push({ type: "stripe_card", message: "Must insert valid card" });
   }
 
   return state;

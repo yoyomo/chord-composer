@@ -1,25 +1,25 @@
 import * as React from "react";
-import {State, Toggles} from "../../state";
+import { State, Toggles } from "../../state";
 import {
   changeEmail,
   changeEmailRequestName,
   changePassword, changePasswordRequestName,
   generateNewAccessToken, generateNewAccessTokenRequestName
 } from "../../reducers/login-reducer";
-import {Action} from "../../core/root-reducer";
-import {Input} from "../../components/input";
-import {inputChangeDispatcher} from "../../reducers/input-reducer";
-import {toggleDispatcher} from "../../reducers/toggle-reducer";
-import {SVGBack} from "../../components/svgs";
-import {Loading} from "../../components/loading";
-import {stringifyRequestName} from "../../reducers/complete-request-reducer";
+import { Action } from "../../core/root-reducer";
+import { Input } from "../../components/input";
+import { inputChangeDispatcher } from "../../reducers/input-reducer";
+import { toggleDispatcher } from "../../reducers/toggle-reducer";
+import { SVGBack } from "../../components/svgs";
+import { Loading } from "../../components/loading";
+import { stringifyRequestName } from "../../reducers/complete-request-reducer";
 
 export function AccountSettings(dispatch: (action: Action) => void) {
   const dispatcher = {
     generateNewAccessToken: () => dispatch(generateNewAccessToken()),
     changeEmail: () => dispatch(changeEmail()),
     changePassword: () => dispatch(changePassword()),
-    // cancelSubscription: () => dispatch(cancelSubscription()),
+    changeSubscription: () => dispatch(changeSubscription()),
   };
 
 
@@ -39,6 +39,8 @@ export function AccountSettings(dispatch: (action: Action) => void) {
       }
     }();
 
+    const subscription = state.loggedInUser && state.stripe.object.subscriptions.retrieve(state.loggedInUser.stripe_subscription_id);
+
     return (
       <div className={"word-wrap"}>
 
@@ -52,83 +54,83 @@ export function AccountSettings(dispatch: (action: Action) => void) {
           {editingSettingsKey ?
             <div>
               <div className={"pointer"} onClick={toggleDispatcher(dispatch, editingSettingsKey, false)}>
-                <SVGBack/>
+                <SVGBack />
               </div>
 
               {state.toggles.changeEmail &&
-              <div className={"db ma2"}>
-                <div>
-                  Email:
+                <div className={"db ma2"}>
+                  <div>
+                    Email:
                 </div>
-                <Input type="email" value={state.inputs.newEmail} onChange={inputChangeDispatcher(dispatch, "newEmail")}/>
-                {state.loadingRequests[stringifyRequestName([changeEmailRequestName])] ?
-                  <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
-                    Changing Email
-                    <Loading className={"mh2"}/>
+                  <Input type="email" value={state.inputs.newEmail} onChange={inputChangeDispatcher(dispatch, "newEmail")} />
+                  {state.loadingRequests[stringifyRequestName([changeEmailRequestName])] ?
+                    <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
+                      Changing Email
+                    <Loading className={"mh2"} />
+                    </div>
+                    :
+                    <div className={"pointer bg-light-gray ma2 pa2 tc shadow-1 br2"}
+                      onClick={dispatcher.changeEmail}>
+                      Change Email
                   </div>
-                  :
-                  <div className={"pointer bg-light-gray ma2 pa2 tc shadow-1 br2"}
-                       onClick={dispatcher.changeEmail}>
-                    Change Email
-                  </div>
-                }
-              </div>
+                  }
+                </div>
               }
 
               {state.toggles.changePassword &&
-              <div>
-                <div className={"db ma2"}>
-                  <div>
-                    Old Password:
+                <div>
+                  <div className={"db ma2"}>
+                    <div>
+                      Old Password:
                   </div>
-                  <Input type="password" value={state.inputs.oldPassword}
-                         onChange={inputChangeDispatcher(dispatch, "oldPassword")}/>
+                    <Input type="password" value={state.inputs.oldPassword}
+                      onChange={inputChangeDispatcher(dispatch, "oldPassword")} />
+                  </div>
+                  <div className={"db ma2"}>
+                    <div>
+                      New Password:
+                  </div>
+                    <Input type="password" value={state.inputs.newPassword}
+                      onChange={inputChangeDispatcher(dispatch, "newPassword")} />
+                  </div>
+                  <div className={"db ma2"}>
+                    <div>
+                      Confirm New Password:
+                  </div>
+                    <Input type="password" value={state.inputs.confirmNewPassword}
+                      onChange={inputChangeDispatcher(dispatch, "confirmNewPassword")} />
+                  </div>
+                  {state.loadingRequests[stringifyRequestName([changePasswordRequestName])] ?
+                    <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
+                      Changing Passwords
+                    <Loading className={"mh2"} />
+                    </div>
+                    :
+                    <div className={"pointer bg-light-gray ma2 pa2 tc shadow-1 br2"} onClick={dispatcher.changePassword}>
+                      Change Password
+                  </div>
+                  }
                 </div>
-                <div className={"db ma2"}>
-                  <div>
-                    New Password:
-                  </div>
-                  <Input type="password" value={state.inputs.newPassword}
-                         onChange={inputChangeDispatcher(dispatch, "newPassword")}/>
-                </div>
-                <div className={"db ma2"}>
-                  <div>
-                    Confirm New Password:
-                  </div>
-                  <Input type="password" value={state.inputs.confirmNewPassword}
-                         onChange={inputChangeDispatcher(dispatch, "confirmNewPassword")}/>
-                </div>
-                {state.loadingRequests[stringifyRequestName([changePasswordRequestName])] ?
-                  <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
-                    Changing Passwords
-                    <Loading className={"mh2"}/>
-                  </div>
-                  :
-                  <div className={"pointer bg-light-gray ma2 pa2 tc shadow-1 br2"} onClick={dispatcher.changePassword}>
-                    Change Password
-                  </div>
-                }
-              </div>
 
               }
 
               {state.toggles.changeAccessToken &&
-              <div>
                 <div>
-                  {state.loggedInUser ? state.loggedInUser.access_token : ""}
+                  <div>
+                    {state.loggedInUser ? state.loggedInUser.access_token : ""}
+                  </div>
+                  {state.loadingRequests[stringifyRequestName([generateNewAccessTokenRequestName])] ?
+                    <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
+                      Generating Access Tokens
+                    <Loading className={"mh2"} />
+                    </div>
+                    :
+                    <div className={"pointer bg-light-gray ma2 pa2 tc shadow-1 br2"}
+                      onClick={dispatcher.generateNewAccessToken}>
+                      Generate New Access Token
+                  </div>
+                  }
                 </div>
-                {state.loadingRequests[stringifyRequestName([generateNewAccessTokenRequestName])] ?
-                  <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
-                    Generating Access Tokens
-                    <Loading className={"mh2"}/>
-                  </div>
-                  :
-                  <div className={"pointer bg-light-gray ma2 pa2 tc shadow-1 br2"}
-                       onClick={dispatcher.generateNewAccessToken}>
-                    Generate New Access Token
-                  </div>
-                }
-              </div>
               }
 
             </div>
@@ -136,10 +138,10 @@ export function AccountSettings(dispatch: (action: Action) => void) {
 
             <div>
               <div className={"pointer"} onClick={toggleDispatcher(dispatch, "showSettingsModal", false)}>
-                <SVGBack/>
+                <SVGBack />
               </div>
               <div className={"pointer pa2 bt b--light-gray hover-bg-light-gray"}
-                   onClick={toggleDispatcher(dispatch, "changeEmail")}>
+                onClick={toggleDispatcher(dispatch, "changeEmail")}>
                 <div>
                   Change Email
                 </div>
@@ -148,11 +150,11 @@ export function AccountSettings(dispatch: (action: Action) => void) {
                 </div>
               </div>
               <div className={"pointer pa2 bt b--light-gray hover-bg-light-gray"}
-                   onClick={toggleDispatcher(dispatch, "changePassword")}>
+                onClick={toggleDispatcher(dispatch, "changePassword")}>
                 Change Password
               </div>
               <div className={"pointer pa2 bt b--light-gray hover-bg-light-gray"}
-                   onClick={toggleDispatcher(dispatch, "changeAccessToken")}>
+                onClick={toggleDispatcher(dispatch, "changeAccessToken")}>
                 <div>
                   Change Access Token
                 </div>
@@ -161,12 +163,14 @@ export function AccountSettings(dispatch: (action: Action) => void) {
                 </div>
               </div>
               <div className={"pointer pa2 bt b--light-gray hover-bg-light-gray"}
-                   onClick={toggleDispatcher(dispatch, "changeAccessToken")}>
+                onClick={toggleDispatcher(dispatch, "changeSubscription")}>
                 <div>
                   Update Subscription
                 </div>
                 <div className={"gray"}>
-                  {state.loggedInUser ? state.loggedInUser.stripe_plan_id : ""}
+                  {subscription ?
+                    subscription
+                    : "none"}
                 </div>
               </div>
             </div>

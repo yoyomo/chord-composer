@@ -1,8 +1,8 @@
-import {State} from "../state";
-import {ReductionWithEffect} from "../core/reducers";
-import {Action} from "../core/root-reducer";
+import { State } from "../state";
+import { ReductionWithEffect } from "../core/reducers";
+import { Action } from "../core/root-reducer";
 
-export interface SelectKeyAction {
+export type SelectKeyAction = {
   type: "select-key"
   keyIndex: number
 }
@@ -23,11 +23,11 @@ export const reduceChordCanvas = (state: State, action: Action): ReductionWithEf
     case "select-key": {
       let keyIndex = action.keyIndex;
 
-      state = {...state};
+      state = { ...state };
       state.selectedKeyIndex = keyIndex;
       break;
     }
   }
 
-  return {state};
+  return { state };
 };

@@ -1,8 +1,8 @@
-import {State} from "../state";
-import {ReductionWithEffect} from "../core/reducers";
-import {Action} from "../core/root-reducer";
+import { State } from "../state";
+import { ReductionWithEffect } from "../core/reducers";
+import { Action } from "../core/root-reducer";
 
-export interface DecreaseOctaveAction {
+export type DecreaseOctaveAction = {
   type: "decrease-octave"
 }
 
@@ -12,7 +12,7 @@ export const decreaseOctave = (): DecreaseOctaveAction => {
   };
 };
 
-export interface IncreaseOctaveAction {
+export type IncreaseOctaveAction = {
   type: "increase-octave"
 }
 
@@ -33,7 +33,7 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
   switch (action.type) {
 
     case "decrease-octave": {
-      state = {...state};
+      state = { ...state };
       state.octave--;
       if (state.octave < MINIMUM_OCTAVE) {
         state.octave = MINIMUM_OCTAVE;
@@ -42,7 +42,7 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
     }
 
     case "increase-octave": {
-      state = {...state};
+      state = { ...state };
       state.octave++;
       if (state.octave > MAXIMUM_OCTAVE) {
         state.octave = MAXIMUM_OCTAVE;
@@ -51,5 +51,5 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
     }
   }
 
-  return {state};
+  return { state };
 };

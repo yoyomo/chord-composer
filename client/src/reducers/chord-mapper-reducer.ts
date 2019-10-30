@@ -1,12 +1,12 @@
-import {State} from "../state";
-import {ReductionWithEffect} from "../core/reducers";
-import {Action} from "../core/root-reducer";
-import {ChordType, KEYS} from "./recompute-chord-grid";
-import {MAXIMUM_OCTAVE, MINIMUM_OCTAVE} from "./chord-tools-reducer";
+import { State } from "../state";
+import { ReductionWithEffect } from "../core/reducers";
+import { Action } from "../core/root-reducer";
+import { ChordType, KEYS } from "./recompute-chord-grid";
+import { MAXIMUM_OCTAVE, MINIMUM_OCTAVE } from "./chord-tools-reducer";
 
 export const ChordMapperKeys = KEYS.concat(KEYS).concat(KEYS);
 
-export interface ToggleChordMapperKeyAction {
+export type ToggleChordMapperKeyAction = {
   type: "toggle-chord-mapper-key"
   keyIndex: number
 }
@@ -18,7 +18,7 @@ export const toggleChordMapperKey = (keyIndex: number): ToggleChordMapperKeyActi
   };
 };
 
-export interface SelectChordAction {
+export type SelectChordAction = {
   type: "select-chord"
   chord: ChordType
 }
@@ -83,7 +83,7 @@ export const keysToPitchClass = (keyIndexes: number[]): number[] => {
 };
 
 export const mapKeysToChord = (state: State): State => {
-  state = {...state};
+  state = { ...state };
   state.suggestedGridChords = [];
   state.suggestedKeyIndexes = [];
 
@@ -100,7 +100,7 @@ export const mapKeysToChord = (state: State): State => {
     chordPitchClass = scalePitchClass(chordPitchClass);
 
     for (let variation = 0; variation < chordPitchClass.length; variation++) {
-      if(variation > 0) chordPitchClass = keysToPitchClass(nextVariation(chordPitchClass));
+      if (variation > 0) chordPitchClass = keysToPitchClass(nextVariation(chordPitchClass));
 
       if (JSON.stringify(pitchClass) !== JSON.stringify(chordPitchClass)) continue;
 
@@ -128,7 +128,7 @@ export const mapKeysToChord = (state: State): State => {
 export const reduceChordMapper = (state: State, action: Action): ReductionWithEffect<State> => {
   switch (action.type) {
     case "toggle-chord-mapper-key": {
-      state = {...state};
+      state = { ...state };
       state.chordMapperKeys = state.chordMapperKeys.slice();
       state.chordMapperKeys[action.keyIndex] = !state.chordMapperKeys[action.keyIndex];
 
@@ -138,7 +138,7 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
     }
 
     case "select-chord": {
-      state = {...state};
+      state = { ...state };
       state.selectedGridChord = action.chord;
 
       state = mapChordToKeys(state);
@@ -149,5 +149,5 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
 
   }
 
-  return {state};
+  return { state };
 };

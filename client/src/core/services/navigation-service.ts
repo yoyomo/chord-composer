@@ -1,6 +1,6 @@
-import {ReductionWithEffect} from "../reducers";
-import {Effect, Service} from "./service";
-import {Action} from "../root-reducer";
+import { ReductionWithEffect } from "../reducers";
+import { Effect, Service } from "./service";
+import { Action } from "../root-reducer";
 
 export interface PathLocation {
   pathname: string,
@@ -20,32 +20,32 @@ const locationDefaults: PathLocation = {
 };
 
 export function historyPush(location: Partial<PathLocation>): HistoryPush {
-  return {effectType: "history-push", location: {...locationDefaults, ...location}}
+  return { effectType: "history-push", location: { ...locationDefaults, ...location } }
 }
 
 export type NavigationActions = Visit | LinkClick
 export type NavigationEffect = HistoryPush;
 
-export interface Visit {
+export type Visit = {
   type: 'visit',
   noHistory?: boolean,
   location: PathLocation
 }
 
 export function visit(location: Partial<PathLocation>): Visit {
-  return {type: "visit", location: {...locationDefaults, ...location}};
+  return { type: "visit", location: { ...locationDefaults, ...location } };
 }
 
-export interface LinkClick {
+export type LinkClick = {
   type: 'link-click',
   location: PathLocation
 }
 
 export function linkClick(location: PathLocation): LinkClick {
-  let {pathname, search, hash} = location;
+  let { pathname, search, hash } = location;
   return {
     type: 'link-click',
-    location: {pathname, search, hash}
+    location: { pathname, search, hash }
   }
 }
 
@@ -71,14 +71,14 @@ export function withHistory(dispatch: (action: Action) => void, history: History
 }
 
 export function navigationReducer<State extends Object>(route: (state: State,
-                                                                pathLocation: PathLocation) => ReductionWithEffect<State>) {
+  pathLocation: PathLocation) => ReductionWithEffect<State>) {
   return (state: State, action: Action): ReductionWithEffect<State> => {
     let effects: Effect[] = [];
 
     switch (action.type) {
       case 'visit':
         let reduction = route(state, action.location);
-        if(reduction.effects){
+        if (reduction.effects) {
           effects = effects.concat(reduction.effects);
         }
         state = reduction.state;
@@ -89,7 +89,7 @@ export function navigationReducer<State extends Object>(route: (state: State,
         break;
     }
 
-    return {state, effects};
+    return { state, effects };
   }
 }
 
@@ -109,7 +109,7 @@ export function visitDispatcher(dispatch: (a: Action) => void) {
       anchorElement = anchorElement.parentElement as HTMLAnchorElement;
     }
 
-    let {pathname, search, hash} = anchorElement;
+    let { pathname, search, hash } = anchorElement;
 
     if (pathname[0] !== '/') pathname = '/' + pathname;
 
@@ -118,7 +118,7 @@ export function visitDispatcher(dispatch: (a: Action) => void) {
       pathname = "/" + pathname.slice(basePath.length);
     }
 
-    dispatch(linkClick({pathname, search, hash}));
+    dispatch(linkClick({ pathname, search, hash }));
     event.preventDefault();
   });
 }

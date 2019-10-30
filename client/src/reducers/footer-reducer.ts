@@ -1,12 +1,12 @@
-import {State} from "../state";
-import {ReductionWithEffect} from "../core/reducers";
-import {requestAjax} from "../core/services/ajax-service";
-import {ApiV1UsersPath} from "../resources/routes";
-import {calculateMML} from "../utils/mml-utils";
-import {Action} from "../core/root-reducer";
-import {Effect} from "../core/services/service";
+import { State } from "../state";
+import { ReductionWithEffect } from "../core/reducers";
+import { requestAjax } from "../core/services/ajax-service";
+import { ApiV1UsersPath } from "../resources/routes";
+import { calculateMML } from "../utils/mml-utils";
+import { Action } from "../core/root-reducer";
+import { Effect } from "../core/services/service";
 
-export interface SaveChordAction {
+export type SaveChordAction = {
   type: "save-chord"
 }
 
@@ -16,7 +16,7 @@ export const saveChord = (): SaveChordAction => {
   };
 };
 
-export interface RemoveSavedChordAction {
+export type RemoveSavedChordAction = {
   type: "remove-saved-chord"
 }
 
@@ -26,7 +26,7 @@ export const removeSavedChord = (): RemoveSavedChordAction => {
   };
 };
 
-export interface SelectSavedChordAction {
+export type SelectSavedChordAction = {
   type: "select-saved-chord"
   savedChordIndex: number
 }
@@ -48,7 +48,7 @@ export const reduceFooter = (state: State, action: Action): ReductionWithEffect<
 
   switch (action.type) {
     case "save-chord": {
-      state = {...state};
+      state = { ...state };
       state.savedChords = state.savedChords.slice();
       if (!state.selectedGridChord) break;
       state.savedChords.push(state.selectedGridChord);
@@ -58,7 +58,7 @@ export const reduceFooter = (state: State, action: Action): ReductionWithEffect<
     }
 
     case "remove-saved-chord": {
-      state = {...state};
+      state = { ...state };
       state.savedChords = state.savedChords.slice();
       state.savedChords.splice(state.selectedSavedChord || state.savedChords.length - 1, 1);
       state.selectedSavedChord = null as unknown as number;
@@ -68,14 +68,14 @@ export const reduceFooter = (state: State, action: Action): ReductionWithEffect<
     }
 
     case "select-saved-chord": {
-      state = {...state};
+      state = { ...state };
       state.selectedSavedChord = action.savedChordIndex;
       break;
     }
 
   }
 
-  return {state, effects};
+  return { state, effects };
 };
 
 export const updateFavoriteChords = (state: State): Effect[] => {
@@ -83,13 +83,14 @@ export const updateFavoriteChords = (state: State): Effect[] => {
 
   let mmlFavoriteChords = state.savedChords.map(favoriteChord => calculateMML(favoriteChord));
 
-  if(!state.loggedInUser) return [];
+  if (!state.loggedInUser) return [];
   effects.push(requestAjax([updateFavoriteChordRequestName], {
     url: `${ApiV1UsersPath}/${state.loggedInUser.id}`, method: "PUT", headers: state.headers,
     json: {
       user: {
         favorite_chords: mmlFavoriteChords
-      }}
+      }
+    }
   }));
 
   return effects;

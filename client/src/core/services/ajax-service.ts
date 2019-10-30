@@ -1,5 +1,5 @@
-import {Effect, Service} from "./service";
-import {Action} from "../root-reducer";
+import { Effect, Service } from "./service";
+import { Action } from "../root-reducer";
 
 export interface AjaxConfig {
   url: string
@@ -10,7 +10,7 @@ export interface AjaxConfig {
   headers: { [k: string]: string }
 }
 
-export interface LoadingRequest {
+export type LoadingRequest = {
   type: "loading-request"
   name: string[]
 }
@@ -36,7 +36,7 @@ export function requestAjax(name: string[], config: AjaxConfig): RequestAjaxEffe
   }
 }
 
-export interface CompleteRequest {
+export type CompleteRequest = {
   type: "complete-request"
   name: string[]
   success: boolean
@@ -46,11 +46,11 @@ export interface CompleteRequest {
   when: number
 }
 
-export type AjaxAction = CompleteRequest | LoadingRequest ;
+export type AjaxAction = CompleteRequest | LoadingRequest;
 
 export function completeRequest(requestEffect: RequestAjaxEffect,
-                                status: number, response: string,
-                                headers: string, when = Date.now()): CompleteRequest {
+  status: number, response: string,
+  headers: string, when = Date.now()): CompleteRequest {
   return {
     type: "complete-request",
     name: requestEffect.name,
@@ -135,11 +135,11 @@ export function withAjax(dispatch: (action: Action) => void, queueSize = 6, root
 }
 
 export const parseHTTPHeadersToJSON = (headersStr: string) => {
-  let headers: {[k: string]: string} = {};
+  let headers: { [k: string]: string } = {};
   const regex = /([\w-]+): (.*)/g;
 
   let header;
-  while (!!(header = regex.exec(headersStr))){
+  while (!!(header = regex.exec(headersStr))) {
     headers[header[1]] = header[2];
   }
 
@@ -151,10 +151,12 @@ export function executeXhrWithConfig(config: AjaxConfig, xhr: XMLHttpRequest, ro
 
   xhr.open(config.method, getAjaxUrl(config, rootUrl), true);
 
-  const headers: {[k: string]: string} = {...config.headers,...{
-    "Accept": "application/json",
-    "Content-Type": "application/json"
-  }};
+  const headers: { [k: string]: string } = {
+    ...config.headers, ...{
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    }
+  };
 
   if (headers) {
     for (let key in headers) {

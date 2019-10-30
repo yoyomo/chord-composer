@@ -1,10 +1,10 @@
-import {Inputs} from "../state";
-import {ReductionWithEffect} from "../core/reducers";
-import {clearInputDebouncing} from "../core/services/input-debouncing-service";
-import {Action} from "../core/root-reducer";
-import {Effect} from "../core/services/service";
+import { Inputs } from "../state";
+import { ReductionWithEffect } from "../core/reducers";
+import { clearInputDebouncing } from "../core/services/input-debouncing-service";
+import { Action } from "../core/root-reducer";
+import { Effect } from "../core/services/service";
 
-export interface InputChange {
+export type InputChange = {
   type: "input-change"
   target: Extract<keyof Inputs, string>
   text: string
@@ -19,7 +19,7 @@ export const inputChange = (target: Extract<keyof Inputs, string>, text: string)
 };
 
 export function inputChangeDispatcher(dispatch: (a: Action) => void,
-                                                     target: Extract<keyof Inputs, string>, value?: string) {
+  target: Extract<keyof Inputs, string>, value?: string) {
   return (e: EventInput) => {
     e.stopPropagation();
     dispatch(inputChange(target, value === undefined ? e.target.value : value));
@@ -41,10 +41,10 @@ export function reduceInputs<T extends InputMap>(state: InputMap, a: Action): Re
     case 'input-change':
       effects = effects.concat(clearInputDebouncing());
       if (state[a.target] === a.text) break;
-      state = {...state};
+      state = { ...state };
       state[a.target] = a.text;
       break;
   }
 
-  return {state: state as T, effects};
+  return { state: state as T, effects };
 }

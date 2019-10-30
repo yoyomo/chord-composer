@@ -1,11 +1,11 @@
-import {State} from "../state";
-import {ReductionWithEffect} from "../core/reducers";
-import {Action} from "../core/root-reducer";
-import {historyPush} from "../core/services/navigation-service";
-import {Effect} from "../core/services/service";
-import {PathPart} from "./router-reducer";
+import { State } from "../state";
+import { ReductionWithEffect } from "../core/reducers";
+import { Action } from "../core/root-reducer";
+import { historyPush } from "../core/services/navigation-service";
+import { Effect } from "../core/services/service";
+import { PathPart } from "./router-reducer";
 
-export interface ChangeBaseFrequencyAction {
+export type ChangeBaseFrequencyAction = {
   type: "change-base-frequency"
   frequency: number
 }
@@ -17,7 +17,7 @@ export const changeBaseFrequency = (frequency: number): ChangeBaseFrequencyActio
   };
 };
 
-export interface SelectWaveTypeAction {
+export type SelectWaveTypeAction = {
   type: "select-wave-type"
   waveType: OscillatorType
 }
@@ -29,7 +29,7 @@ export const selectWaveType = (waveType: OscillatorType): SelectWaveTypeAction =
   };
 };
 
-export interface ToggleSoundAction {
+export type ToggleSoundAction = {
   type: "toggle-sound"
 }
 
@@ -39,7 +39,7 @@ export const toggleSound = (): ToggleSoundAction => {
   };
 };
 
-export interface GoToHomePageAction {
+export type GoToHomePageAction = {
   type: "go-to-home-page"
   page: PathPart
 }
@@ -53,10 +53,10 @@ export const goToHomePage = (page: PathPart): GoToHomePageAction => {
 
 
 export type HeaderActions =
-    | ChangeBaseFrequencyAction
-    | SelectWaveTypeAction
-    | ToggleSoundAction
-    | GoToHomePageAction;
+  | ChangeBaseFrequencyAction
+  | SelectWaveTypeAction
+  | ToggleSoundAction
+  | GoToHomePageAction;
 
 
 export const reduceHeader = (state: State, action: Action): ReductionWithEffect<State> => {
@@ -64,29 +64,29 @@ export const reduceHeader = (state: State, action: Action): ReductionWithEffect<
   switch (action.type) {
 
     case "change-base-frequency": {
-      state = {...state};
+      state = { ...state };
       state.baseFrequency = action.frequency;
       break;
     }
 
     case "select-wave-type": {
-      state = {...state};
+      state = { ...state };
       state.waveType = action.waveType;
       break;
     }
 
     case "toggle-sound": {
-      state = {...state};
+      state = { ...state };
       state.soundOn = !state.soundOn;
       break;
     }
 
     case "go-to-home-page": {
-      effects = effects.concat(historyPush({pathname: "/home/" + action.page}));
+      effects = effects.concat(historyPush({ pathname: "/home/" + action.page }));
       break;
     }
 
   }
 
-  return {state, effects};
+  return { state, effects };
 };

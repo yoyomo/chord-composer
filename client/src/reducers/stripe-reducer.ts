@@ -1,9 +1,9 @@
-import {State} from "../state";
-import {Action} from "../core/root-reducer";
-import {ReductionWithEffect} from "../core/reducers";
-import {Effect} from "../core/services/service";
+import { State } from "../state";
+import { Action } from "../core/root-reducer";
+import { ReductionWithEffect } from "../core/reducers";
+import { Effect } from "../core/services/service";
 
-export interface SetStripeObjectAction {
+export type SetStripeObjectAction = {
   type: "set-stripe-object"
   stripeObject: stripe.Stripe
 }
@@ -22,14 +22,14 @@ export const reduceStripe = (state: State, action: Action): ReductionWithEffect<
   let effects: Effect[] = [];
   switch (action.type) {
 
-    case "set-stripe-object":{
-      state = {...state};
-      state.stripe = {...state.stripe};
-      state.stripe.object = {...action.stripeObject};
+    case "set-stripe-object": {
+      state = { ...state };
+      state.stripe = { ...state.stripe };
+      state.stripe.object = { ...action.stripeObject };
 
       break;
     }
   }
 
-  return {state, effects};
+  return { state, effects };
 };
