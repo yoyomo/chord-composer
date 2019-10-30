@@ -137,6 +137,16 @@ export const forgotPassword = (): ForgotPasswordAction => {
   }
 };
 
+export interface ResetPasswordAction {
+  type: "reset-password"
+}
+
+export const resetPassword = (): ResetPasswordAction => {
+  return {
+    type: "reset-password",
+  }
+};
+
 export type LogInActions =
   | SignInAction
   | SignOutAction
@@ -148,7 +158,8 @@ export type LogInActions =
   | ResendConfirmationEmailAction
   | ChangeEmailAction
   | ChangePasswordAction
-  | ForgotPasswordAction;
+  | ForgotPasswordAction
+  | ResetPasswordAction;
 
 
 export interface ResponseType {
@@ -344,6 +355,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
             state = {...state};
             state.success = {...state.success};
             state.success.changeAccountSettings = "Generated new access token";
+            state.errors = {...state.errors};
             state.errors.changeAccountSettings = initialState.errors.changeAccountSettings;
 
 
@@ -362,6 +374,27 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
             state.alerts = {...state.alerts};
             state.alerts.signIn = "An email has been sent to reset your password.";
           }
+          break;
+        }
+
+        case resetPasswordRequestName: {
+          if (action.success) {
+            state = {...state};
+            state.toggles = {...state.toggles};
+            state.toggles.isResettingPassword = false;
+            state.errors = {...state.errors};
+            state.errors.changeAccountSettings = initialState.errors.changeAccountSettings;
+
+            state.success = {...state.success};
+            state.success.changeAccountSettings = "Password reset successfully! Please try logging in now";
+
+          } else {
+            state = {...state};
+            state.errors = {...state.errors};
+            state.errors.changeAccountSettings = response.errors;
+            state.success = initialState.success;
+          }
+          break;
         }
       }
       break;
@@ -517,6 +550,24 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         }));
       break;
 
+    case "reset-password":
+      state = validatePasswords(state, "changeAccountSettings", "newPassword", "confirmNewPassword");
+
+      if (state.errors.changeAccountSettings.length > 0) break;
+
+      effects.push(requestAjax([resetPasswordRequestName],
+        {
+          url: ApiV1UsersPath + "/reset_password", method: "PUT", headers: state.headers,
+          json: {
+            reset_password_token: state.inputs.resetPasswordToken,
+            user: {
+              email: state.inputs.email,
+              password: state.inputs.newPassword,
+            }
+          }
+        }));
+      break;
+
   }
 
   return {state, effects};
@@ -583,3 +634,4 @@ export const generateNewAccessTokenRequestName = "user-generate-new-access-token
 export const changeEmailRequestName = "change-email";
 export const changePasswordRequestName = "change-password";
 export const forgotPasswordRequestName = "forgot-password";
+export const resetPasswordRequestName = "reset-password";

@@ -60,6 +60,7 @@ export function SignIn(dispatch: (action: Action) => void) {
       )}
 
       {state.success.signUp && <div className={"green"}> {state.success.signUp} </div>}
+      {state.success.changeAccountSettings && <div className={"green"}> {state.success.changeAccountSettings} </div>}
       <div className={"db ma2"}>
         <div>
           Email:

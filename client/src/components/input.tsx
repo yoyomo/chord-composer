@@ -11,5 +11,5 @@ export interface InputProps extends ClassAndChildren{
 }
 
 export const Input = (props: InputProps) => {
-  return <input className={"pa2 mv2 ba br3 b--moon-gray " + props.className} {...props}/>
+  return <input {...props} className={`pa2 mv2 ba br3 b--moon-gray ${props.className}`}/>
 };

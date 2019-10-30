@@ -3,10 +3,8 @@ import {Input} from "../../components/input";
 import {inputChangeDispatcher} from "../../reducers/input-reducer";
 import * as React from "react";
 import {State} from "../../state";
-import {stringifyRequestName} from "../../reducers/complete-request-reducer";
 import {
-  forgotPassword,
-  resendConfirmationEmailRequestName,
+  forgotPassword, resetPassword,
 } from "../../reducers/login-reducer";
 
 export function ResetPassword(dispatch: (action: Action) => void) {
@@ -19,7 +17,7 @@ export function ResetPassword(dispatch: (action: Action) => void) {
   return (state: State) => {
 
     return <div>
-      {state.errors.signIn && state.errors.signIn.map(error => {
+      {state.errors.changeAccountSettings && state.errors.changeAccountSettings.map(error => {
 
         return <div className={"red"} key={"sign-in-error_" + error.type}>
           {error.message}
@@ -32,18 +30,18 @@ export function ResetPassword(dispatch: (action: Action) => void) {
       })}
 
       {state.alerts.signIn && (
-        <div className="gray pointer f7">
+        <div className="gray f7">
           {state.alerts.signIn}
         </div>
       )}
 
-      {state.success.signUp && <div className={"green"}> {state.success.signUp} </div>}
+      {state.success.changeAccountSettings && <div className={"green"}> {state.success.changeAccountSettings} </div>}
       <div className={"db ma2"}>
         <div>
-          Email:
+          For Email:
         </div>
         <Input type="email" disabled value={state.inputs.email} autoComplete={"email"}
-               onChange={inputChangeDispatcher(dispatch, "email")}/>
+               onChange={inputChangeDispatcher(dispatch, "email")} className="bg-light-gray"/>
       </div>
       <div className={"db ma2"}>
         <div>

@@ -23,6 +23,7 @@ const accountSettingsInputs = {
   oldPassword: "",
   newPassword: "",
   confirmNewPassword: "",
+  resetPasswordToken: "",
 };
 
 export const initialState = {
@@ -71,8 +72,8 @@ export const initialState = {
   },
 
   success: {
-    signUp: "" as string,
-    changeAccountSettings: "" as string
+    signUp: "",
+    changeAccountSettings: ""
   },
   errors: {
     signIn: [] as ResponseError[],
@@ -80,7 +81,7 @@ export const initialState = {
     changeAccountSettings: [] as ResponseError[]
   },
   alerts: {
-    signIn: "" as string
+    signIn: ""
   },
 
   loadingRequests: {} as { [k: string]: boolean },

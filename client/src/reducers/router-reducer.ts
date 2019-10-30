@@ -100,6 +100,7 @@ export function routerReducer(state: State,
           state.toggles.isResettingPassword = true;
           state.inputs = {...state.inputs};
           state.inputs.email = email;
+          state.inputs.resetPasswordToken = resetPasswordToken;
 
           state.toggles.showLogInModal = true;
 

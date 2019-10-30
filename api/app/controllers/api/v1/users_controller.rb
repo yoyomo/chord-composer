@@ -2,7 +2,8 @@ class Api::V1::UsersController < APIController
 
   before_action :set_user, only: [:show, :update, :destroy, :generate_new_access_token]
 
-  skip_before_action :authenticate_user!, only: [:create, :confirm_email, :sign_in, :resend_confirmation_email, :forgot_password]
+  skip_before_action :authenticate_user!,
+                     only: [:create, :confirm_email, :sign_in, :resend_confirmation_email, :forgot_password, :reset_password]
 
   def index
     @users = User.all
@@ -157,7 +158,7 @@ class Api::V1::UsersController < APIController
   end
 
   def reset_password
-    token = user_params[:reset_password_token]
+    token = params[:reset_password_token]
     email = user_params[:email]
     password = user_params[:password]
 
