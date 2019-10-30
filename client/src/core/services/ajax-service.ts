@@ -36,7 +36,7 @@ export function requestAjax(name: string[], config: AjaxConfig): RequestAjaxEffe
   }
 }
 
-export type CompleteRequest = {
+export type CompleteRequestAction = {
   type: "complete-request"
   name: string[]
   success: boolean
@@ -46,11 +46,11 @@ export type CompleteRequest = {
   when: number
 }
 
-export type AjaxAction = CompleteRequest | LoadingRequest;
+export type AjaxAction = CompleteRequestAction | LoadingRequest;
 
 export function completeRequest(requestEffect: RequestAjaxEffect,
   status: number, response: string,
-  headers: string, when = Date.now()): CompleteRequest {
+  headers: string, when = Date.now()): CompleteRequestAction {
   return {
     type: "complete-request",
     name: requestEffect.name,

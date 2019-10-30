@@ -4,7 +4,7 @@ import {
   changeEmail,
   changeEmailRequestName,
   changePassword, changePasswordRequestName,
-  generateNewAccessToken, generateNewAccessTokenRequestName
+  generateNewAccessToken, generateNewAccessTokenRequestName, changeSubscription
 } from "../../reducers/login-reducer";
 import { Action } from "../../core/root-reducer";
 import { Input } from "../../components/input";
@@ -128,6 +128,25 @@ export function AccountSettings(dispatch: (action: Action) => void) {
                     <div className={"pointer bg-light-gray ma2 pa2 tc shadow-1 br2"}
                       onClick={dispatcher.generateNewAccessToken}>
                       Generate New Access Token
+                  </div>
+                  }
+                </div>
+              }
+
+              {state.toggles.changeSubscription &&
+                <div>
+                  <div>
+                    {subscription ? subscription : "none"}
+                  </div>
+                  {state.loadingRequests[stringifyRequestName([changeSubscriptionRequestName])] ?
+                    <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
+                      Changing Subscription
+                    <Loading className={"mh2"} />
+                    </div>
+                    :
+                    <div className={"pointer bg-light-gray ma2 pa2 tc shadow-1 br2"}
+                      onClick={dispatcher.changeSubscription}>
+                      Change Subscription
                   </div>
                   }
                 </div>

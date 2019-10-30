@@ -579,6 +579,10 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         }));
       break;
 
+      case "change-subscription":
+        // TODO change subscription
+      break;
+
   }
 
   return { state, effects };
