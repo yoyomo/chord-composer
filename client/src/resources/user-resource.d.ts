@@ -1,3 +1,5 @@
+import { StripeSubscriptionResource } from "./stripe-resource";
+
 export interface UserResource {
   id: number
   username: string
@@ -10,6 +12,8 @@ export interface UserResource {
   stripe_subscription_id: string,
   stripe_plan_id: string,
   stripe_token_id: string,
+
+  stripe_subscription: StripeSubscriptionResource,
 
   created_at: string
 }

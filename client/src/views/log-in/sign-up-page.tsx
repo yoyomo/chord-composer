@@ -15,7 +15,7 @@ import { Page } from "../../components/page";
 import { stringifyRequestName } from "../../reducers/complete-request-reducer";
 import { Loading } from "../../components/loading";
 import { SVGCheckMark } from "../../components/svgs";
-import { StripePlans } from "./stripe-plans";
+import { StripePlans } from "../../components/stripe-plans";
 
 
 interface SignUpFormProps extends ReactStripeElements.InjectedStripeProps {

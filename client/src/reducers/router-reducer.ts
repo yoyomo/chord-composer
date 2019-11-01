@@ -1,6 +1,6 @@
 import {historyPush, navigationReducer, PathLocation} from "../core/services/navigation-service";
 import {State} from "../state";
-import {ReductionWithEffect} from "../core/reducers";
+import {ReductionWithEffect, SideEffect} from "../core/reducers";
 import {Effect} from "../core/services/service";
 import {AuthHeaders, confirmEmailRequestName} from "./login-reducer";
 import {getCookie} from "../utils/cookies";
@@ -10,9 +10,26 @@ import {getLoggedInUserRequestName} from "./footer-reducer";
 
 export type PathPart = '' | 'home' | 'sign-up' | 'chords' | 'song'
 
+export const getStripeData = (state: State, effects: Effect[]): ReductionWithEffect<State> => {
+  if (!state.stripe.publishableKey || state.stripe.plans.length === 0) {
+    effects = effects.concat(requestAjax([getStripePublishableKeyRequestName], {
+      headers: state.headers,
+      url: StripePath + '/data',
+      method: 'GET'
+    }));
+  }
+
+  if (state.loggedInUser ) {
+    state = {...state};
+    state.stripe = {...state.stripe};
+    state.stripe.chosenPlanID = state.loggedInUser && state.loggedInUser.stripe_subscription.plan.id || state.stripe.chosenPlanID;
+  }
+  return {state, effects};
+}
+
 export function routerReducer(state: State,
                               location: PathLocation): ReductionWithEffect<State> {
-  let effects: Effect[] = [];
+  let effects: Effect[] | void = [];
   state = {...state};
 
   let nextPathParts: PathPart[] = location.pathname.split("/").slice(1) as PathPart[];
@@ -26,13 +43,7 @@ export function routerReducer(state: State,
         effects = effects.concat(historyPush({pathname: "home"}));
       }
 
-      if (!state.stripe.publishableKey || state.stripe.plans.length === 0) {
-        effects = effects.concat(requestAjax([getStripePublishableKeyRequestName], {
-          headers: state.headers,
-          url: StripePath + '/data',
-          method: 'GET'
-        }));
-      }
+      ({ state, effects } = getStripeData(state, effects));
 
       break;
 

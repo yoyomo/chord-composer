@@ -5,7 +5,8 @@ import {
   ApiV1UsersPath,
   AuthResendConfirmationEmail,
   AuthSignIn,
-  AuthSignUp
+  AuthSignUp,
+  StripePath
 } from "../resources/routes";
 import { historyPush } from "../core/services/navigation-service";
 import { ResourceType } from "../resources/resource";
@@ -15,7 +16,7 @@ import { Effect } from "../core/services/service";
 import { setCookie } from "../utils/cookies";
 import { getLoggedInUserRequestName } from "./footer-reducer";
 import { parseMMLChords } from "../utils/mml-utils";
-import { getStripePublishableKeyRequestName } from "./router-reducer";
+import { getStripePublishableKeyRequestName, getStripeData } from "./router-reducer";
 import { StripeResource } from "../resources/stripe-resource";
 import { getStripe } from "../core/services/stripe-service";
 import { setTimer } from "../core/services/timer-service";
@@ -147,13 +148,13 @@ export const resetPassword = (): ResetPasswordAction => {
   }
 };
 
-export type ChangeSubscriptionAction = {
-  type: "change-subscription"
+export type CancelSubscriptionAction = {
+  type: "cancel-subscription"
 }
 
-export const changeSubscription = (): ChangeSubscriptionAction => {
+export const cancelSubscription = (): CancelSubscriptionAction => {
   return {
-    type: "change-subscription",
+    type: "cancel-subscription",
   }
 };
 
@@ -170,7 +171,7 @@ export type LogInActions =
   | ChangePasswordAction
   | ForgotPasswordAction
   | ResetPasswordAction
-  | ChangeSubscriptionAction;
+  | CancelSubscriptionAction;
 
 
 export interface ResponseType {
@@ -228,7 +229,7 @@ export const resetUser = (state: State): State => {
 };
 
 export const reduceLogin = (state: State, action: Action): ReductionWithEffect<State> => {
-  let effects: Effect[] = [];
+  let effects: Effect[] | void = [];
   switch (action.type) {
 
     case "complete-request":
@@ -493,6 +494,8 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         state = { ...state };
         state.inputs = { ...state.inputs };
         state.inputs.email = (state.loggedInUser && state.loggedInUser.email) || "";
+      } else if (action.target === "showSettingsModal") {
+        ({ state, effects } = getStripeData(state, effects));
       }
       break;
 
@@ -579,8 +582,12 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         }));
       break;
 
-      case "change-subscription":
-        // TODO change subscription
+    case "cancel-subscription":
+      if (!state.loggedInUser) break;
+      effects.push(requestAjax([cancelSubscriptionRequestName],
+        {
+          method: "PUT", url: ApiV1UsersPath + "/" + state.loggedInUser.id + "/cancel_subscription", headers: state.headers
+        }));
       break;
 
   }
@@ -650,3 +657,4 @@ export const changeEmailRequestName = "change-email";
 export const changePasswordRequestName = "change-password";
 export const forgotPasswordRequestName = "forgot-password";
 export const resetPasswordRequestName = "reset-password";
+export const cancelSubscriptionRequestName = "cancel-subscription";

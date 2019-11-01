@@ -7,6 +7,8 @@ class User < ApplicationRecord
   validates :password, allow_nil: true, format: PASSWORD_REQUIREMENTS
   validates :email, uniqueness: true, format: EMAIL_REQUIREMENTS
 
+  attribute :stripe_subscription
+
   def send_confirmation_email
     update_user_confirmation
     UserMailer.with(user: self).confirm_email.deliver_later
@@ -32,7 +34,6 @@ class User < ApplicationRecord
   end
 
   def confirm
-
     user = resource
     if user.email.nil? || user.stripe_token_id.nil? || user.stripe_plan_id.nil?
       Rails.logger.error "Stripe Error: Email, Token ID, and Plan ID are required"
@@ -40,17 +41,19 @@ class User < ApplicationRecord
     end
 
     customer = Stripe::Customer.create({
-                                           email: user.email,
-                                           source: user.stripe_token_id
+                                         email: user.email,
+                                         source: user.stripe_token_id,
                                        })
 
     subscription = Stripe::Subscription.create({
-                                                   customer: customer.id,
-                                                   items: [{plan: user.stripe_plan_id}]
+                                                 customer: customer.id,
+                                                 items: [{ plan: user.stripe_plan_id }],
                                                })
 
     user.update!(stripe_customer_id: customer.id, stripe_subscription_id: subscription.id)
-
   end
 
+  def stripe_subscription
+    Stripe::Subscription.retrieve(self.stripe_subscription_id)
+  end
 end
