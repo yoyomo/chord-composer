@@ -1,6 +1,6 @@
 import {historyPush, navigationReducer, PathLocation} from "../core/services/navigation-service";
 import {State} from "../state";
-import {ReductionWithEffect, SideEffect} from "../core/reducers";
+import {ReductionWithEffect} from "../core/reducers";
 import {Effect} from "../core/services/service";
 import {AuthHeaders, confirmEmailRequestName} from "./login-reducer";
 import {getCookie} from "../utils/cookies";
@@ -22,7 +22,7 @@ export const getStripeData = (state: State, effects: Effect[]): ReductionWithEff
   if (state.loggedInUser ) {
     state = {...state};
     state.stripe = {...state.stripe};
-    state.stripe.chosenPlanID = state.loggedInUser && state.loggedInUser.stripe_subscription.plan.id || state.stripe.chosenPlanID;
+    state.stripe.chosenPlanID = state.loggedInUser ? state.loggedInUser.stripe_subscription.plan.id : state.stripe.chosenPlanID;
   }
   return {state, effects};
 }

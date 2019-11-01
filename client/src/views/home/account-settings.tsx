@@ -43,6 +43,8 @@ export function AccountSettings(dispatch: (action: Action) => void) {
       }
     }();
 
+    const isSubscriptionActive = (state.loggedInUser && state.loggedInUser.stripe_subscription.status === "active") || null;
+
     return (
       <div className={"word-wrap"}>
 
@@ -161,8 +163,8 @@ export function AccountSettings(dispatch: (action: Action) => void) {
                     <Loading className={"mh2"} />
                     </div>
                     :
-                    <div className={"pointer bg-light-red ma2 pa2 tc  br2 white"}
-                      onClick={dispatcher.cancelSubscription}>
+                    <div className={`${isSubscriptionActive ? 'bg-light-red white pointer' : 'bg-light-gray'} ma2 pa2 tc  br2`}
+                      onClick={isSubscriptionActive &&dispatcher.cancelSubscription}>
                       Cancel Subscription
                         </div>
                   }

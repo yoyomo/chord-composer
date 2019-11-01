@@ -6,7 +6,8 @@ user = User.create!(username: "first_user", email: "kordpad@gmail.com",
                     stripe_subscription_id: "sub_G3A8XfFHZDk9ui",
                     stripe_plan_id: "plan_FPRSWCfeC2eHz1",
                     stripe_token_id: "tok_1FX3imCK5Il4ajSVJnQNy7eI",
-                    access_token: SecureRandom.hex
-)
+                    access_token: SecureRandom.hex)
+
+user.create_stripe_subscription
 
 puts "Created user " + user.to_json.to_s

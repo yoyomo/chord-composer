@@ -1,5 +1,5 @@
 class Api::V1::UsersController < APIController
-  before_action :set_user, only: [:show, :update, :destroy, :generate_new_access_token]
+  before_action :set_user, except: [:create, :sign_in, :index, :resend_confirmation_email, :confirm_email, :forgot_password, :reset_password]
 
   skip_before_action :authenticate_user!,
                      only: [:create, :confirm_email, :sign_in, :resend_confirmation_email, :forgot_password, :reset_password]
@@ -75,17 +75,7 @@ class Api::V1::UsersController < APIController
       user.update!(confirmed_at: Time.now)
 
       if !user.stripe_token_id.nil? && !user.stripe_plan_id.nil? && user.stripe_customer_id.nil? && user.stripe_subscription_id.nil?
-        customer = Stripe::Customer.create({
-                                             email: user.email,
-                                             source: user.stripe_token_id,
-                                           })
-
-        subscription = Stripe::Subscription.create({
-                                                     customer: customer.id,
-                                                     items: [{ plan: user.stripe_plan_id }],
-                                                   })
-
-        user.update!(stripe_customer_id: customer.id, stripe_subscription_id: subscription.id)
+        user.create_stripe_subscription
       end
 
       render json: { data: user }
@@ -167,6 +157,11 @@ class Api::V1::UsersController < APIController
                                message: "Reset Password Token is invalid or has expired" }] },
              status: :unprocessable_entity
     end
+  end
+
+  def cancel_subscription
+    @user.cancel_stripe_subscription
+    render json: { data: @user }
   end
 
   private

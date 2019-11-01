@@ -15,5 +15,6 @@ export interface StripeResource {
 
 export interface StripeSubscriptionResource {
   status: string,
+  current_period_end: number,
   plan: StripePlanResource
 }

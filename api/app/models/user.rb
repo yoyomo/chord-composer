@@ -9,6 +9,8 @@ class User < ApplicationRecord
 
   attribute :stripe_subscription
 
+  before_destroy :cancel_stripe_subscription, prepend: true
+
   def send_confirmation_email
     update_user_confirmation
     UserMailer.with(user: self).confirm_email.deliver_later
@@ -40,20 +42,36 @@ class User < ApplicationRecord
       return
     end
 
-    customer = Stripe::Customer.create({
-                                         email: user.email,
-                                         source: user.stripe_token_id,
-                                       })
+    user.create_stripe_subscription
+  end
 
-    subscription = Stripe::Subscription.create({
-                                                 customer: customer.id,
-                                                 items: [{ plan: user.stripe_plan_id }],
-                                               })
+  def create_stripe_subscription
+    customer = Stripe::Customer.retrieve(self.stripe_customer_id)
+    if !customer
+      customer = Stripe::Customer.create({
+        email: self.email,
+        source: self.stripe_token_id,
+      })
+    end
 
-    user.update!(stripe_customer_id: customer.id, stripe_subscription_id: subscription.id)
+    subscription = Stripe::Subscription.list(customer: customer.id).select { |sub| sub.status === "active" }.first
+    if !subscription
+      subscription = Stripe::Subscription.create({
+        customer: customer.id,
+        items: [{ plan: self.stripe_plan_id }],
+      })
+    end
+
+    self.update!(stripe_customer_id: customer.id, stripe_subscription_id: subscription.id)
   end
 
   def stripe_subscription
+    init_stripe if !Stripe.api_key
     Stripe::Subscription.retrieve(self.stripe_subscription_id)
+  end
+
+  def cancel_stripe_subscription
+    init_stripe if !Stripe.api_key
+    Stripe::Subscription.delete(self.stripe_subscription_id)
   end
 end

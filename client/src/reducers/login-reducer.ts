@@ -6,7 +6,6 @@ import {
   AuthResendConfirmationEmail,
   AuthSignIn,
   AuthSignUp,
-  StripePath
 } from "../resources/routes";
 import { historyPush } from "../core/services/navigation-service";
 import { ResourceType } from "../resources/resource";
@@ -407,6 +406,13 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
             state.success = initialState.success;
           }
           break;
+        }
+
+        case cancelSubscriptionRequestName: {
+          if (action.success) {
+            state = {...state};
+            state.loggedInUser = response.data;
+          }
         }
       }
       break;

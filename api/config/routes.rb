@@ -13,6 +13,7 @@ Rails.application.routes.draw do
         end
         member do
           put "generate_new_access_token"
+          put "cancel_subscription"
         end
       end
 
