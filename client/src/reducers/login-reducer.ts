@@ -255,16 +255,17 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
             state = setUser(state, action.headers, response.data as UserResource);
             state.toggles = { ...state.toggles };
             state.toggles.showLogInModal = false;
-            state.success = initialState.success;
             state.errors = initialState.errors;
             state.inputs = { ...state.inputs };
             state.inputs.email = "";
             state.inputs.password = "";
             state.inputs.confirmPassword = "";
 
-            state.toggles.showSuccessfulLogInModal = true;
+            state.success = {...state.success};
+            state.success.signIn = "Successful Login!";
+            state.toggles.showTemporaryUserModal = true;
 
-            effects = effects.concat(setTimer(toggle<Toggles>("showSuccessfulLogInModal", false), 1500))
+            effects = effects.concat(setTimer(toggle<Toggles>("showTemporaryUserModal", false), 1500))
           } else {
             state = { ...state };
             state.errors = { ...state.errors };

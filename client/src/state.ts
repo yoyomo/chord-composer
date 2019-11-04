@@ -62,7 +62,7 @@ export const initialState = {
 
   toggles: {
     showLogInModal: false,
-    showSuccessfulLogInModal: false,
+    showTemporaryUserModal: false,
     showSettingsModal: false,
     changeEmail: false,
     changePassword: false,
@@ -72,13 +72,15 @@ export const initialState = {
   },
 
   success: {
+    signIn: "",
     signUp: "",
     changeAccountSettings: ""
   },
   errors: {
     signIn: [] as ResponseError[],
     signUp: [] as ResponseError[],
-    changeAccountSettings: [] as ResponseError[]
+    changeAccountSettings: [] as ResponseError[],
+    server: [] as ResponseError[],
   },
   alerts: {
     signIn: ""

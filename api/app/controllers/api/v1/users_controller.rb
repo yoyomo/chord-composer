@@ -1,8 +1,13 @@
 class Api::V1::UsersController < APIController
-  before_action :set_user, except: [:create, :sign_in, :index, :resend_confirmation_email, :confirm_email, :forgot_password, :reset_password]
+  before_action :set_user, except: [:index,
+                                    :create, :sign_in, :resend_confirmation_email, :confirm_email, :forgot_password, :reset_password]
 
   skip_before_action :authenticate_user!,
-                     only: [:create, :confirm_email, :sign_in, :resend_confirmation_email, :forgot_password, :reset_password]
+                     only: [:create, :sign_in, :resend_confirmation_email, :confirm_email, :forgot_password, :reset_password]
+
+  skip_before_action :verify_stripe!,
+                     only: [:index , :show,
+                            :create, :sign_in, :resend_confirmation_email, :confirm_email, :forgot_password, :reset_password]
 
   def index
     @users = User.all

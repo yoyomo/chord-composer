@@ -18,24 +18,18 @@ export function UserInfoModal(dispatch: (action: Action) => void) {
       <div className={"w-100 h-100"}>
 
         <HeaderTitle/>
-        {state.toggles.showSuccessfulLogInModal ?
-          <div className={"green"}>
-            Successful Login!
-          </div>
+        {state.toggles.showSettingsModal ?
+          AccountSettingsContent(state)
           :
-          state.toggles.showSettingsModal ?
-            AccountSettingsContent(state)
-            :
-            <div>
-              <div className={"pointer b--light-gray hover-bg-black-10 pa2"}
-                   onClick={toggleDispatcher(dispatch, "showSettingsModal")}>
-                Settings
-              </div>
-              <div className={"pointer bt b--light-gray hover-bg-black-10 pa2"} onClick={dispatcher.signOut}>
-                Sign Out
-              </div>
+          <div>
+            <div className={"pointer b--light-gray hover-bg-black-10 pa2"}
+                 onClick={toggleDispatcher(dispatch, "showSettingsModal")}>
+              Settings
             </div>
-
+            <div className={"pointer bt b--light-gray hover-bg-black-10 pa2"} onClick={dispatcher.signOut}>
+              Sign Out
+            </div>
+          </div>
         }
       </div>
     );
