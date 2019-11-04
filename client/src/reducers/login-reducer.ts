@@ -157,6 +157,16 @@ export const cancelSubscription = (): CancelSubscriptionAction => {
   }
 };
 
+export type ChangePaymentAction = {
+  type: "change-payment"
+}
+
+export const changePayment = (): ChangePaymentAction => {
+  return {
+    type: "change-payment",
+  }
+};
+
 export type LogInActions =
   | SignInAction
   | SignOutAction
@@ -170,7 +180,8 @@ export type LogInActions =
   | ChangePasswordAction
   | ForgotPasswordAction
   | ResetPasswordAction
-  | CancelSubscriptionAction;
+  | CancelSubscriptionAction
+  | ChangePaymentAction;
 
 
 export interface ResponseType {
@@ -596,6 +607,10 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         }));
       break;
 
+    case "change-payment":
+      debugger;
+      break;
+
   }
 
   return { state, effects };
@@ -664,3 +679,4 @@ export const changePasswordRequestName = "change-password";
 export const forgotPasswordRequestName = "forgot-password";
 export const resetPasswordRequestName = "reset-password";
 export const cancelSubscriptionRequestName = "cancel-subscription";
+export const changeSubscriptionRequestName = "change-subscription";
