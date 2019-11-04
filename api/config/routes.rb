@@ -1,10 +1,8 @@
 Rails.application.routes.draw do
-
-  get 'stripe/data'
+  get "stripe/data"
 
   namespace :api do
     namespace :v1 do
-
       resources :users do
         collection do
           put "confirm_email"
@@ -15,11 +13,11 @@ Rails.application.routes.draw do
         end
         member do
           put "generate_new_access_token"
+          put "cancel_subscription"
         end
       end
 
       resources :songs
-
     end
   end
 end

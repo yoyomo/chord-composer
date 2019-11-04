@@ -4,7 +4,7 @@ import {
   changeEmail,
   changeEmailRequestName,
   changePassword, changePasswordRequestName,
-  generateNewAccessToken, generateNewAccessTokenRequestName, changeSubscription
+  generateNewAccessToken, generateNewAccessTokenRequestName, cancelSubscription, cancelSubscriptionRequestName
 } from "../../reducers/login-reducer";
 import { Action } from "../../core/root-reducer";
 import { Input } from "../../components/input";
@@ -13,15 +13,19 @@ import { toggleDispatcher } from "../../reducers/toggle-reducer";
 import { SVGBack } from "../../components/svgs";
 import { Loading } from "../../components/loading";
 import { stringifyRequestName } from "../../reducers/complete-request-reducer";
+import { StripePlans } from "../../components/stripe-plans";
+import { StripeSubscription } from "../../components/stripe-subscription";
 
 export function AccountSettings(dispatch: (action: Action) => void) {
   const dispatcher = {
     generateNewAccessToken: () => dispatch(generateNewAccessToken()),
     changeEmail: () => dispatch(changeEmail()),
     changePassword: () => dispatch(changePassword()),
-    changeSubscription: () => dispatch(changeSubscription()),
+    cancelSubscription: () => dispatch(cancelSubscription()),
+    // changePayment: () => dispatch(changePayment()),
   };
 
+  const StripePlansContent = StripePlans(dispatch);
 
   return (state: State) => {
 
@@ -39,7 +43,7 @@ export function AccountSettings(dispatch: (action: Action) => void) {
       }
     }();
 
-    const subscription = state.loggedInUser && state.stripe.object.subscriptions.retrieve(state.loggedInUser.stripe_subscription_id);
+    const isSubscriptionActive = (state.loggedInUser && state.loggedInUser.stripe_subscription.status === "active") || null;
 
     return (
       <div className={"word-wrap"}>
@@ -135,19 +139,34 @@ export function AccountSettings(dispatch: (action: Action) => void) {
 
               {state.toggles.changeSubscription &&
                 <div>
-                  <div>
-                    {subscription ? subscription : "none"}
-                  </div>
-                  {state.loadingRequests[stringifyRequestName([changeSubscriptionRequestName])] ?
+                  <StripeSubscription user={state.loggedInUser} />
+                  {StripePlansContent(state)}
+                  {/* {state.stripe.object && state.stripe.publishableKey && <div>
+                        <StripeProvider apiKey={state.stripe.publishableKey}>
+                          <Elements>
+                            <StripeSignUpForm onSubmit={dispatcher.signUp} onError={dispatcher.error}
+                              errors={state.errors.signUp}
+                              isLoadingRequest={state.loadingRequests[stringifyRequestName([userSignUpRequestName])]}
+                            />
+                          </Elements>
+                        </StripeProvider> 
+
+                        <div className={"pointer bg-light-gray ma2 pa2 tc shadow-1 br2"}
+                          onClick={dispatcher.changePayment}>
+                          Change Payment
+                        </div>
+                      </div>
+                      } */}
+                  {state.loadingRequests[stringifyRequestName([cancelSubscriptionRequestName])] ?
                     <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
-                      Changing Subscription
+                      Cancelling Subscription
                     <Loading className={"mh2"} />
                     </div>
                     :
-                    <div className={"pointer bg-light-gray ma2 pa2 tc shadow-1 br2"}
-                      onClick={dispatcher.changeSubscription}>
-                      Change Subscription
-                  </div>
+                    <div className={`${isSubscriptionActive ? 'bg-light-red white pointer' : 'bg-light-gray'} ma2 pa2 tc  br2`}
+                      onClick={isSubscriptionActive &&dispatcher.cancelSubscription}>
+                      Cancel Subscription
+                        </div>
                   }
                 </div>
               }
@@ -187,9 +206,7 @@ export function AccountSettings(dispatch: (action: Action) => void) {
                   Update Subscription
                 </div>
                 <div className={"gray"}>
-                  {subscription ?
-                    subscription
-                    : "none"}
+                  <StripeSubscription user={state.loggedInUser} />
                 </div>
               </div>
             </div>

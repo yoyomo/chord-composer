@@ -12,3 +12,9 @@ export interface StripeResource {
   publishable_key: string,
   plans: StripePlanResource[]
 }
+
+export interface StripeSubscriptionResource {
+  status: string,
+  current_period_end: number,
+  plan: StripePlanResource
+}
