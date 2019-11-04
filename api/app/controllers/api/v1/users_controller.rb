@@ -6,7 +6,7 @@ class Api::V1::UsersController < APIController
                      only: [:create, :sign_in, :resend_confirmation_email, :confirm_email, :forgot_password, :reset_password]
 
   skip_before_action :verify_stripe!,
-                     only: [:index , :show,
+                     only: [:show,
                             :create, :sign_in, :resend_confirmation_email, :confirm_email, :forgot_password, :reset_password]
 
   def index
