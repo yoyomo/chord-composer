@@ -27,24 +27,28 @@ export function ChordMapper(dispatch: (action: Action) => void) {
       <div className={"w-100 bg-light-gray dark-gray"}>
         <div className={"overflow-x-auto overflow-y-hidden gpu pb1"}>
           <div className={"db nowrap"}>
+            <div className="bg-light-gray w2 h3 dib v-mid"/>
             {ChordMapperKeys.map((blackKey, i) => {
+              const width = blackKey === "G#" ? 'w3' : 'w3-5';
               return blackKey.includes('#') &&
-                <div key={"black-key-" + i}
-                     className={`bg-gray light-gray tc ${blackKey === "G#" ? 'w3' : 'w3-5'} h3 dib v-mid pointer pa3 br b--white`} onClick={() => onKeyClick(i)}>
-                  {blackKey}
-                  {state.chordMapperKeys[i] && <SelectedKey/>}
-                </div>
+                  <div key={"black-key-" + i}
+                       className={`bg-gray light-gray tc ${width} h3 dib v-mid pointer pa3 br b--white`}
+                       onClick={() => onKeyClick(i)}>
+                    {blackKey}
+                    {state.chordMapperKeys[i] && <SelectedKey/>}
+                  </div>
             })}
           </div>
 
           <div className={"db nowrap"}>
             {ChordMapperKeys.map((whiteKey, i) => {
               return !whiteKey.includes('#') &&
-                <div key={"white-key-" + i}
-                     className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 br b--black"}  onClick={() => onKeyClick(i)}>
-                  {whiteKey}
-                  {state.chordMapperKeys[i] && <SelectedKey/>}
-                </div>
+                  <div key={"white-key-" + i}
+                       className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 br b--black"}
+                       onClick={() => onKeyClick(i)}>
+                    {whiteKey}
+                    {state.chordMapperKeys[i] && <SelectedKey/>}
+                  </div>
             })}
           </div>
         </div>
