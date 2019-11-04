@@ -27,7 +27,7 @@ export function ChordMapper(dispatch: (action: Action) => void) {
       <div className={"w-100 bg-light-gray dark-gray"}>
         <div className={"overflow-x-auto overflow-y-hidden gpu pb1"}>
           <div className={"db nowrap"}>
-            <div className="bg-light-gray w2 h3 dib v-mid"/>
+            <div className="bg-gray w2 h3 dib v-mid pointer" onClick={() => onKeyClick(1)}/>
             {ChordMapperKeys.map((blackKey, i) => {
               const width = blackKey === "G#" ? 'w3' : 'w3-5';
               return blackKey.includes('#') &&
@@ -44,12 +44,14 @@ export function ChordMapper(dispatch: (action: Action) => void) {
             {ChordMapperKeys.map((whiteKey, i) => {
               return !whiteKey.includes('#') &&
                   <div key={"white-key-" + i}
-                       className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 br b--black"}
+                       className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 bl b--black"}
                        onClick={() => onKeyClick(i)}>
                     {whiteKey}
                     {state.chordMapperKeys[i] && <SelectedKey/>}
                   </div>
             })}
+            <div className="bg-white w2 h3 dib v-mid pointer" onClick={() => onKeyClick(ChordMapperKeys.length - 2)}/>
+
           </div>
         </div>
 
