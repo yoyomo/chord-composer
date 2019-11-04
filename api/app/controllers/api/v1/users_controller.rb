@@ -75,7 +75,7 @@ class Api::V1::UsersController < APIController
       user.update!(confirmed_at: Time.now)
 
       if !user.stripe_token_id.nil? && !user.stripe_plan_id.nil? && user.stripe_customer_id.nil? && user.stripe_subscription_id.nil?
-        user.create_stripe_subscription
+        user.create_or_update_customer_subscription
       end
 
       render json: { data: user }
@@ -161,6 +161,12 @@ class Api::V1::UsersController < APIController
 
   def cancel_subscription
     @user.cancel_stripe_subscription
+    render json: { data: @user }
+  end
+
+  def change_subscription
+    @user.update!(user_params)
+    @user.create_or_update_customer_subscription
     render json: { data: @user }
   end
 

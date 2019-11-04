@@ -157,13 +157,15 @@ export const cancelSubscription = (): CancelSubscriptionAction => {
   }
 };
 
-export type ChangePaymentAction = {
-  type: "change-payment"
+export type ChangeSubscriptionAction = {
+  type: "change-subscription"
+  token_id: string
 }
 
-export const changePayment = (): ChangePaymentAction => {
+export const changeSubscription = (token_id: string): ChangeSubscriptionAction => {
   return {
-    type: "change-payment",
+    type: "change-subscription",
+    token_id
   }
 };
 
@@ -181,7 +183,7 @@ export type LogInActions =
   | ForgotPasswordAction
   | ResetPasswordAction
   | CancelSubscriptionAction
-  | ChangePaymentAction;
+  | ChangeSubscriptionAction;
 
 
 export interface ResponseType {
@@ -424,6 +426,14 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
             state = {...state};
             state.loggedInUser = response.data;
           }
+          break;
+        }
+        case changeSubscriptionRequestName: {
+          if (action.success) {
+            state = {...state};
+            state.loggedInUser = response.data;
+          }
+          break;
         }
       }
       break;
@@ -607,8 +617,18 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         }));
       break;
 
-    case "change-payment":
-      debugger;
+    case "change-subscription":
+      if (!state.loggedInUser) break;
+      effects.push(requestAjax([changeSubscriptionRequestName],
+        {
+          method: "PUT", url: ApiV1UsersPath + "/" + state.loggedInUser.id + "/change_subscription", headers: state.headers,
+          json: {
+            user: {
+              stripe_plan_id: state.stripe.chosenPlanID,
+              stripe_token_id: action.token_id
+            }
+          }
+        }));
       break;
 
   }

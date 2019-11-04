@@ -9,7 +9,7 @@ import {
   generateNewAccessTokenRequestName,
   cancelSubscription,
   cancelSubscriptionRequestName,
-  ResponseError, changeSubscriptionRequestName, errorOnSignUp, changePayment
+  ResponseError, changeSubscriptionRequestName, errorOnSignUp, changeSubscription
 } from "../../reducers/login-reducer";
 import {Action} from "../../core/root-reducer";
 import {Input} from "../../components/input";
@@ -29,7 +29,7 @@ export function AccountSettings(dispatch: (action: Action) => void) {
     changeEmail: () => dispatch(changeEmail()),
     changePassword: () => dispatch(changePassword()),
     cancelSubscription: () => dispatch(cancelSubscription()),
-    changePayment: () => dispatch(changePayment()),
+    changeSubscription: (token_id: string) => dispatch(changeSubscription(token_id)),
     error: (error: ResponseError) => dispatch(errorOnSignUp(error)),
   };
 
@@ -153,12 +153,12 @@ export function AccountSettings(dispatch: (action: Action) => void) {
                 {StripePlansContent(state)}
                 {state.stripe.object && state.stripe.publishableKey &&
                 <StripeForm apiKey={state.stripe.publishableKey}
-                            onSubmit={dispatcher.changePayment}
+                            onSubmit={dispatcher.changeSubscription}
                             onError={dispatcher.error}
                             errors={state.errors.changeAccountSettings}
                             isLoadingRequest={state.loadingRequests[stringifyRequestName([changeSubscriptionRequestName])]}
-                            loadingMessage="Changing Payment"
-                            submitMessage="Change Payment"/>
+                            loadingMessage="Changing Subscription"
+                            submitMessage="Change Subscription"/>
                 }
                 {state.loadingRequests[stringifyRequestName([cancelSubscriptionRequestName])] ?
                   <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
