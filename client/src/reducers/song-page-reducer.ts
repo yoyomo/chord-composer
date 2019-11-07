@@ -1,6 +1,6 @@
 import { Action } from "../core/root-reducer";
 import { State } from "../state";
-import { Effect } from "../core/services/service";
+import { Effect } from "../core/services/services";
 import { calculateMML } from "../utils/mml-utils";
 
 export type AddChordAndLyricAction = {

@@ -11,7 +11,7 @@ import { historyPush } from "../core/services/navigation-service";
 import { ResourceType } from "../resources/resource";
 import { UserResource } from "../resources/user-resource";
 import { Action } from "../core/root-reducer";
-import { Effect } from "../core/services/service";
+import { Effect } from "../core/services/services";
 import { setCookie } from "../utils/cookies";
 import { getLoggedInUserRequestName } from "./footer-reducer";
 import { parseMMLChords } from "../utils/mml-utils";

@@ -4,7 +4,7 @@ import { requestAjax } from "../core/services/ajax-service";
 import { ApiV1UsersPath } from "../resources/routes";
 import { calculateMML } from "../utils/mml-utils";
 import { Action } from "../core/root-reducer";
-import { Effect } from "../core/services/service";
+import { Effect } from "../core/services/services";
 
 export type SaveChordAction = {
   type: "save-chord"

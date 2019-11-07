@@ -1,4 +1,4 @@
-import { Effect, Service } from "./service";
+import { Effect, Services } from "./services";
 import { Action } from "../root-reducer";
 
 export interface AjaxConfig {
@@ -62,7 +62,7 @@ export function completeRequest(requestEffect: RequestAjaxEffect,
   }
 }
 
-export function withAjax(dispatch: (action: Action) => void, queueSize = 6, rootUrl = ""): Service {
+export function withAjax(dispatch: (action: Action) => void, queueSize = 6, rootUrl = ""): Services {
   return (effect: Effect) => {
     let requests = {} as { [k: string]: XMLHttpRequest };
     let canceled = false;

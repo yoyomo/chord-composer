@@ -3,7 +3,7 @@ import {ReductionWithEffect} from "../core/reducers";
 import {Action} from "../core/root-reducer";
 import {setTimer} from "../core/services/timer-service";
 import {toggle} from "./toggle-reducer";
-import {Effect} from "../core/services/service";
+import {Effect} from "../core/services/services";
 
 export const stringifyRequestName = (name: string[]) => {
   return name.join('-');

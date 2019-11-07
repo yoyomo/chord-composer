@@ -1,5 +1,5 @@
 import { ReductionWithEffect } from "../reducers";
-import { Effect, Service } from "./service";
+import { Effect, Services } from "./services";
 import { Action } from "../root-reducer";
 
 export interface PathLocation {
@@ -55,7 +55,7 @@ export interface HistoryProvider {
   location: PathLocation
 }
 
-export function withHistory(dispatch: (action: Action) => void, history: HistoryProvider): Service {
+export function withHistory(dispatch: (action: Action) => void, history: HistoryProvider): Services {
 
   history.listen((location, action) => {
     dispatch(visit(location));

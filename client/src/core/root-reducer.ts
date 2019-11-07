@@ -9,7 +9,7 @@ import {ChordCanvasActions, reduceChordCanvas} from "../reducers/chord-grid-redu
 import {recomputeAllNotes} from "../reducers/recompute-all-notes";
 import {recomputeChordGrid} from "../reducers/recompute-chord-grid";
 import {State} from "../state";
-import {ServicesActions} from "./services/service";
+import {ServicesActions} from "./services/services";
 import {NavigationActions} from "./services/navigation-service";
 import {reduceStripe, StripeActions} from "../reducers/stripe-reducer";
 import {reduceToggle, ToggleAction} from "../reducers/toggle-reducer";

@@ -1,4 +1,4 @@
-import {Effect, Service} from "./service";
+import {Effect, Services} from "./services";
 import {Action} from "../root-reducer";
 
 export interface SetTimerEffect {
@@ -15,7 +15,7 @@ export function setTimer(action: Action, ms: number): SetTimerEffect {
   }
 }
 
-export function withTimer(dispatch: (action: Action) => void): Service {
+export function withTimer(dispatch: (action: Action) => void): Services {
   return (effect: Effect) => {
 
     switch (effect.effectType) {

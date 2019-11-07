@@ -1,4 +1,4 @@
-import {Effect, Service} from "./service";
+import {Effect, Services} from "./services";
 import {Action} from "../root-reducer";
 import {setStripeObject} from "../../reducers/stripe-reducer";
 
@@ -14,7 +14,7 @@ export function getStripe(apiKey: string): GetStripeEffect {
   }
 }
 
-export function withStripe(dispatch: (action: Action) => void): Service {
+export function withStripe(dispatch: (action: Action) => void): Services {
   let getStripeTimeout: number;
   return (effect: Effect) => {
 

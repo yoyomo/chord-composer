@@ -2,7 +2,7 @@ import { Inputs } from "../state";
 import { ReductionWithEffect } from "../core/reducers";
 import { clearInputDebouncing } from "../core/services/input-debouncing-service";
 import { Action } from "../core/root-reducer";
-import { Effect } from "../core/services/service";
+import { Effect } from "../core/services/services";
 
 export type InputChange = {
   type: "input-change"

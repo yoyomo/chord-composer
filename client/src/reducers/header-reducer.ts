@@ -2,7 +2,7 @@ import { State } from "../state";
 import { ReductionWithEffect } from "../core/reducers";
 import { Action } from "../core/root-reducer";
 import { historyPush } from "../core/services/navigation-service";
-import { Effect } from "../core/services/service";
+import { Effect } from "../core/services/services";
 import { PathPart } from "./router-reducer";
 
 export type ChangeBaseFrequencyAction = {

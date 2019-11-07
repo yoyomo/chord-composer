@@ -1,7 +1,7 @@
 import { State } from "../state";
 import { Action } from "../core/root-reducer";
 import { ReductionWithEffect } from "../core/reducers";
-import { Effect } from "../core/services/service";
+import { Effect } from "../core/services/services";
 
 export type SetStripeObjectAction = {
   type: "set-stripe-object"

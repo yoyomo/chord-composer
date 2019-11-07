@@ -2,13 +2,13 @@ import React from 'react';
 import {initialState, State} from "./state";
 import {RootPage} from "./views/root-page";
 import {ClassAndChildren} from "./core/reducers";
-import {Effect, getCoreServices, Service} from "./core/services/service";
+import {Effect, getCoreServices, Services} from "./core/services/services";
 import {visit} from "./core/services/navigation-service";
 import {Action, rootReducer} from "./core/root-reducer";
 
 export class ReactRoot extends React.Component<{}, typeof initialState> {
 
-  services: Service[];
+  services: Services[];
 
   constructor(props: ClassAndChildren) {
     super(props);

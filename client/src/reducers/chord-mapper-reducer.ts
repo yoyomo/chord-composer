@@ -4,7 +4,7 @@ import { Action } from "../core/root-reducer";
 import { ChordType, KEYS } from "./recompute-chord-grid";
 import { MAXIMUM_OCTAVE, MINIMUM_OCTAVE } from "./chord-tools-reducer";
 
-export const ChordMapperKeys = KEYS.concat(KEYS).concat(KEYS);
+export const ChordMapperKeys = KEYS.concat(KEYS).concat(KEYS).concat(KEYS[0]);
 
 export type ToggleChordMapperKeyAction = {
   type: "toggle-chord-mapper-key"

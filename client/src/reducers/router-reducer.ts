@@ -1,7 +1,7 @@
 import {historyPush, navigationReducer, PathLocation} from "../core/services/navigation-service";
 import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
-import {Effect} from "../core/services/service";
+import {Effect} from "../core/services/services";
 import {AuthHeaders, confirmEmailRequestName} from "./login-reducer";
 import {getCookie} from "../utils/cookies";
 import {requestAjax} from "../core/services/ajax-service";

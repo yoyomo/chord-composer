@@ -1,5 +1,5 @@
 import {Action} from "../root-reducer";
-import {Effect} from "./service";
+import {Effect} from "./services";
 
 export const clearInputDebouncingEventName = "clear-input-debouncing";
 
