@@ -1,2 +1,2 @@
-client: cd client && PORT=3002 FORCE_COLOR=true BROWSER=none npm run start | cat
+client: cd client && PORT=3002 FORCE_COLOR=true npm run start | cat
 api: cd api && ./bin/rails s -p 3001

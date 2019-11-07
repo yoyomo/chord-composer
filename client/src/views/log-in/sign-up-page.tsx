@@ -14,7 +14,7 @@ import {Page} from "../../components/page";
 import {stringifyRequestName} from "../../reducers/complete-request-reducer";
 import {SVGCheckMark} from "../../components/svgs";
 import {StripePlans} from "../../components/stripe-plans";
-import {StripeForm} from "../../components/stripe-card";
+import {StripeForm} from "../../components/stripe-form";
 
 
 export function SignUpPage(dispatch: (action: Action) => void) {

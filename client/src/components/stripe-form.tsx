@@ -52,7 +52,7 @@ class Form extends React.Component<FormProps> {
               <Loading className={"mh2"} />
             </div>
             :
-            <div className={`dib ma2 br4 pa2 pointer bg-green white`}
+            <div className={"bg-light-gray pointer ma2 pa2 tc br2"}
                  onClick={this.submit}>
               {this.props.submitMessage}
             </div>

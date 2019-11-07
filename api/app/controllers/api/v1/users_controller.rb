@@ -7,7 +7,7 @@ class Api::V1::UsersController < APIController
 
   skip_before_action :verify_stripe!,
                      only: [:show,
-                            :create, :sign_in, :resend_confirmation_email, :confirm_email, :forgot_password, :reset_password]
+                            :create, :sign_in, :resend_confirmation_email, :confirm_email, :forgot_password, :reset_password, :change_subscription]
 
   def index
     @users = User.all

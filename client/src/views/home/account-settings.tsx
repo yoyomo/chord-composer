@@ -20,7 +20,7 @@ import {Loading} from "../../components/loading";
 import {stringifyRequestName} from "../../reducers/complete-request-reducer";
 import {StripePlans} from "../../components/stripe-plans";
 import {StripeSubscription} from "../../components/stripe-subscription";
-import {StripeForm} from "../../components/stripe-card";
+import {StripeForm} from "../../components/stripe-form";
 
 
 export function AccountSettings(dispatch: (action: Action) => void) {
@@ -160,16 +160,20 @@ export function AccountSettings(dispatch: (action: Action) => void) {
                             loadingMessage="Changing Subscription"
                             submitMessage="Change Subscription"/>
                 }
-                {state.loadingRequests[stringifyRequestName([cancelSubscriptionRequestName])] ?
-                  <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
-                    Cancelling Subscription
-                    <Loading className={"mh2"}/>
-                  </div>
-                  :
-                  <div
-                    className={`${isSubscriptionActive ? 'bg-light-red white pointer' : 'bg-light-gray'} ma2 pa2 tc  br2`}
-                    onClick={isSubscriptionActive && dispatcher.cancelSubscription}>
-                    Cancel Subscription
+                {isSubscriptionActive &&
+                  <div>
+                    {state.loadingRequests[stringifyRequestName([cancelSubscriptionRequestName])] ?
+                      <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
+                        Cancelling Subscription
+                        <Loading className={"mh2"}/>
+                      </div>
+                      :
+                      <div
+                        className="bg-light-red white pointer ma2 pa2 tc br2"
+                        onClick={dispatcher.cancelSubscription}>
+                        Cancel Subscription
+                      </div>
+                    }
                   </div>
                 }
               </div>

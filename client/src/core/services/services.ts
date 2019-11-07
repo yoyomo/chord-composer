@@ -5,6 +5,7 @@ import {ClearInputDebouncing} from "./input-debouncing-service";
 import {GetStripeEffect, withStripe} from "./stripe-service";
 import {SetTimerEffect, withTimer} from "./timer-service";
 import {withExternalInput} from "./external-input-service";
+import { PlaySoundEffect, withSound } from "./sound-service";
 let createBrowserHistory = require("history").createBrowserHistory;
 
 export type Effect =
@@ -13,6 +14,7 @@ export type Effect =
   | ClearInputDebouncing
   | GetStripeEffect
   | SetTimerEffect
+  | PlaySoundEffect
   ;
 
 export type Services = (effect: Effect) => void
@@ -28,6 +30,7 @@ export function getCoreServices(dispatch: (action: Action) => void): Services[] 
   services.push(withStripe(dispatch));
   services.push(withTimer(dispatch));
   services.push(withExternalInput(dispatch));
+  services.push(withSound(dispatch));
 
   return services;
 }

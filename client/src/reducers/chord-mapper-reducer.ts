@@ -3,6 +3,8 @@ import { ReductionWithEffect } from "../core/reducers";
 import { Action } from "../core/root-reducer";
 import { ChordType, KEYS } from "./recompute-chord-grid";
 import { MAXIMUM_OCTAVE, MINIMUM_OCTAVE } from "./chord-tools-reducer";
+import { Effect } from "../core/services/services";
+import { playSoundEffect } from "../core/services/sound-service";
 
 export const ChordMapperKeys = KEYS.concat(KEYS).concat(KEYS).concat(KEYS[0]);
 
@@ -126,6 +128,7 @@ export const mapKeysToChord = (state: State): State => {
 
 
 export const reduceChordMapper = (state: State, action: Action): ReductionWithEffect<State> => {
+  let effects: Effect[] = [];
   switch (action.type) {
     case "toggle-chord-mapper-key": {
       state = { ...state };
@@ -133,6 +136,9 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
       state.chordMapperKeys[action.keyIndex] = !state.chordMapperKeys[action.keyIndex];
 
       state = mapKeysToChord(state);
+
+      let noteIndex = action.keyIndex + (state.octave * KEYS.length);
+      effects = effects.concat(playSoundEffect(noteIndex, state.notes, state.audioContext, state.waveType, state.soundOn))
 
       break;
     }
@@ -149,5 +155,5 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
 
   }
 
-  return { state };
+  return { state, effects };
 };
