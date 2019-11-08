@@ -56,6 +56,7 @@ export const initialState = {
 
   inputs: {
     lyric: "",
+    mapKeyboardTo: 'keys' as 'keys' | 'chords' | 'none',
     ...loginPageInputs,
     ...accountSettingsInputs,
   },
@@ -68,7 +69,7 @@ export const initialState = {
     changePassword: false,
     changeAccessToken: false,
     changeSubscription: false,
-    isResettingPassword: false,
+    isResettingPassword: false
   },
 
   success: {

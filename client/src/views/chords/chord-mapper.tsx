@@ -51,7 +51,7 @@ export function ChordMapper(dispatch: (action: Action) => void) {
                   className={`bg-gray light-gray tc ${width} h3 dib v-mid pointer pa3 br b--white relative`}
                   onClick={() => dispatcher.toggleChordMapperKey(i)}>
                   {blackKey}
-                  <KeyboardKey i={i} />
+                  {state.inputs.mapKeyboardTo === 'keys' && <KeyboardKey i={i} />}
                   {state.chordMapperKeys[i] && <SelectedKey />}
                 </div>
             })}
@@ -64,7 +64,7 @@ export function ChordMapper(dispatch: (action: Action) => void) {
                   className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 bl b--black relative"}
                   onClick={() => dispatcher.toggleChordMapperKey(i)}>
                   {whiteKey}
-                  <KeyboardKey i={i} />
+                  {state.inputs.mapKeyboardTo === 'keys' && <KeyboardKey i={i} />}
                   {state.chordMapperKeys[i] && <SelectedKey />}
                 </div>
             })}
