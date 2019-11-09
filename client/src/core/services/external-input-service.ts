@@ -53,18 +53,18 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
     }
   };
 
-  let eventHandler: (e: KeyboardEvent) => void;
+  let keyboardEventListener: (e: KeyboardEvent) => void;
 
   return (effect: Effect) => {
     switch(effect.effectType){
       case "cancel-external-input":
-        document.body.removeEventListener('keydown', eventHandler);
+        document.body.removeEventListener('keydown', keyboardEventListener);
         break;
 
       case "accept-external-input":
-        document.body.removeEventListener('keydown', eventHandler);
-        eventHandler = (e: KeyboardEvent) => handleKeyDown(e, effect.keyboardMap);
-        document.body.addEventListener('keydown', eventHandler);
+        document.body.removeEventListener('keydown', keyboardEventListener);
+        keyboardEventListener = (e: KeyboardEvent) => handleKeyDown(e, effect.keyboardMap);
+        document.body.addEventListener('keydown', keyboardEventListener);
         break;
     }
   }
