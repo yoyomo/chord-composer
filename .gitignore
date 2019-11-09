@@ -34,7 +34,7 @@
 /client/.idea/**/*
 /client/.idea/workspace.xml
 /client/.idea/misc.xml
-.idea/*
+.idea
 /api/.idea/*
 **/*.js
 !client/src/setupProxy.js
