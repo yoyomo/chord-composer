@@ -7,6 +7,7 @@ import {getCookie} from "../utils/cookies";
 import {requestAjax} from "../core/services/ajax-service";
 import {ApiV1UsersPath, AuthConfirmEmail, StripePath} from "../resources/routes";
 import {getLoggedInUserRequestName} from "./footer-reducer";
+import {acceptExternalInput} from "../core/services/external-input-service";
 
 export type PathPart = '' | 'home' | 'sign-up' | 'chords' | 'song'
 
@@ -25,7 +26,7 @@ export const getStripeData = (state: State, effects: Effect[]): ReductionWithEff
     state.stripe.chosenPlanID = state.loggedInUser ? state.loggedInUser.stripe_subscription.plan.id : state.stripe.chosenPlanID;
   }
   return {state, effects};
-}
+};
 
 export function routerReducer(state: State,
                               location: PathLocation): ReductionWithEffect<State> {
@@ -34,6 +35,8 @@ export function routerReducer(state: State,
 
   let nextPathParts: PathPart[] = location.pathname.split("/").slice(1) as PathPart[];
   if (!nextPathParts[0]) nextPathParts[0] = "home";
+
+  effects = effects.concat(acceptExternalInput(state.inputs.mapKeyboardTo));
 
   switch (nextPathParts[0]) {
 

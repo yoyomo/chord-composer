@@ -4,7 +4,7 @@ import {
   mapKeysToChord,
   nextVariation,
   scalePitchClass
-} from "../reducers/chord-mapper-reducer";
+} from "../reducers/keyboard-reducer";
 import {KordPoseTest} from "./mml.test";
 import {MAXIMUM_OCTAVE, MINIMUM_OCTAVE} from "../reducers/chord-tools-reducer";
 import {ChordType, KEYS} from "../reducers/recompute-chord-grid";

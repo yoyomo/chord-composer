@@ -3,7 +3,7 @@ import React from "react";
 import {State} from "../../state";
 import {chordIdentifier, ChordType} from "../../reducers/recompute-chord-grid";
 import {Action} from "../../core/root-reducer";
-import {selectChord} from "../../reducers/chord-mapper-reducer";
+import {selectChord} from "../../reducers/keyboard-reducer";
 
 
 export function ChordGrid(dispatch: (action: Action) => void) {

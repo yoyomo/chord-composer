@@ -4,7 +4,7 @@ import {Action} from "../root-reducer";
 import {ClearInputDebouncing} from "./input-debouncing-service";
 import {GetStripeEffect, withStripe} from "./stripe-service";
 import {SetTimerEffect, withTimer} from "./timer-service";
-import {withExternalInput} from "./external-input-service";
+import {ExternalInputEffects, withExternalInput} from "./external-input-service";
 import { PlaySoundEffect, withSound } from "./sound-service";
 let createBrowserHistory = require("history").createBrowserHistory;
 
@@ -15,6 +15,7 @@ export type Effect =
   | GetStripeEffect
   | SetTimerEffect
   | PlaySoundEffect
+  | ExternalInputEffects
   ;
 
 export type Services = (effect: Effect) => void

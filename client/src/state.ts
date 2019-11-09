@@ -5,6 +5,7 @@ import {PathPart} from "./reducers/router-reducer";
 import {SongResource} from "./resources/song-resource";
 import {StripePlanResource} from "./resources/stripe-resource";
 import {ResponseError} from "./reducers/login-reducer";
+import {KeyBoardMapType} from "./reducers/keyboard-reducer";
 
 let AudioContext = (window as any).AudioContext // Default
   || (window as any).webkitAudioContext // Safari and old versions of Chrome
@@ -56,7 +57,7 @@ export const initialState = {
 
   inputs: {
     lyric: "",
-    mapKeyboardTo: 'keys' as 'keys' | 'chords' | 'none',
+    mapKeyboardTo: 'keys' as KeyBoardMapType,
     ...loginPageInputs,
     ...accountSettingsInputs,
   },

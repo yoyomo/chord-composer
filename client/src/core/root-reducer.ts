@@ -13,7 +13,7 @@ import {ServicesActions} from "./services/services";
 import {NavigationActions} from "./services/navigation-service";
 import {reduceStripe, StripeActions} from "../reducers/stripe-reducer";
 import {reduceToggle, ToggleAction} from "../reducers/toggle-reducer";
-import {ChordMapperActions, reduceChordMapper} from "../reducers/chord-mapper-reducer";
+import {ChordMapperActions, reduceChordMapper} from "../reducers/keyboard-reducer";
 import {reduceSongPage, SongPageActions} from "../reducers/song-page-reducer";
 import {reduceCompleteRequest} from "../reducers/complete-request-reducer";
 

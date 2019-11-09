@@ -316,8 +316,7 @@ export const reduceLogin = (state: State, action: Action): ReductionWithEffect<S
         }
         case getLoggedInUserRequestName: {
           if (action.success) {
-            state = { ...state };
-            state.loggedInUser = response.data;
+            state = setUser(state,action.headers, response.data);
           }
           break;
         }

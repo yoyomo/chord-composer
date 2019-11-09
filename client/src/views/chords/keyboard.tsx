@@ -1,19 +1,24 @@
 import React from "react";
 import { State } from "../../state";
 import { Action } from "../../core/root-reducer";
-import { ChordMapperKeys, toggleChordMapperKey } from "../../reducers/chord-mapper-reducer";
+import {
+  changeKeyboardMap,
+  ChordMapperKeys,
+  KeyBoardMapType,
+  toggleKeyboardKey
+} from "../../reducers/keyboard-reducer";
 import { USKeyboardMapperFirstRow, USKeyboardMapperSecondRow } from "../../core/services/external-input-service";
 
-export const SelectedKey = () => {
+export const SelectedKeyIndicator = () => {
   return <div className={"bg-light-red w2 h2 pa2 br-100"} />
 };
 
-interface KeyboardKeyProps {
-  i: number
+interface ComputerKeyboardKeyProps {
+  index: number
 }
-export const KeyboardKey = (props: KeyboardKeyProps) => {
-  const firstRowKey = USKeyboardMapperFirstRow[props.i] || "";
-  const secondRowKey = USKeyboardMapperSecondRow[props.i] || "";
+export const ComputerKeyboardKey = (props: ComputerKeyboardKeyProps) => {
+  const firstRowKey = USKeyboardMapperFirstRow[props.index] || "";
+  const secondRowKey = USKeyboardMapperSecondRow[props.index] || "";
   const letter = secondRowKey + ' ' + firstRowKey;
   return <div>
     <div className="absolute bg-light-blue h0_125rem top-0 left-0 w-100" />
@@ -21,18 +26,32 @@ export const KeyboardKey = (props: KeyboardKeyProps) => {
       {letter.toUpperCase()}
     </div>
   </div>
-}
+};
 
-export function ChordMapper(dispatch: (action: Action) => void) {
+export function Keyboard(dispatch: (action: Action) => void) {
 
   let dispatcher = {
-    toggleChordMapperKey: (keyIndex: number) => dispatch(toggleChordMapperKey(keyIndex))
+    toggleChordMapperKey: (keyIndex: number) => dispatch(toggleKeyboardKey(keyIndex)),
+    changeKeyBoardMap: (keyboardMap: KeyBoardMapType) => dispatch(changeKeyboardMap(keyboardMap))
   };
+
+  const keyboardMappers: KeyBoardMapType[] = ['none','keys','chords'];
 
   return (state: State) => {
 
     return (
       <div className={"w-100 bg-light-gray dark-gray"}>
+        <div >
+          {keyboardMappers.map(keyboardMap => {
+            const color = state.inputs.mapKeyboardTo === keyboardMap ? 'light-blue' : 'black';
+            return (
+              <div className={`pointer dib pa1 ${color}`}
+                   onClick={()=> dispatcher.changeKeyBoardMap(keyboardMap)}>
+              {keyboardMap}
+              </div>
+            );
+          })}
+        </div>
         <div className={"overflow-x-auto overflow-y-hidden gpu pb1"}>
           <div className={"db nowrap"}>
             {ChordMapperKeys.map((blackKey, i) => {
@@ -51,8 +70,8 @@ export function ChordMapper(dispatch: (action: Action) => void) {
                   className={`bg-gray light-gray tc ${width} h3 dib v-mid pointer pa3 br b--white relative`}
                   onClick={() => dispatcher.toggleChordMapperKey(i)}>
                   {blackKey}
-                  {state.inputs.mapKeyboardTo === 'keys' && <KeyboardKey i={i} />}
-                  {state.chordMapperKeys[i] && <SelectedKey />}
+                  {state.inputs.mapKeyboardTo === 'keys' && <ComputerKeyboardKey index={i} />}
+                  {state.chordMapperKeys[i] && <SelectedKeyIndicator />}
                 </div>
             })}
           </div>
@@ -64,8 +83,8 @@ export function ChordMapper(dispatch: (action: Action) => void) {
                   className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 bl b--black relative"}
                   onClick={() => dispatcher.toggleChordMapperKey(i)}>
                   {whiteKey}
-                  {state.inputs.mapKeyboardTo === 'keys' && <KeyboardKey i={i} />}
-                  {state.chordMapperKeys[i] && <SelectedKey />}
+                  {state.inputs.mapKeyboardTo === 'keys' && <ComputerKeyboardKey index={i} />}
+                  {state.chordMapperKeys[i] && <SelectedKeyIndicator />}
                 </div>
             })}
 

@@ -18,11 +18,18 @@ export class ChordElement extends React.Component<ChordElementProps> {
   clickHandled = false;
 
   render() {
+    let highlightColor;
+
+    if (this.props.isSelected){
+      highlightColor = 'shadow-2-skyblue';
+    } else if (this.props.isSuggested){
+      highlightColor = 'shadow-2-red';
+    }
+
     return (
       <div
         className={`${this.props.chord.variation === 0 ? "bg-gray light-gray" : "bg-light-gray dark-gray"}
-            ${this.props.isSelected ? 'shadow-2-skyblue' : ''}
-            ${this.props.isSuggested ? 'shadow-2-red' : ''}
+            ${highlightColor}
              w3 h3 dib tc v-mid pointer ma2 pt3 br3`}
         // style={{backgroundColor: this.getColor()}}
         onMouseDown={this.handleClick}

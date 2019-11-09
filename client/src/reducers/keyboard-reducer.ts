@@ -5,6 +5,7 @@ import { ChordType, KEYS } from "./recompute-chord-grid";
 import { MAXIMUM_OCTAVE, MINIMUM_OCTAVE } from "./chord-tools-reducer";
 import { Effect } from "../core/services/services";
 import { playSoundEffect } from "../core/services/sound-service";
+import {acceptExternalInput, cancelExternalInput} from "../core/services/external-input-service";
 
 export const ChordMapperKeys = KEYS.concat(KEYS).concat(KEYS).concat(KEYS[0]);
 
@@ -13,7 +14,7 @@ export type ToggleChordMapperKeyAction = {
   keyIndex: number
 }
 
-export const toggleChordMapperKey = (keyIndex: number): ToggleChordMapperKeyAction => {
+export const toggleKeyboardKey = (keyIndex: number): ToggleChordMapperKeyAction => {
   return {
     type: "toggle-chord-mapper-key",
     keyIndex
@@ -28,13 +29,28 @@ export type SelectChordAction = {
 export const selectChord = (chord: ChordType): SelectChordAction => {
   return {
     type: "select-chord",
-    chord: chord
+    chord
+  };
+};
+
+export type KeyBoardMapType = 'keys' | 'chords' | 'none';
+
+export type ChangeKeyboardMapAction = {
+  type: "change-keyboard-map"
+  keyboardMap: KeyBoardMapType
+}
+
+export const changeKeyboardMap = (keyboardMap: KeyBoardMapType): ChangeKeyboardMapAction => {
+  return {
+    type: "change-keyboard-map",
+    keyboardMap
   };
 };
 
 export type ChordMapperActions =
-  ToggleChordMapperKeyAction
+  | ToggleChordMapperKeyAction
   | SelectChordAction
+  | ChangeKeyboardMapAction
   ;
 
 export const mapChordToKeys = (state: State): State => {
@@ -150,6 +166,19 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
       state = mapChordToKeys(state);
       state = mapKeysToChord(state);
 
+      break;
+    }
+
+    case "change-keyboard-map": {
+      state = {...state};
+      state.inputs = {...state.inputs};
+      state.inputs.mapKeyboardTo = action.keyboardMap;
+
+      if(action.keyboardMap === "none"){
+        effects = effects.concat(cancelExternalInput());
+      } else {
+        effects = effects.concat(acceptExternalInput(action.keyboardMap));
+      }
       break;
     }
 
