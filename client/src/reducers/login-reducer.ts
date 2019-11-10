@@ -207,7 +207,7 @@ export const setUser = (state: State, headers: string, userData: UserResource): 
   state.loggedInUser = userData;
   state.headers = parseHTTPHeadersToJSON(headers);
 
-  state.savedChords = parseMMLChords(state.chordRules, state.loggedInUser.favorite_chords);
+  state.draftChords = parseMMLChords(state.chordRules, state.loggedInUser.favorite_chords);
 
   for (let key in state.headers) {
     if (AuthHeaders.indexOf(key) !== -1) {
@@ -224,7 +224,7 @@ export const resetUser = (state: State): State => {
   state = { ...state };
   state.loggedInUser = undefined;
 
-  state.savedChords = [];
+  state.draftChords = [];
 
   state.headers = { ...state.headers };
 

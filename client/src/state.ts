@@ -41,7 +41,7 @@ export const initialState = {
   chordMapperKeys: [] as boolean[],
   waveType: "sine" as OscillatorType,
   soundOn: true,
-  savedChords: [] as ChordType[],
+  draftChords: [] as ChordType[],
   selectedSavedChord: undefined as number | void,
   loggedInUser: undefined as UserResource | void,
   pathParts: [] as PathPart[],
@@ -72,6 +72,8 @@ export const initialState = {
     changeSubscription: false,
     isResettingPassword: false
   },
+
+  showStarChord: undefined as ChordType | void,
 
   success: {
     signIn: "",

@@ -16,6 +16,7 @@ class Api::V1::UsersController < APIController
   end
 
   def show
+    set_cookie_headers(@user)
     render json: { data: @user }
   end
 

@@ -5,26 +5,34 @@ import { ApiV1UsersPath } from "../resources/routes";
 import { calculateMML } from "../utils/mml-utils";
 import { Action } from "../core/root-reducer";
 import { Effect } from "../core/services/services";
+import {ChordType} from "./recompute-chord-grid";
 
-export type SaveChordAction = {
-  type: "save-chord"
+export type ToggleDraftChordAction = {
+  type: "toggle-draft-chord"
+  chord: ChordType
 }
 
-export const saveChord = (): SaveChordAction => {
+export const toggleDraftChord = (chord: ChordType): ToggleDraftChordAction => {
   return {
-    type: "save-chord",
+    type: "toggle-draft-chord",
+    chord
   };
 };
 
-export type RemoveSavedChordAction = {
-  type: "remove-saved-chord"
+export type ShowStarAction = {
+  type: "show-star"
+  chord: ChordType
+  show: boolean
 }
 
-export const removeSavedChord = (): RemoveSavedChordAction => {
+export const showStar = (chord: ChordType, show: boolean): ShowStarAction => {
   return {
-    type: "remove-saved-chord",
+    type: "show-star",
+    chord,
+    show
   };
 };
+
 
 export type SelectSavedChordAction = {
   type: "select-saved-chord"
@@ -39,33 +47,35 @@ export const selectSavedChord = (savedChordIndex: number): SelectSavedChordActio
 };
 
 export type FooterActions =
-  | SaveChordAction
-  | RemoveSavedChordAction
+  | ToggleDraftChordAction
+  | ShowStarAction
   | SelectSavedChordAction;
 
 export const reduceFooter = (state: State, action: Action): ReductionWithEffect<State> => {
   let effects: Effect[] = [];
 
   switch (action.type) {
-    case "save-chord": {
+    case "toggle-draft-chord": {
       state = { ...state };
-      state.savedChords = state.savedChords.slice();
-      if (!state.selectedGridChord) break;
-      state.savedChords.push(state.selectedGridChord);
+      state.draftChords = state.draftChords.slice();
+
+      const savedChordIndex = state.draftChords.indexOf(action.chord);
+
+      if(savedChordIndex === -1 ){
+        state.draftChords.push(action.chord);
+      } else {
+        state.draftChords.splice(savedChordIndex, 1);
+      }
+
 
       effects = effects.concat(updateFavoriteChords(state));
       break;
     }
 
-    case "remove-saved-chord": {
-      state = { ...state };
-      state.savedChords = state.savedChords.slice();
-      state.savedChords.splice(state.selectedSavedChord || state.savedChords.length - 1, 1);
-      state.selectedSavedChord = null as unknown as number;
-
-      effects = effects.concat(updateFavoriteChords(state));
+    case "show-star":
+      state = {...state};
+      state.showStarChord = action.show ? action.chord : undefined;
       break;
-    }
 
     case "select-saved-chord": {
       state = { ...state };
@@ -81,7 +91,7 @@ export const reduceFooter = (state: State, action: Action): ReductionWithEffect<
 export const updateFavoriteChords = (state: State): Effect[] => {
   let effects: Effect[] = [];
 
-  let mmlFavoriteChords = state.savedChords.map(favoriteChord => calculateMML(favoriteChord));
+  let mmlFavoriteChords = state.draftChords.map(favoriteChord => calculateMML(favoriteChord));
 
   if (!state.loggedInUser) return [];
   effects.push(requestAjax([updateFavoriteChordRequestName], {
