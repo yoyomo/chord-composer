@@ -11,7 +11,7 @@ export function ChordGrid(dispatch: (action: Action) => void) {
 
   let dispatcher = {
     toggleDraftChord: (chord: ChordType) => dispatch(toggleDraftChord(chord)),
-    showStar: (chord: ChordType,show: boolean) => dispatch(showStar(chord, show)),
+    showStar: (chord: ChordType, show: boolean) => dispatch(showStar(chord, show)),
     selectChord: (chord: ChordType) => dispatch(selectChord(chord)),
   };
 
@@ -22,34 +22,38 @@ export function ChordGrid(dispatch: (action: Action) => void) {
           {state.selectedKeyIndex != null &&
           state.chordGrid.map((chord, chordIndex) => {
             if (chord.variation !== 0) return null;
-            let variations = state.chordGrid.slice(chordIndex+1, chordIndex + chord.pitchClass.length);
+            let variations = state.chordGrid.slice(chordIndex + 1, chordIndex + chord.pitchClass.length);
             return <div key={"chord-" + chordIndex}>
               <ChordElement
-                            chord={chord}
-                            notes={state.notes}
-                            audioContext={state.audioContext}
-                            isSelected={!!state.selectedGridChord && chordIdentifier(state.selectedGridChord) === chordIdentifier(chord)}
-                            isSuggested={state.suggestedGridChords.filter(c => chordIdentifier(c) === chordIdentifier(chord)).length > 0}
-                            onSelect={() => dispatcher.selectChord(chord)}
-                            waveType={state.waveType}
-                            soundOn={state.soundOn}
-                            onStar={()=>dispatcher.toggleDraftChord(chord)}
-                            onHover={(show) => dispatcher.showStar(chord,show)}
-                            showStar={state.showStarChord === chord}
+                chord={chord}
+                notes={state.notes}
+                audioContext={state.audioContext}
+                isSelected={!!state.selectedGridChord && chordIdentifier(state.selectedGridChord) === chordIdentifier(chord)}
+                isSuggested={state.suggestedGridChords.filter(c => chordIdentifier(c) === chordIdentifier(chord)).length > 0}
+                onSelect={() => dispatcher.selectChord(chord)}
+                waveType={state.waveType}
+                soundOn={state.soundOn}
+                onStar={() => dispatcher.toggleDraftChord(chord)}
+                onHover={(show) => dispatcher.showStar(chord, show)}
+                showStar={!!state.showStarChord && chordIdentifier(state.showStarChord) === chordIdentifier(chord)}
+                isStarred={state.draftChords.filter(c => chordIdentifier(c) === chordIdentifier(chord)).length > 0}
+
               />
               {variations.map(variation => {
-                return <ChordElement key={"chord-" + chordIdentifier(variation)}
-                              chord={variation}
-                              notes={state.notes}
-                              audioContext={state.audioContext}
-                              isSelected={!!state.selectedGridChord && chordIdentifier(state.selectedGridChord) === chordIdentifier(variation)}
-                              isSuggested={state.suggestedGridChords.filter(c => chordIdentifier(c) === chordIdentifier(variation)).length > 0}
-                              onSelect={() => dispatcher.selectChord(variation)}
-                              waveType={state.waveType}
-                              soundOn={state.soundOn}
-                                     onStar={()=>dispatcher.toggleDraftChord(variation)}
-                                     onHover={(show) => dispatcher.showStar(variation, show)}
-                                     showStar={state.showStarChord === variation}
+                return <ChordElement
+                  key={"chord-" + chordIdentifier(variation)}
+                  chord={variation}
+                  notes={state.notes}
+                  audioContext={state.audioContext}
+                  isSelected={!!state.selectedGridChord && chordIdentifier(state.selectedGridChord) === chordIdentifier(variation)}
+                  isSuggested={state.suggestedGridChords.filter(c => chordIdentifier(c) === chordIdentifier(variation)).length > 0}
+                  onSelect={() => dispatcher.selectChord(variation)}
+                  waveType={state.waveType}
+                  soundOn={state.soundOn}
+                  onStar={() => dispatcher.toggleDraftChord(variation)}
+                  onHover={(show) => dispatcher.showStar(variation, show)}
+                  showStar={!!state.showStarChord && chordIdentifier(state.showStarChord) === chordIdentifier(variation)}
+                  isStarred={state.draftChords.filter(c => chordIdentifier(c) === chordIdentifier(variation)).length > 0}
                 />
               })
               }

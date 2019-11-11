@@ -5,7 +5,7 @@ import { ApiV1UsersPath } from "../resources/routes";
 import { calculateMML } from "../utils/mml-utils";
 import { Action } from "../core/root-reducer";
 import { Effect } from "../core/services/services";
-import {ChordType} from "./recompute-chord-grid";
+import {chordIdentifier, ChordType} from "./recompute-chord-grid";
 
 export type ToggleDraftChordAction = {
   type: "toggle-draft-chord"
@@ -59,7 +59,13 @@ export const reduceFooter = (state: State, action: Action): ReductionWithEffect<
       state = { ...state };
       state.draftChords = state.draftChords.slice();
 
-      const savedChordIndex = state.draftChords.indexOf(action.chord);
+      let savedChordIndex = -1;
+      for(let i =0;i < state.draftChords.length; i++){
+        if(chordIdentifier(state.draftChords[i]) === chordIdentifier(action.chord)){
+          savedChordIndex = i;
+          break;
+        }
+      }
 
       if(savedChordIndex === -1 ){
         state.draftChords.push(action.chord);

@@ -6,3 +6,6 @@
 .svg-light-gray { stroke: lightgray; fill: lightgray }
 
 .fill-none { fill: none;}
+.stroke-gray { stroke: gray }
+.stroke-gold { stroke: gold }
+.fill-gold { fill: gold }

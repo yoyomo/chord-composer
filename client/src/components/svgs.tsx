@@ -112,6 +112,15 @@ export const SVGMinus = (props: SVGProps) => {
   </svg>
 };
 
+export const SVGStar = (props: SVGProps) => {
+  return <svg width={12} height={12} {...props}
+              id="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268.07 257.36">
+    <title>star</title>
+    <path d="M359.33,171.81" transform="translate(-134.02 -15.21)" strokeMiterlimit="10" strokeWidth="15"/>
+    <polygon points="218.23 254.33 135.49 211.95 53.87 256.44 68.39 164.25 1.07 99.95 92.78 85.35 132.8 1.13 174.96 84.3 267 96.55 201.35 162.55 218.23 254.33" strokeMiterlimit="10" strokeWidth="15"/>
+  </svg>
+};
+
 export const SVGChords = (props: SVGProps) => {
   return <svg width={32} height={32} {...props}
     id="chords" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 113.28 75.85"><title>chords</title>

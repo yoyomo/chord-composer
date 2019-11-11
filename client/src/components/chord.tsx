@@ -2,7 +2,7 @@ import React, {SyntheticEvent} from "react";
 import {ClassAndChildren} from "../core/reducers";
 import {ChordType} from "../reducers/recompute-chord-grid";
 import {playSound} from "../utils/sound-utils";
-import {SVGPlus} from "./svgs";
+import {SVGStar} from "./svgs";
 
 interface ChordElementProps extends ClassAndChildren {
   chord: ChordType
@@ -16,6 +16,7 @@ interface ChordElementProps extends ClassAndChildren {
   onStar: () => void
   onHover: (show: boolean) => void
   showStar: boolean
+  isStarred: boolean
 }
 
 export class ChordElement extends React.Component<ChordElementProps> {
@@ -39,8 +40,8 @@ export class ChordElement extends React.Component<ChordElementProps> {
         onMouseDown={this.onClick}
         onMouseUp={this.onClickEnd}
         onTouchStart={this.onClick}
-        onMouseOver={()=>this.props.onHover(true)}
-        onMouseOut={()=>this.props.onHover(false)}
+        onMouseEnter={()=>this.props.onHover(true)}
+        onMouseLeave={()=>this.props.onHover(false)}
       >
         <div className="">
           {this.props.chord.baseKey + this.props.chord.symbol}
@@ -51,8 +52,8 @@ export class ChordElement extends React.Component<ChordElementProps> {
         </div>
         }
         {this.props.showStar &&
-        <div className="absolute top-0 right-0 svg-gray" onClick={this.props.onStar}>
-            <SVGPlus/>
+        <div className={`absolute top-0 right-0 ${this.props.isStarred ? 'fill-gold' : 'stroke-gold fill-none'}`} onClick={this.props.onStar}>
+            <SVGStar/>
         </div>
         }
       </div>

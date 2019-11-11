@@ -1,18 +1,19 @@
 import React from "react";
 import {State} from "../../state";
 import {
-  removeSavedChord,
   toggleDraftChord,
-  selectSavedChord,
+  selectSavedChord, showStar,
 } from "../../reducers/footer-reducer";
 import {ChordElement} from "../../components/chord";
-import {chordIdentifier} from "../../reducers/recompute-chord-grid";
+import {chordIdentifier, ChordType} from "../../reducers/recompute-chord-grid";
 import {Action} from "../../core/root-reducer";
 
 export function Footer(dispatch: (action: Action) => void) {
 
   let dispatcher = {
     onSelectSavedChord: (savedChordIndex: number) => dispatch(selectSavedChord(savedChordIndex)),
+    toggleDraftChord: (chord: ChordType) => dispatch(toggleDraftChord(chord)),
+    showStar: (chord: ChordType, show: boolean) => dispatch(showStar(chord, show)),
   };
 
   return (state: State) => {
@@ -28,7 +29,12 @@ export function Footer(dispatch: (action: Action) => void) {
                                  soundOn={state.soundOn}
                                  onSelect={() => dispatcher.onSelectSavedChord(s)}
                                  isSelected={!!state.selectedGridChord && chordIdentifier(state.selectedGridChord) === chordIdentifier(savedChord)}
-                                 isSuggested={state.suggestedGridChords.filter(c => chordIdentifier(c) === chordIdentifier(savedChord)).length > 0}/>
+                                 isSuggested={state.suggestedGridChords.filter(c => chordIdentifier(c) === chordIdentifier(savedChord)).length > 0}
+                                 onStar={() => dispatcher.toggleDraftChord(savedChord)}
+                                 onHover={(show) => dispatcher.showStar(savedChord, show)}
+                                 showStar={!!state.showStarChord && chordIdentifier(state.showStarChord) === chordIdentifier(savedChord)}
+                                 isStarred={state.draftChords.filter(c => chordIdentifier(c) === chordIdentifier(savedChord)).length > 0}
+            />
           })}
         </div>
 
