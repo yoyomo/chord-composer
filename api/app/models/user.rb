@@ -8,6 +8,7 @@ class User < ApplicationRecord
   validates :email, uniqueness: true, format: EMAIL_REQUIREMENTS
 
   attribute :stripe_subscription
+  attribute :latest_synth
 
   before_destroy :cancel_stripe_subscription, prepend: true
 
@@ -101,5 +102,9 @@ class User < ApplicationRecord
   def cancel_stripe_subscription
     init_stripe unless Stripe.api_key
     Stripe::Subscription.delete(self.stripe_subscription_id)
+  end
+
+  def latest_synth
+    Synth.where(user_id: self.id).last
   end
 end

@@ -16,11 +16,14 @@ export function setTimer(action: Action, ms: number): SetTimerEffect {
 }
 
 export function withTimer(dispatch: (action: Action) => void): Services {
+  let timer: number;
+
   return (effect: Effect) => {
 
     switch (effect.effectType) {
       case "set-timer":
-          setTimeout(() => dispatch(effect.action), effect.ms);
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => dispatch(effect.action), effect.ms);
         break;
     }
 

@@ -8,6 +8,21 @@ user = User.create!(username: "first_user", email: "kordpad@gmail.com",
                     stripe_token_id: "tok_1FX3imCK5Il4ajSVJnQNy7eI",
                     access_token: SecureRandom.hex)
 
-user.create_or_update_customer_subscription
+def create_or_ignore_customer_subscription(user)
+  customer = Stripe::Customer.retrieve(user.stripe_customer_id)
+  subscription = Stripe::Subscription.retrieve(user.stripe_subscription_id)
+
+  unless customer
+    user.create_stripe_customer
+  end
+
+
+  if !subscription || subscription.ended_at.nil?
+    user.create_stripe_subscription
+  end
+
+end
+
+create_or_ignore_customer_subscription(user)
 
 puts "Created user " + user.to_json.to_s

@@ -18,6 +18,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :synths
+
       resources :songs
     end
   end

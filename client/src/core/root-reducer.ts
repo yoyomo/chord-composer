@@ -3,7 +3,7 @@ import {reduceNavigation} from "../reducers/router-reducer";
 import {InputChange, reduceInputs} from "../reducers/input-reducer";
 import {LogInActions, reduceLogin} from "../reducers/login-reducer";
 import {HeaderActions, reduceHeader} from "../reducers/header-reducer";
-import {ChordToolsActions, reduceChordTools} from "../reducers/chord-tools-reducer";
+import {ChordToolsActions, reduceChordTools} from "../reducers/synth-tools-reducer";
 import {FooterActions, reduceFooter} from "../reducers/footer-reducer";
 import {ChordCanvasActions, reduceChordCanvas} from "../reducers/chord-grid-reducer";
 import {recomputeAllNotes} from "../reducers/recompute-all-notes";

@@ -6,6 +6,7 @@ import {SongResource} from "./resources/song-resource";
 import {StripePlanResource} from "./resources/stripe-resource";
 import {ResponseError} from "./reducers/login-reducer";
 import {KeyBoardMapType} from "./reducers/keyboard-reducer";
+import {SynthResource} from "./resources/synth-resource";
 
 let AudioContext = (window as any).AudioContext // Default
   || (window as any).webkitAudioContext // Safari and old versions of Chrome
@@ -30,23 +31,27 @@ const accountSettingsInputs = {
 export const initialState = {
   audioContext: AudioContext && new AudioContext(),
   notes: [] as number[],
-  baseFrequency: 440,
   selectedKeyIndex: undefined as number | void,
-  octave: 2,
   chordRules: BASE_CHORD_RULES as ChordRuleType[],
   chordGrid: [] as ChordType[],
   selectedGridChord: undefined as ChordType | void,
   suggestedGridChords: [] as ChordType[],
   suggestedKeyIndexes: [] as number[],
   chordMapperKeys: [] as boolean[],
-  waveType: "sine" as OscillatorType,
-  soundOn: true,
-  draftChords: [] as (ChordType|null)[],
-  selectedSavedChord: undefined as number | void,
+  draftChords: [] as (ChordType|void)[],
   loggedInUser: undefined as UserResource | void,
   pathParts: [] as PathPart[],
   headers: {} as { [k: string]: string },
   minimumPasswordLength: 6,
+
+  synth: {
+    base_octave: 2,
+    vco_signal: "sine" as OscillatorType,
+    sound_on: true,
+    base_frequency: 440,
+    id: undefined,
+    user_id: undefined
+  } as SynthResource,
 
   stripe: {
     object: undefined as stripe.Stripe | void,
@@ -99,7 +104,7 @@ export const initialState = {
     title: "",
     author: "",
     chordsAndLyrics: [],
-    created_at: null as unknown as string
+    created_at: undefined as string | void
   } as SongResource,
 
 };

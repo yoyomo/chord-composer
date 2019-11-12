@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ChordTools} from "./chord-tools";
+import {SynthTools} from "./synth-tools";
 import {ChordGrid} from "./chord-grid";
 import {Keyboard} from "./keyboard";
 import {State} from "../../state";
@@ -10,7 +10,7 @@ import {Page} from "../../components/page";
 
 export function ChordsPage(dispatch: (action: Action) => void) {
 
-  let ChordToolsContent = ChordTools(dispatch);
+  let ChordToolsContent = SynthTools(dispatch);
   let ChordCanvasContent = ChordGrid(dispatch);
   let ChordKeySelectorContent = ChordKeySelector(dispatch);
   let KeyboardContent = Keyboard(dispatch);

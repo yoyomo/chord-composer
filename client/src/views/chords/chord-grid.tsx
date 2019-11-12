@@ -3,7 +3,7 @@ import React from "react";
 import {State} from "../../state";
 import {chordIdentifier, ChordType} from "../../reducers/recompute-chord-grid";
 import {Action} from "../../core/root-reducer";
-import {selectChord} from "../../reducers/keyboard-reducer";
+import {selectChordAction} from "../../reducers/keyboard-reducer";
 import {showStar, toggleDraftChord} from "../../reducers/footer-reducer";
 
 
@@ -12,7 +12,7 @@ export function ChordGrid(dispatch: (action: Action) => void) {
   let dispatcher = {
     toggleDraftChord: (chord: ChordType) => dispatch(toggleDraftChord(chord)),
     showStar: (chord: ChordType, show: boolean) => dispatch(showStar(chord, show)),
-    selectChord: (chord: ChordType) => dispatch(selectChord(chord)),
+    selectChord: (chord: ChordType) => dispatch(selectChordAction(chord)),
   };
 
   return (state: State) => {

@@ -5,40 +5,6 @@ import { historyPush } from "../core/services/navigation-service";
 import { Effect } from "../core/services/services";
 import { PathPart } from "./router-reducer";
 
-export type ChangeBaseFrequencyAction = {
-  type: "change-base-frequency"
-  frequency: number
-}
-
-export const changeBaseFrequency = (frequency: number): ChangeBaseFrequencyAction => {
-  return {
-    type: "change-base-frequency",
-    frequency
-  };
-};
-
-export type SelectWaveTypeAction = {
-  type: "select-wave-type"
-  waveType: OscillatorType
-}
-
-export const selectWaveType = (waveType: OscillatorType): SelectWaveTypeAction => {
-  return {
-    type: "select-wave-type",
-    waveType
-  };
-};
-
-export type ToggleSoundAction = {
-  type: "toggle-sound"
-}
-
-export const toggleSound = (): ToggleSoundAction => {
-  return {
-    type: "toggle-sound"
-  };
-};
-
 export type GoToHomePageAction = {
   type: "go-to-home-page"
   page: PathPart
@@ -53,33 +19,12 @@ export const goToHomePage = (page: PathPart): GoToHomePageAction => {
 
 
 export type HeaderActions =
-  | ChangeBaseFrequencyAction
-  | SelectWaveTypeAction
-  | ToggleSoundAction
   | GoToHomePageAction;
 
 
 export const reduceHeader = (state: State, action: Action): ReductionWithEffect<State> => {
   let effects: Effect[] = [];
   switch (action.type) {
-
-    case "change-base-frequency": {
-      state = { ...state };
-      state.baseFrequency = action.frequency;
-      break;
-    }
-
-    case "select-wave-type": {
-      state = { ...state };
-      state.waveType = action.waveType;
-      break;
-    }
-
-    case "toggle-sound": {
-      state = { ...state };
-      state.soundOn = !state.soundOn;
-      break;
-    }
 
     case "go-to-home-page": {
       effects = effects.concat(historyPush({ pathname: "/home/" + action.page }));

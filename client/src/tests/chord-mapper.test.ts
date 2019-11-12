@@ -6,7 +6,7 @@ import {
   scalePitchClass
 } from "../reducers/keyboard-reducer";
 import {KordPoseTest} from "./mml.test";
-import {MAXIMUM_OCTAVE, MINIMUM_OCTAVE} from "../reducers/chord-tools-reducer";
+import {MAXIMUM_OCTAVE, MINIMUM_OCTAVE} from "../reducers/synth-tools-reducer";
 import {ChordType, KEYS} from "../reducers/recompute-chord-grid";
 
 it('maps and demaps correctly', () => {

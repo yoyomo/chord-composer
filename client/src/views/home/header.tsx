@@ -1,11 +1,8 @@
 import React from "react";
 import {State} from "../../state";
 import {
-  changeBaseFrequency, goToHomePage,
-  selectWaveType,
-  toggleSound
+  goToHomePage,
 } from "../../reducers/header-reducer";
-import {ClassAndChildren} from "../../core/reducers";
 import {Action} from "../../core/root-reducer";
 import {LogIn} from "../log-in/log-in";
 import {toggleDispatcher} from "../../reducers/toggle-reducer";
@@ -13,38 +10,15 @@ import {UserInfoModal} from "./user-info";
 import {PathPart} from "../../reducers/router-reducer";
 import {
   SVGChords,
-  SVGSawtooth,
-  SVGSine, SVGSong,
-  SVGSoundOff,
-  SVGSoundOn,
-  SVGSquare,
-  SVGTriangle,
+  SVGSong,
   SVGUser
 } from "../../components/svgs";
+import {HeaderTitle} from "../../components/header-title";
 
 export function Header(dispatch: (action: Action) => void) {
 
   let dispatcher = {
-    changeBaseFrequency: (freq: number) => dispatch(changeBaseFrequency(freq)),
-    selectWaveType: (waveType: OscillatorType) => dispatch(selectWaveType(waveType)),
-    toggleSound: () => dispatch(toggleSound()),
     goToHomePage: (page: PathPart) => dispatch(goToHomePage(page)),
-  };
-
-  interface WaveTypeProps extends ClassAndChildren {
-    waveType: OscillatorType
-    currentWaveType: OscillatorType
-  }
-
-
-  const WaveType = (props: WaveTypeProps) => {
-    let isSelected = props.waveType === props.currentWaveType;
-    return (
-      <div className={`dib ma1 pointer ${isSelected ? " svg-light-blue" : ""}`}
-           onClick={() => dispatcher.selectWaveType(props.waveType)}>
-        {props.children}
-      </div>
-    )
   };
 
   const LogInContent = LogIn(dispatch);
@@ -57,34 +31,8 @@ export function Header(dispatch: (action: Action) => void) {
 
     return (
       <div className={"h3 w-100 bg-light-gray flex flex-row items-stretch  svg-dim-gray"}>
-        <div className={"ma2 pa2 dark-gray"}>
-          <WaveType waveType={"sine"} currentWaveType={state.waveType}>
-            <SVGSine/>
-          </WaveType>
-          <WaveType waveType={"triangle"} currentWaveType={state.waveType}>
-            <SVGTriangle/>
-          </WaveType>
-          <WaveType waveType={"sawtooth"} currentWaveType={state.waveType}>
-            <SVGSawtooth/>
-          </WaveType>
-          <WaveType waveType={"square"} currentWaveType={state.waveType}>
-            <SVGSquare/>
-          </WaveType>
-        </div>
 
-        <div className={"ma2 pa2 dark-gray"}>
-          <input type={"number"} className={"bg-transparent border-less w3 color-inherit tc pointer"}
-                 value={state.baseFrequency}
-                 onChange={(e) => dispatcher.changeBaseFrequency(parseInt(e.target.value))}/>
-          Hz
-        </div>
-
-        <div className={"ma2 pa2 dark-gray"}>
-          <div className={`dib ma1 pointer`}
-               onClick={dispatcher.toggleSound}>
-            {state.soundOn ? <SVGSoundOn/> : <SVGSoundOff/>}
-          </div>
-        </div>
+        <HeaderTitle/>
 
         <div className={"ma2 pa2 dark-gray"}>
           <div className={`db pointer ${showUserModal ? "svg-light-blue" : "svg-dim-gray"}`}

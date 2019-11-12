@@ -2,7 +2,7 @@ import {memoizeBySomeProperties} from "../utils/memoizers";
 import {initialState} from "../state";
 import {calculateMML} from "../utils/mml-utils";
 
-export const chordIdentifier = (chord: ChordType | null): string => {
+export const chordIdentifier = (chord: ChordType | void): string => {
   if(!chord) return "";
   return `k${chord.baseKey}c${chord.chordRuleIndex}v${chord.variation}p${chord.pitchClass}m${calculateMML(chord)}`
 };
@@ -28,7 +28,7 @@ export interface ChordRuleType {
 export const recomputeChordGrid = memoizeBySomeProperties({
   chordRules: initialState.chordRules,
   selectedKeyIndex: initialState.selectedKeyIndex,
-  octave: initialState.octave,
+  synth: initialState.synth,
 }, (state): ChordType[] => {
 
   if (state.selectedKeyIndex === undefined) return [];
@@ -41,7 +41,7 @@ export const recomputeChordGrid = memoizeBySomeProperties({
     let variation = 0;
 
     for (let p = 0; p < chordNotes.length; p++) {
-      chordNotes[p] += selectedKeyIndex + state.octave * KEYS.length;
+      chordNotes[p] += selectedKeyIndex + state.synth.base_octave * KEYS.length;
 
       while (p > 0 && chordNotes[p] < chordNotes[p - 1]) {
         chordNotes[p] += KEYS.length;
@@ -54,7 +54,7 @@ export const recomputeChordGrid = memoizeBySomeProperties({
       variation: variation,
       baseKey: baseKey,
       chordRuleIndex: chordRuleIndex,
-      octave: state.octave,
+      octave: state.synth.base_octave,
     };
 
     chordGrid.push(baseChord);
@@ -71,7 +71,7 @@ export const recomputeChordGrid = memoizeBySomeProperties({
 
       baseChordNotes = baseChordNotes.slice(1).concat(firstPitch);
 
-      if (baseChordNotes[0] >= state.octave * KEYS.length + KEYS.length) {
+      if (baseChordNotes[0] >= state.synth.base_octave * KEYS.length + KEYS.length) {
         baseChordNotes = baseChordNotes.map(note => note - KEYS.length);
       }
 
