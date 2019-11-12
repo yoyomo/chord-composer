@@ -82,8 +82,6 @@ export type ChordToolsActions =
   | ToggleSoundAction
   | SaveSynthToolsAction;
 
-const SynthToolsActionTypes = [ChangeOctaveActionType, ChangeBaseFrequencyActionType, SelectWaveTypeActionType, ToggleSoundActionType];
-
 export const reduceChordTools = (state: State, action: Action): ReductionWithEffect<State> => {
   let effects: Effect[] = [];
 
@@ -96,10 +94,14 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
           let synth = response.data;
           state = {...state};
           state.synth = synth;
+
+          if(!state.loggedInUser) break;
+          state.loggedInUser = {...state.loggedInUser};
+          state.loggedInUser.latest_synth = synth;
         }
 
       }
-      if (action.name[0] === getLoggedInUserRequestName || action.name[0] === userSignInRequestName){
+      else if (action.name[0] === getLoggedInUserRequestName || action.name[0] === userSignInRequestName){
         if(action.success){
           let synth = response.data.latest_synth;
           if(synth){
@@ -169,10 +171,6 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
         }
       }));
       break;
-  }
-
-  if (SynthToolsActionTypes.indexOf(action.type) !== -1) {
-    effects = effects.concat(setTimer(saveSynthTools(),3000));
   }
 
   return {state, effects};

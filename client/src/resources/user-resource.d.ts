@@ -1,4 +1,5 @@
 import { StripeSubscriptionResource } from "./stripe-resource";
+import {SynthResource} from "./synth-resource";
 
 export interface UserResource {
   id: number
@@ -14,6 +15,7 @@ export interface UserResource {
   stripe_token_id: string,
 
   stripe_subscription: StripeSubscriptionResource,
+  latest_synth: SynthResource,
 
   created_at: string
 }

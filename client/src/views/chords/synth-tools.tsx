@@ -4,10 +4,11 @@ import {ParameterButton} from "../../components/parameter-button";
 import {
   changeBaseFrequency, changeOctave,
   MAXIMUM_OCTAVE,
-  MINIMUM_OCTAVE, selectWaveType, toggleSound
+  MINIMUM_OCTAVE, saveSynthTools, selectWaveType, toggleSound
 } from "../../reducers/synth-tools-reducer";
 import {Action} from "../../core/root-reducer";
 import {
+  SVGCheckMark,
   SVGMinus,
   SVGOctave,
   SVGPlus,
@@ -27,6 +28,7 @@ export function SynthTools(dispatch: (action: Action) => void) {
     changeBaseFrequency: (freq: number) => dispatch(changeBaseFrequency(freq)),
     selectWaveType: (waveType: OscillatorType) => dispatch(selectWaveType(waveType)),
     toggleSound: () => dispatch(toggleSound()),
+    saveSynthTools: () => dispatch(saveSynthTools()),
   };
 
   interface WaveTypeProps extends ClassAndChildren {
@@ -58,7 +60,8 @@ export function SynthTools(dispatch: (action: Action) => void) {
         </ParameterButton>
         <div className={"pv2 dark-gray"}>
           {octaves.map(octave => {
-            return <SVGOctave key={`octave-${octave}`} className={`ma1 ${octave === state.synth.base_octave ? "svg-green-yellow" : "svg-gray fill-none"}`}/>
+            return <SVGOctave key={`octave-${octave}`}
+                              className={`ma1 ${octave === state.synth.base_octave ? "svg-green-yellow" : "svg-gray fill-none"}`}/>
           })}
         </div>
         <ParameterButton className={"w2 h2 pa2 ma2"} disabled={state.synth.base_octave === MAXIMUM_OCTAVE}
@@ -88,10 +91,24 @@ export function SynthTools(dispatch: (action: Action) => void) {
           Hz
         </div>
 
-        <div className={"ma2 pa2 dark-gray"}>
+        <div className={"pa2 dark-gray"}>
           <div className={`dib ma1 pointer`}
                onClick={dispatcher.toggleSound}>
             {state.synth.sound_on ? <SVGSoundOn/> : <SVGSoundOff/>}
+          </div>
+        </div>
+
+        <div className="pa2">
+          <div className="dib ">
+            {deepEqual(state.loggedInUser && state.loggedInUser.latest_synth, state.synth) ?
+              <div className="svg-gray b b--dark-gray br2">
+                <SVGCheckMark/>
+              </div>
+              :
+              <div className="pointer bg-gray white svg-white pa1 b b--dark-gray br2" onClick={dispatcher.saveSynthTools}>
+                Save Synth
+              </div>
+            }
           </div>
         </div>
 
@@ -99,3 +116,12 @@ export function SynthTools(dispatch: (action: Action) => void) {
     );
   }
 }
+
+const deepEqual = (obj1, obj2) => {
+  for(let key in obj1) {
+    if(obj2[key] !== obj1[key]){
+      return false;
+    }
+  }
+  return true;
+};
