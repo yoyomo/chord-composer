@@ -1,7 +1,7 @@
 import { Effect, Services } from "./services";
 import { Action } from "../root-reducer";
 import {KeyBoardMapType, toggleKeyboardKey} from "../../reducers/keyboard-reducer";
-import {KeyboardEventHandler} from "react";
+import {selectSavedChord} from "../../reducers/footer-reducer";
 
 export const USKeyboardMapperFirstRow =
   ['q', '2', 'w', 'e', '4', 'r', '5', 't', 'y', '7', 'u', '8', 'i', '9', 'o', 'p', '-', '[', '=', ']', '\\'];
@@ -39,7 +39,17 @@ export type ExternalInputEffects =
 
 export function withExternalInput(dispatch: (action: Action) => void): Services {
 
+  let pressedKeyCodes: {[k: string]: boolean} = {};
+
+  let keydownEventListener: (e: KeyboardEvent) => void;
+  let keyupEventListener: (e: KeyboardEvent) => void;
+
   const handleKeyDown = (e: KeyboardEvent, keyboardMap: KeyBoardMapType) => {
+
+    if(pressedKeyCodes[e.code]) return;
+
+    pressedKeyCodes[e.code] = true;
+
     let keyIndex = KeyboardMapperFirstRow.indexOf(e.code);
 
     if (keyIndex === -1) {
@@ -50,21 +60,31 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
       if(keyboardMap === "keys"){
         dispatch(toggleKeyboardKey(keyIndex));
       }
+      else if(keyboardMap === "chords"){
+        dispatch(selectSavedChord(keyIndex))
+      }
     }
   };
 
-  let keyboardEventListener: (e: KeyboardEvent) => void;
+  const handleKeyUp = (e: KeyboardEvent, keyboardMap: KeyBoardMapType) => {
+    pressedKeyCodes[e.code] = false;
+  };
+
 
   return (effect: Effect) => {
     switch(effect.effectType){
       case "cancel-external-input":
-        document.body.removeEventListener('keydown', keyboardEventListener);
+        document.body.removeEventListener('keydown', keydownEventListener);
+        document.body.removeEventListener('keyup', keyupEventListener);
         break;
 
       case "accept-external-input":
-        document.body.removeEventListener('keydown', keyboardEventListener);
-        keyboardEventListener = (e: KeyboardEvent) => handleKeyDown(e, effect.keyboardMap);
-        document.body.addEventListener('keydown', keyboardEventListener);
+        document.body.removeEventListener('keydown', keydownEventListener);
+        document.body.removeEventListener('keyup', keyupEventListener);
+        keydownEventListener = (e: KeyboardEvent) => handleKeyDown(e, effect.keyboardMap);
+        keyupEventListener = (e: KeyboardEvent) => handleKeyUp(e, effect.keyboardMap);
+        document.body.addEventListener('keydown', keydownEventListener);
+        document.body.addEventListener('keyup', keyupEventListener);
         break;
     }
   }

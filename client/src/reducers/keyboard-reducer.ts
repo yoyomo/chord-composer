@@ -166,6 +166,12 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
       state = mapChordToKeys(state);
       state = mapKeysToChord(state);
 
+      if(!state.selectedGridChord) break;
+
+      effects = effects.concat(state.selectedGridChord.notes.map(noteIndex => {
+        return playSoundEffect(noteIndex, state.notes, state.audioContext, state.waveType, state.soundOn)
+      }));
+
       break;
     }
 

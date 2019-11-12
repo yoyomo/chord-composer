@@ -41,7 +41,7 @@ export const initialState = {
   chordMapperKeys: [] as boolean[],
   waveType: "sine" as OscillatorType,
   soundOn: true,
-  draftChords: [] as ChordType[],
+  draftChords: [] as (ChordType|null)[],
   selectedSavedChord: undefined as number | void,
   loggedInUser: undefined as UserResource | void,
   pathParts: [] as PathPart[],

@@ -7,6 +7,7 @@ import {
 import {ChordElement} from "../../components/chord";
 import {chordIdentifier, ChordType} from "../../reducers/recompute-chord-grid";
 import {Action} from "../../core/root-reducer";
+import {ComputerKeyboardKey} from "../chords/keyboard";
 
 export function Footer(dispatch: (action: Action) => void) {
 
@@ -34,7 +35,9 @@ export function Footer(dispatch: (action: Action) => void) {
                                  onHover={(show) => dispatcher.showStar(savedChord, show)}
                                  showStar={!!state.showStarChord && chordIdentifier(state.showStarChord) === chordIdentifier(savedChord)}
                                  isStarred={state.draftChords.filter(c => chordIdentifier(c) === chordIdentifier(savedChord)).length > 0}
-            />
+            >
+              {state.inputs.mapKeyboardTo === 'chords' && <ComputerKeyboardKey index={s} />}
+            </ChordElement>
           })}
         </div>
 

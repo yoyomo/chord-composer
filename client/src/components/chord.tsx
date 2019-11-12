@@ -1,7 +1,6 @@
 import React, {SyntheticEvent} from "react";
 import {ClassAndChildren} from "../core/reducers";
 import {ChordType} from "../reducers/recompute-chord-grid";
-import {playSound} from "../utils/sound-utils";
 import {SVGStar} from "./svgs";
 
 interface ChordElementProps extends ClassAndChildren {
@@ -52,10 +51,11 @@ export class ChordElement extends React.Component<ChordElementProps> {
         </div>
         }
         {this.props.showStar &&
-        <div className={`absolute top-0 right-0 ${this.props.isStarred ? 'fill-gold' : 'stroke-gold fill-none'}`} onClick={this.props.onStar}>
+        <div className={`absolute top-0 left-0 ${this.props.isStarred ? 'fill-gold' : 'stroke-gold fill-none'}`} onClick={this.props.onStar}>
             <SVGStar/>
         </div>
         }
+        {this.props.children}
       </div>
     );
   }
@@ -73,18 +73,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
       this.clickHandled = true;
     }
 
-    this.playChord();
     this.props.onSelect();
-  };
-
-  playChord = () => {
-    if (!this.props.soundOn) {
-      return;
-    }
-
-    this.props.chord.notes.map(noteIndex => {
-      return playSound(noteIndex, this.props.notes, this.props.audioContext, this.props.waveType);
-    });
   };
 
   normalize = (x: number, minX: number, maxX: number, minY: number, maxY: number) => {

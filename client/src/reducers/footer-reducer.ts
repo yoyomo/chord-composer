@@ -6,6 +6,7 @@ import { calculateMML } from "../utils/mml-utils";
 import { Action } from "../core/root-reducer";
 import { Effect } from "../core/services/services";
 import {chordIdentifier, ChordType} from "./recompute-chord-grid";
+import {playSoundEffect} from "../core/services/sound-service";
 
 export type ToggleDraftChordAction = {
   type: "toggle-draft-chord"
@@ -86,6 +87,11 @@ export const reduceFooter = (state: State, action: Action): ReductionWithEffect<
     case "select-saved-chord": {
       state = { ...state };
       state.selectedSavedChord = action.savedChordIndex;
+      const selectedDraftChord = state.draftChords[state.selectedSavedChord];
+      if(!selectedDraftChord) break;
+      effects = effects.concat(selectedDraftChord.notes.map(noteIndex => {
+        return playSoundEffect(noteIndex, state.notes, state.audioContext, state.waveType, state.soundOn)
+      }));
       break;
     }
 
