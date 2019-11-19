@@ -37,14 +37,21 @@ export function Knob(props: KnobProps) {
 
   const onMouseMove = (event) => {
     // if(!isTwisting) return;
-    props.changeValue(props.value - event.movementY);
+    const newValue = props.value - event.movementY;
+
+    if(newValue > props.min && newValue < props.max){
+      props.changeValue(newValue);
+    }
   };
 
   return <div className="br-100 b--gray ba w2 h2 pointer relative"
               onMouseDown={onMouseDown}
               onMouseMove={onMouseMove}
   >
-    <div className="ba b--gray absolute h-100 left-50" style={{transform: `rotate(${360 * props.value / (props.max - props.min)}deg)`}}/>
+    <div className="absolute h-100 left-50" style={{transform: `rotate(${360 * props.value / (props.max - props.min)}deg)`}}>
+      <div className="h-50"/>
+      <div className="h-50 ba b--gray"/>
+    </div>
   </div>
 }
 
