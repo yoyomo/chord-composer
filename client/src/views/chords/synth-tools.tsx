@@ -2,7 +2,7 @@ import React from "react";
 import {State} from "../../state";
 import {ParameterButton} from "../../components/parameter-button";
 import {
-  changeBaseFrequency, changeOctave,
+  changeBaseFrequency, changeCutOffFrequency, changeOctave,
   MAXIMUM_OCTAVE,
   MINIMUM_OCTAVE, saveSynthTools, selectWaveType, toggleSound
 } from "../../reducers/synth-tools-reducer";
@@ -20,12 +20,41 @@ import {
 } from "../../components/svgs";
 import {ClassAndChildren} from "../../core/reducers";
 
+export interface KnobProps {
+  value: number
+  max: number
+  min: number
+  changeValue: (newValue: number) => void
+}
+
+export function Knob(props: KnobProps) {
+
+  // let isTwisting = false;
+
+  const onMouseDown = (event) => {
+    // isTwisting = true;
+  };
+
+  const onMouseMove = (event) => {
+    // if(!isTwisting) return;
+    props.changeValue(props.value - event.movementY);
+  };
+
+  return <div className="br-100 b--gray ba w2 h2 pointer relative"
+              onMouseDown={onMouseDown}
+              onMouseMove={onMouseMove}
+  >
+    <div className="ba b--gray absolute h-100 left-50" style={{transform: `rotate(${360 * props.value / (props.max - props.min)}deg)`}}/>
+  </div>
+}
+
 export function SynthTools(dispatch: (action: Action) => void) {
 
   let dispatcher = {
     decreaseOctave: () => dispatch(changeOctave("decrease")),
     increaseOctave: () => dispatch(changeOctave("increase")),
     changeBaseFrequency: (freq: number) => dispatch(changeBaseFrequency(freq)),
+    changeCutOffFrequency: (freq: number) => dispatch(changeCutOffFrequency(freq)),
     selectWaveType: (waveType: OscillatorType) => dispatch(selectWaveType(waveType)),
     toggleSound: () => dispatch(toggleSound()),
     saveSynthTools: () => dispatch(saveSynthTools()),
@@ -96,6 +125,10 @@ export function SynthTools(dispatch: (action: Action) => void) {
                onClick={dispatcher.toggleSound}>
             {state.synth.sound_on ? <SVGSoundOn/> : <SVGSoundOff/>}
           </div>
+        </div>
+
+        <div>
+          <Knob value={state.synth.cutoff_frequency} max={1000} min={0} changeValue={dispatcher.changeCutOffFrequency}/>
         </div>
 
         <div className="pa2">

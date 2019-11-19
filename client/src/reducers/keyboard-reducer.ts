@@ -154,7 +154,7 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
       state = mapKeysToChord(state);
 
       let noteIndex = action.keyIndex + (state.synth.base_octave * KEYS.length);
-      effects = effects.concat(playSoundEffect(noteIndex, state.notes, state.audioContext, state.synth.vco_signal, state.synth.sound_on))
+      effects = effects.concat(playSoundEffect(noteIndex, state.notes, state.audioContext, state.synth));
 
       break;
     }
@@ -193,7 +193,7 @@ export const selectChord = (state:State,effects: Effect[], chord: ChordType | vo
   if(!state.selectedGridChord) return {state,effects};
 
   effects = effects.concat(state.selectedGridChord.notes.map(noteIndex => {
-    return playSoundEffect(noteIndex, state.notes, state.audioContext, state.synth.vco_signal, state.synth.sound_on)
+    return playSoundEffect(noteIndex, state.notes, state.audioContext, state.synth)
   }));
 
   return {state, effects}

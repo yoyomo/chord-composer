@@ -9,6 +9,7 @@
 @import url(_animations.css);
 @import url(_svgs.css);
 @import url(_word-break.css);
+@import url(_coordinates.css);
 
 body {
   margin: 0;

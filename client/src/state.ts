@@ -49,6 +49,7 @@ export const initialState = {
     vco_signal: "sine" as OscillatorType,
     sound_on: true,
     base_frequency: 440,
+    cutoff_frequency: 1000,
     id: undefined,
     user_id: undefined
   } as SynthResource,

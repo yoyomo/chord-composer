@@ -6,7 +6,6 @@ import {ApiV1SynthPath} from "../resources/routes";
 import {Effect} from "../core/services/services";
 import {getLoggedInUserRequestName} from "./footer-reducer";
 import {userSignInRequestName} from "./login-reducer";
-import {setTimer} from "../core/services/timer-service";
 
 const ChangeOctaveActionType = "change-octave";
 export type ChangeOctaveAction = {
@@ -74,13 +73,27 @@ export const saveSynthTools = (): SaveSynthToolsAction => {
   };
 };
 
+const ChangeCutOffFrequencyActionType = "change-cut-off-frequency";
+export type ChangeCutOffFrequencyAction = {
+  type: typeof ChangeCutOffFrequencyActionType
+  frequency: number
+}
+
+export const changeCutOffFrequency = (frequency: number): ChangeCutOffFrequencyAction => {
+  return {
+    type: ChangeCutOffFrequencyActionType,
+    frequency
+  };
+};
+
 
 export type ChordToolsActions =
   ChangeOctaveAction
   | ChangeBaseFrequencyAction
   | SelectWaveTypeAction
   | ToggleSoundAction
-  | SaveSynthToolsAction;
+  | SaveSynthToolsAction
+  | ChangeCutOffFrequencyAction;
 
 export const reduceChordTools = (state: State, action: Action): ReductionWithEffect<State> => {
   let effects: Effect[] = [];
@@ -93,11 +106,11 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
         if(action.success){
           let synth = response.data;
           state = {...state};
-          state.synth = synth;
+          state.synth = {...state.synth, ...synth};
 
           if(!state.loggedInUser) break;
           state.loggedInUser = {...state.loggedInUser};
-          state.loggedInUser.latest_synth = synth;
+          state.loggedInUser.latest_synth = {...state.loggedInUser.latest_synth, ...synth};
         }
 
       }
@@ -106,7 +119,7 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
           let synth = response.data.latest_synth;
           if(synth){
             state = {...state};
-            state.synth = synth;
+            state.synth = {...state.synth, ...synth};
           }
         }
       }
@@ -139,6 +152,13 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
       state = {...state};
       state.synth = {...state.synth};
       state.synth.base_frequency = action.frequency;
+      break;
+    }
+
+    case "change-cut-off-frequency": {
+      state = {...state};
+      state.synth = {...state.synth};
+      state.synth.cutoff_frequency = action.frequency;
       break;
     }
 
