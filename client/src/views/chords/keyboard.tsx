@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from 'react';
 import {State} from "../../state";
 import {Action} from "../../core/root-reducer";
 import {

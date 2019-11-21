@@ -18,7 +18,7 @@ export const playSound = (noteIndex: number,notes: number[], audioContext: Audio
 
   osc1.type = synth.vco_signal;
   osc1.frequency.value = noteValue;
-  biquadFilter.frequency.value = synth.cutoff_frequency;
+  biquadFilter.frequency.value = synth.cut_off_frequency;
 
   let now = audioContext.currentTime;
   gain.gain.setValueAtTime(0.2, now);

@@ -1,10 +1,10 @@
-import React from "react";
+import * as React from 'react';
 import {State} from "../../state";
 import {ParameterButton} from "../../components/parameter-button";
 import {
   changeBaseFrequency, changeCutOffFrequency, changeOctave,
   MAXIMUM_OCTAVE,
-  MINIMUM_OCTAVE, saveSynthTools, selectWaveType, toggleSound
+  MINIMUM_OCTAVE, saveSynthTools, selectWaveType, activateKnob, toggleSound
 } from "../../reducers/synth-tools-reducer";
 import {Action} from "../../core/root-reducer";
 import {
@@ -19,35 +19,24 @@ import {
   SVGTriangle
 } from "../../components/svgs";
 import {ClassAndChildren} from "../../core/reducers";
+import {SynthResource} from "../../resources/synth-resource";
 
 export interface KnobProps {
   value: number
   max: number
   min: number
-  changeValue: (newValue: number) => void
+  activateKnob: () => void
 }
 
 export function Knob(props: KnobProps) {
 
-  // let isTwisting = false;
 
   const onMouseDown = (event) => {
-    // isTwisting = true;
-  };
-
-  const onMouseMove = (event) => {
-    // if(!isTwisting) return;
-    const newValue = props.value - event.movementY;
-
-    if(newValue > props.min && newValue < props.max){
-      props.changeValue(newValue);
-    }
+    props.activateKnob();
   };
 
   return <div className="br-100 b--gray ba w2 h2 pointer relative"
-              onMouseDown={onMouseDown}
-              onMouseMove={onMouseMove}
-  >
+              onMouseDown={onMouseDown}>
     <div className="absolute h-100 left-50" style={{transform: `rotate(${360 * props.value / (props.max - props.min)}deg)`}}>
       <div className="h-50"/>
       <div className="h-50 ba b--gray"/>
@@ -61,10 +50,10 @@ export function SynthTools(dispatch: (action: Action) => void) {
     decreaseOctave: () => dispatch(changeOctave("decrease")),
     increaseOctave: () => dispatch(changeOctave("increase")),
     changeBaseFrequency: (freq: number) => dispatch(changeBaseFrequency(freq)),
-    changeCutOffFrequency: (freq: number) => dispatch(changeCutOffFrequency(freq)),
     selectWaveType: (waveType: OscillatorType) => dispatch(selectWaveType(waveType)),
     toggleSound: () => dispatch(toggleSound()),
     saveSynthTools: () => dispatch(saveSynthTools()),
+    activateKnob: (knobKey: keyof SynthResource) => dispatch(activateKnob(knobKey)),
   };
 
   interface WaveTypeProps extends ClassAndChildren {
@@ -135,7 +124,10 @@ export function SynthTools(dispatch: (action: Action) => void) {
         </div>
 
         <div>
-          <Knob value={state.synth.cutoff_frequency} max={1000} min={0} changeValue={dispatcher.changeCutOffFrequency}/>
+          <Knob value={state.synth.cut_off_frequency}
+                max={state.limits.cut_off_frequency.max} min={state.limits.cut_off_frequency.min}
+                activateKnob={() => dispatcher.activateKnob("cut_off_frequency")}
+          />
         </div>
 
         <div className="pa2">

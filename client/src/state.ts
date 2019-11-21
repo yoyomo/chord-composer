@@ -49,10 +49,17 @@ export const initialState = {
     vco_signal: "sine" as OscillatorType,
     sound_on: true,
     base_frequency: 440,
-    cutoff_frequency: 1000,
+    cut_off_frequency: 350,
     id: undefined,
     user_id: undefined
   } as SynthResource,
+
+  limits: {
+    cut_off_frequency: {
+      min: 10,
+      max: AudioContext && new AudioContext().sampleRate / 10
+    }
+  },
 
   stripe: {
     object: undefined as stripe.Stripe | void,
