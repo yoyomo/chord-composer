@@ -46,6 +46,6 @@ class Api::V1::SynthsController < APIController
 
     # Only allow a trusted parameter "white list" through.
     def synth_params
-      params.require(:synth).permit(:base_frequency, :base_octave, :vco_signal, :sound_on, :cut_off_frequency, :user_id)
+      params.require(:synth).permit(:base_frequency, :base_octave, :vco_signal, :sound_on, :cut_off_frequency, :attack, :release, :user_id)
     end
 end

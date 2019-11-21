@@ -20,6 +20,9 @@ ActiveRecord::Schema.define(version: 2019_11_12_064312) do
     t.integer "base_octave"
     t.integer "vco_signal"
     t.boolean "sound_on"
+    t.integer "cut_off_frequency"
+    t.decimal "attack", precision: 4, scale: 3
+    t.decimal "release", precision: 4, scale: 3
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

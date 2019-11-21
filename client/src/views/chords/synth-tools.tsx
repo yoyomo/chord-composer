@@ -2,7 +2,7 @@ import * as React from 'react';
 import {State} from "../../state";
 import {ParameterButton} from "../../components/parameter-button";
 import {
-  changeBaseFrequency, changeCutOffFrequency, changeOctave,
+  changeBaseFrequency, changeOctave,
   MAXIMUM_OCTAVE,
   MINIMUM_OCTAVE, saveSynthTools, selectWaveType, activateKnob, toggleSound
 } from "../../reducers/synth-tools-reducer";
@@ -29,17 +29,30 @@ export interface KnobProps {
 }
 
 export function Knob(props: KnobProps) {
-
-
-  const onMouseDown = (event) => {
-    props.activateKnob();
-  };
-
-  return <div className="br-100 b--gray ba w2 h2 pointer relative"
-              onMouseDown={onMouseDown}>
+  return <div className="br-100 b--gray ba w2 h2 mh2 pointer relative"
+              onMouseDown={props.activateKnob}>
     <div className="absolute h-100 left-50" style={{transform: `rotate(${360 * props.value / (props.max - props.min)}deg)`}}>
       <div className="h-50"/>
       <div className="h-50 ba b--gray"/>
+    </div>
+  </div>
+}
+
+export interface SliderProps {
+  value: number
+  max: number
+  min: number
+  activateKnob: () => void
+}
+
+export function Slider(props: SliderProps) {
+  const meter = new Array(10);
+  return <div className="w2 h2 mh2 relative">
+    <div className="absolute h-100 ba b--gray left-50"/>
+    <div className="absolute w-50 pointer left-25"
+         style={{bottom: `${100 * props.value / (props.max - props.min)}%`}}
+         onMouseDown={props.activateKnob}>
+      <div className="ba b--gray"/>
     </div>
   </div>
 }
@@ -130,6 +143,20 @@ export function SynthTools(dispatch: (action: Action) => void) {
           />
         </div>
 
+        <div>
+          <Slider value={parseFloat(state.synth.attack + "")}
+                max={state.limits.attack.max} min={state.limits.attack.min}
+                activateKnob={() => dispatcher.activateKnob("attack")}
+          />
+        </div>
+
+        <div>
+          <Slider value={parseFloat(state.synth.release +"")}
+                  max={state.limits.release.max} min={state.limits.release.min}
+                  activateKnob={() => dispatcher.activateKnob("release")}
+          />
+        </div>
+
         <div className="pa2">
           <div className="dib ">
             {deepEqual(state.loggedInUser && state.loggedInUser.latest_synth, state.synth) ?
@@ -150,6 +177,7 @@ export function SynthTools(dispatch: (action: Action) => void) {
 }
 
 const deepEqual = (obj1, obj2) => {
+  if(!obj1 || !obj2) return false;
   for(let key in obj1) {
     if(obj2[key] !== obj1[key]){
       return false;

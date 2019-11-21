@@ -1,4 +1,4 @@
-import {initialState, State} from "../state";
+import {State} from "../state";
 import {ReductionWithEffect} from "../core/reducers";
 import {Action} from "../core/root-reducer";
 import {requestAjax} from "../core/services/ajax-service";
@@ -75,19 +75,6 @@ export const saveSynthTools = (): SaveSynthToolsAction => {
   };
 };
 
-const ChangeCutOffFrequencyActionType = "change-cut-off-frequency";
-export type ChangeCutOffFrequencyAction = {
-  type: typeof ChangeCutOffFrequencyActionType
-  frequency: number
-}
-
-export const changeCutOffFrequency = (frequency: number): ChangeCutOffFrequencyAction => {
-  return {
-    type: ChangeCutOffFrequencyActionType,
-    frequency
-  };
-};
-
 export type ActivateKnobAction = {
   type: "activate-knob"
   knobKey: keyof SynthResource
@@ -120,7 +107,6 @@ export type ChordToolsActions =
   | SelectWaveTypeAction
   | ToggleSoundAction
   | SaveSynthToolsAction
-  | ChangeCutOffFrequencyAction
   | ActivateKnobAction
   | ChangeKnobValueAction;
 
@@ -184,13 +170,6 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
       break;
     }
 
-    case "change-cut-off-frequency": {
-      state = {...state};
-      state.synth = {...state.synth};
-      state.synth.cut_off_frequency = action.frequency;
-      break;
-    }
-
     case "select-wave-type": {
       state = {...state};
       state.synth = {...state.synth};
@@ -209,8 +188,16 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
       state = {...state};
       state.synth = {...state.synth};
 
-      if(action.synthKey === "cut_off_frequency"){
-        const newValue = state.synth[action.synthKey] - action.changeValue * 10;
+      if(action.synthKey === "cut_off_frequency" || action.synthKey === "attack" || action.synthKey === "release"){
+        let newValue = 0;
+
+        if(action.synthKey === "cut_off_frequency") {
+          newValue = state.synth[action.synthKey] - action.changeValue * 10;
+        } else if(action.synthKey === "attack"){
+          newValue = parseFloat(state.synth[action.synthKey] + "") - action.changeValue * 0.01;
+        } else if(action.synthKey === "release"){
+          newValue = parseFloat(state.synth[action.synthKey] + "") - action.changeValue * 0.1;
+        }
 
         if(newValue > state.limits[action.synthKey].min && newValue < state.limits[action.synthKey].max){
           state.synth[action.synthKey] = newValue;

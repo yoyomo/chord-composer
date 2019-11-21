@@ -12,6 +12,8 @@ let AudioContext = (window as any).AudioContext // Default
   || (window as any).webkitAudioContext // Safari and old versions of Chrome
   || false;
 
+const SAMPLE_RATE = AudioContext && new AudioContext().sampleRate;
+
 export type ToggleMap = { [k: number]: boolean }
 
 const loginPageInputs = {
@@ -50,6 +52,9 @@ export const initialState = {
     sound_on: true,
     base_frequency: 440,
     cut_off_frequency: 350,
+    attack: 0.0001,
+    release: 1.5,
+
     id: undefined,
     user_id: undefined
   } as SynthResource,
@@ -57,8 +62,16 @@ export const initialState = {
   limits: {
     cut_off_frequency: {
       min: 10,
-      max: AudioContext && new AudioContext().sampleRate / 10
-    }
+      max: 1500 > SAMPLE_RATE ? SAMPLE_RATE : 1500
+    },
+    attack: {
+      min: 0,
+      max: 1
+    },
+    release: {
+      min: 0,
+      max: 10
+    },
   },
 
   stripe: {
