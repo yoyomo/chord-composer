@@ -6,6 +6,7 @@ import { MAXIMUM_OCTAVE, MINIMUM_OCTAVE } from "./synth-tools-reducer";
 import { Effect } from "../core/services/services";
 import { playSoundEffect } from "../core/services/sound-service";
 import {acceptExternalInput, cancelExternalInput} from "../core/services/external-input-service";
+import {parseMidiNote, stopMidiNoteEffect} from "../core/services/midi-service";
 
 export const ChordMapperKeys = KEYS.concat(KEYS).concat(KEYS).concat(KEYS[0]);
 
@@ -154,7 +155,7 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
       state = mapKeysToChord(state);
 
       let noteIndex = action.keyIndex + (state.synth.base_octave * KEYS.length);
-      effects = effects.concat(playSoundEffect(noteIndex, state.notes, state.audioContext, state.synth));
+      effects = effects.concat(playSoundEffect(noteIndex, state.notes, state.audioContext, state.synth, state.inputs.outputSource));
 
       break;
     }
@@ -178,6 +179,15 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
       break;
     }
 
+    case "stop-midi-note":{
+      const {pianoNote, keyIndex} = parseMidiNote(action.midiNote);
+      const draftChord = state.draftChords[keyIndex];
+      if(draftChord && draftChord.notes.indexOf(pianoNote) === -1){
+        effects = effects.concat(stopMidiNoteEffect(action.midiNote));
+      }
+      break;
+    }
+
   }
 
   return { state, effects };
@@ -193,7 +203,7 @@ export const selectChord = (state:State,effects: Effect[], chord: ChordType | vo
   if(!state.selectedGridChord) return {state,effects};
 
   effects = effects.concat(state.selectedGridChord.notes.map(noteIndex => {
-    return playSoundEffect(noteIndex, state.notes, state.audioContext, state.synth)
+    return playSoundEffect(noteIndex, state.notes, state.audioContext, state.synth, state.inputs.outputSource)
   }));
 
   return {state, effects}

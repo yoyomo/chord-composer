@@ -7,6 +7,7 @@ import {StripePlanResource} from "./resources/stripe-resource";
 import {ResponseError} from "./reducers/login-reducer";
 import {KeyBoardMapType} from "./reducers/keyboard-reducer";
 import {SynthResource} from "./resources/synth-resource";
+import {OutputSource} from "./core/services/midi-service";
 
 let AudioContext = (window as any).AudioContext // Default
   || (window as any).webkitAudioContext // Safari and old versions of Chrome
@@ -84,6 +85,7 @@ export const initialState = {
   inputs: {
     lyric: "",
     mapKeyboardTo: 'keys' as KeyBoardMapType,
+    outputSource: 'computer' as OutputSource,
     ...loginPageInputs,
     ...accountSettingsInputs,
   },

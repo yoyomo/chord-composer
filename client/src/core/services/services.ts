@@ -7,7 +7,7 @@ import {SetTimerEffect, withTimer} from "./timer-service";
 import {ExternalInputEffects, withExternalInput} from "./external-input-service";
 import { PlaySoundEffect, withSound } from "./sound-service";
 import {MouseEffects, withMouseMovements} from "./mouse-movements-service";
-import {withMidiInput} from "./midi-service";
+import {MidiEffects, withMidiInput} from "./midi-service";
 let createBrowserHistory = require("history").createBrowserHistory;
 
 export type Effect =
@@ -19,6 +19,7 @@ export type Effect =
   | PlaySoundEffect
   | ExternalInputEffects
   | MouseEffects
+  | MidiEffects
   ;
 
 export type Services = (effect: Effect) => void
