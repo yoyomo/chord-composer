@@ -46,7 +46,6 @@ export interface SliderProps {
 }
 
 export function Slider(props: SliderProps) {
-  const meter = new Array(10);
   return <div className="w2 h2 mh2 relative">
     <div className="absolute h-100 ba b--gray left-50"/>
     <div className="absolute w-50 pointer left-25"

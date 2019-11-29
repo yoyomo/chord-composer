@@ -6,7 +6,7 @@ export const playSound = (noteIndex: number,notes: number[], audioContext: Audio
     return null;
   }
 
-  let noteValue = notes[noteIndex];
+  let noteFrequency = notes[noteIndex];
 
   let osc1 = audioContext.createOscillator();
   let biquadFilter = audioContext.createBiquadFilter();
@@ -17,7 +17,7 @@ export const playSound = (noteIndex: number,notes: number[], audioContext: Audio
   gain.connect(audioContext.destination);
 
   osc1.type = synth.vco_signal;
-  osc1.frequency.value = noteValue;
+  osc1.frequency.value = noteFrequency;
   biquadFilter.type = "lowpass";
   biquadFilter.frequency.value = synth.cut_off_frequency;
 
