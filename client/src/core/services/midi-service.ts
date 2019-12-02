@@ -53,7 +53,7 @@ export function withMidiInput(dispatch: (action: Action) => void): Services {
 
   const clearMidiEvents = () => {
     midiInputs.map(input => {
-      input.onmidimessage = () => null;
+      return input.onmidimessage = () => null;
     });
     midi = null;
     midiInputs = [];
@@ -89,8 +89,8 @@ export function withMidiInput(dispatch: (action: Action) => void): Services {
     const midiNote = e.data[1];
     const vel = e.data[2];
 
-    if (vel != 0 && command === on) {
-      const {pianoNote, keyIndex} = parseMidiNote(midiNote);
+    if (vel !== 0 && command === on) {
+      const {keyIndex} = parseMidiNote(midiNote);
       if (keyboardMap === "keys") {
         dispatch(toggleKeyboardKey(keyIndex));
       } else if (keyboardMap === "chords") {
