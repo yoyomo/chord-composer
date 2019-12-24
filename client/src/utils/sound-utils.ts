@@ -1,13 +1,14 @@
+import {SynthResource} from "../resources/synth-resource";
 
-export const playSound = (noteIndex: number,notes: number[], audioContext: AudioContext, waveType: OscillatorType, soundOn = true) => {
-  if (!soundOn) return null;
+export const playSound = (noteIndex: number, notes: number[], audioContext: AudioContext, synth: SynthResource) => {
+  if (!synth.sound_on) return null;
   if (noteIndex < 0 || noteIndex >= notes.length) {
     return null;
   }
   let noteValue = notes[noteIndex];
 
   let osc1 = audioContext.createOscillator();
-  osc1.type = waveType;
+  osc1.type = synth.vco_signal;
   osc1.frequency.value = noteValue;
 
   let gain = audioContext.createGain();

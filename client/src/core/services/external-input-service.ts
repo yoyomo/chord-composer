@@ -60,7 +60,7 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
       if(keyboardMap === "keys"){
         dispatch(toggleKeyboardKey(keyIndex));
       }
-      else if(keyboardMap === "chords"){
+      else if(keyboardMap === "chords") {
         dispatch(selectSavedChord(keyIndex))
       }
     }

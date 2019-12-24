@@ -6,7 +6,6 @@ import {ApiV1SynthPath} from "../resources/routes";
 import {Effect} from "../core/services/services";
 import {getLoggedInUserRequestName} from "./footer-reducer";
 import {userSignInRequestName} from "./login-reducer";
-import {setTimer} from "../core/services/timer-service";
 
 const ChangeOctaveActionType = "change-octave";
 export type ChangeOctaveAction = {

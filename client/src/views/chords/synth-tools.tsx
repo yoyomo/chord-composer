@@ -98,6 +98,11 @@ export function SynthTools(dispatch: (action: Action) => void) {
           </div>
         </div>
 
+
+        <div className="pa2">
+
+        </div>
+
         <div className="pa2">
           <div className="dib ">
             {deepEqual(state.loggedInUser && state.loggedInUser.latest_synth, state.synth) ?
@@ -117,7 +122,9 @@ export function SynthTools(dispatch: (action: Action) => void) {
   }
 }
 
-const deepEqual = (obj1, obj2) => {
+const deepEqual = (obj1: any, obj2: any) => {
+  if(!obj1 || !obj2 ) return false;
+
   for(let key in obj1) {
     if(obj2[key] !== obj1[key]){
       return false;
