@@ -16,6 +16,7 @@ import {reduceToggle, ToggleAction} from "../reducers/toggle-reducer";
 import {ChordMapperActions, reduceChordMapper} from "../reducers/keyboard-reducer";
 import {reduceSongPage, SongPageActions} from "../reducers/song-page-reducer";
 import {reduceCompleteRequest} from "../reducers/complete-request-reducer";
+import {MidiActions} from "./services/midi-service";
 
 const subReducer = subReducersFor<State>();
 const computed = computedFor<State>();
@@ -33,6 +34,7 @@ export type Action =
   | StripeActions
   | ChordMapperActions
   | SongPageActions
+  | MidiActions
   ;
 
 

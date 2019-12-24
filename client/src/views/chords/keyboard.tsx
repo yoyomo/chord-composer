@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from 'react';
 import {State} from "../../state";
 import {Action} from "../../core/root-reducer";
 import {
@@ -8,6 +8,8 @@ import {
   toggleKeyboardKey
 } from "../../reducers/keyboard-reducer";
 import {USKeyboardMapperFirstRow, USKeyboardMapperSecondRow} from "../../core/services/external-input-service";
+import {OutputSource} from "../../core/services/midi-service";
+import {inputChangeDispatcher} from "../../reducers/input-reducer";
 
 export const SelectedKeyIndicator = () => {
   return <div className={"bg-light-red w2 h2 pa2 br-100"}/>
@@ -38,6 +40,7 @@ export function Keyboard(dispatch: (action: Action) => void) {
   };
 
   const keyboardMappers: KeyBoardMapType[] = ['none', 'keys', 'chords'];
+  const outputSources: OutputSource[] = ['computer', 'midi'];
 
   return (state: State) => {
 
@@ -50,6 +53,18 @@ export function Keyboard(dispatch: (action: Action) => void) {
               <div className={`pointer dib pa1 ${color}`}
                    onClick={() => dispatcher.changeKeyBoardMap(keyboardMap)}>
                 {keyboardMap}
+              </div>
+            );
+          })}
+        </div>
+
+        <div>
+          {outputSources.map(outputSource => {
+            const color = state.inputs.outputSource === outputSource ? 'light-blue' : 'black';
+            return (
+              <div className={`pointer dib pa1 ${color}`}
+                   onClick={inputChangeDispatcher(dispatch,"outputSource", outputSource)}>
+                {outputSource}
               </div>
             );
           })}

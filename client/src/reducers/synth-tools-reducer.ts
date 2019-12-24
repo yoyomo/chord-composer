@@ -6,6 +6,8 @@ import {ApiV1SynthPath} from "../resources/routes";
 import {Effect} from "../core/services/services";
 import {getLoggedInUserRequestName} from "./footer-reducer";
 import {userSignInRequestName} from "./login-reducer";
+import {SynthResource} from "../resources/synth-resource";
+import {followKnobMovementsEffect} from "../core/services/mouse-movements-service";
 
 const ChangeOctaveActionType = "change-octave";
 export type ChangeOctaveAction = {
@@ -73,13 +75,40 @@ export const saveSynthTools = (): SaveSynthToolsAction => {
   };
 };
 
+export type ActivateKnobAction = {
+  type: "activate-knob"
+  knobKey: keyof SynthResource
+}
+
+export const activateKnob = (knobKey: keyof SynthResource): ActivateKnobAction => {
+  return {
+    type: "activate-knob",
+    knobKey
+  };
+};
+
+export type ChangeKnobValueAction = {
+  type: "change-knob-value"
+  synthKey: keyof SynthResource,
+  changeValue: number
+}
+
+export const changeSynthAttribute = (synthKey: keyof SynthResource, changeValue: number): ChangeKnobValueAction => {
+  return {
+    type: "change-knob-value",
+    synthKey,
+    changeValue
+  };
+};
 
 export type ChordToolsActions =
   ChangeOctaveAction
   | ChangeBaseFrequencyAction
   | SelectWaveTypeAction
   | ToggleSoundAction
-  | SaveSynthToolsAction;
+  | SaveSynthToolsAction
+  | ActivateKnobAction
+  | ChangeKnobValueAction;
 
 export const reduceChordTools = (state: State, action: Action): ReductionWithEffect<State> => {
   let effects: Effect[] = [];
@@ -92,11 +121,11 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
         if(action.success){
           let synth = response.data;
           state = {...state};
-          state.synth = synth;
+          state.synth = {...state.synth, ...synth};
 
           if(!state.loggedInUser) break;
           state.loggedInUser = {...state.loggedInUser};
-          state.loggedInUser.latest_synth = synth;
+          state.loggedInUser.latest_synth = {...state.loggedInUser.latest_synth, ...synth};
         }
 
       }
@@ -105,7 +134,7 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
           let synth = response.data.latest_synth;
           if(synth){
             state = {...state};
-            state.synth = synth;
+            state.synth = {...state.synth, ...synth};
           }
         }
       }
@@ -154,6 +183,32 @@ export const reduceChordTools = (state: State, action: Action): ReductionWithEff
       state.synth.sound_on = !state.synth.sound_on;
       break;
     }
+
+    case "change-knob-value": {
+      state = {...state};
+      state.synth = {...state.synth};
+
+      if(action.synthKey === "cut_off_frequency" || action.synthKey === "attack" || action.synthKey === "release"){
+        let newValue = 0;
+
+        if(action.synthKey === "cut_off_frequency") {
+          newValue = state.synth[action.synthKey] - action.changeValue * 10;
+        } else if(action.synthKey === "attack"){
+          newValue = parseFloat(state.synth[action.synthKey] + "") - action.changeValue * 0.01;
+        } else if(action.synthKey === "release"){
+          newValue = parseFloat(state.synth[action.synthKey] + "") - action.changeValue * 0.1;
+        }
+
+        if(newValue > state.limits[action.synthKey].min && newValue < state.limits[action.synthKey].max){
+          state.synth[action.synthKey] = newValue;
+        }
+      }
+      break;
+    }
+
+    case "activate-knob":
+      effects = effects.concat(followKnobMovementsEffect(action.knobKey));
+      break;
 
     case "save-synth-tools":
       const url = ApiV1SynthPath + (state.synth.id ? "/" + state.synth.id : "");

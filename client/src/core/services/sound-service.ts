@@ -1,27 +1,28 @@
-
 import { Effect, Services } from "./services";
 import { Action } from "../root-reducer";
 import { playSound } from "../../utils/sound-utils";
-import {initialState} from "../../state";
-import {SynthResource} from "../../resources/synth-resource";
+import { SynthResource } from "../../resources/synth-resource";
+import { OutputSource } from "./midi-service";
 
 export interface PlaySoundEffect {
   effectType: "play-sound",
   noteIndex: number,
   notes: number[],
   audioContext: AudioContext,
-  synth: SynthResource,
+  synth: SynthResource
+  outputSource: OutputSource
 }
 
-export const playSoundEffect = (noteIndex: number,notes: number[],audioContext: AudioContext,synth: SynthResource): PlaySoundEffect => {
+export const playSoundEffect = (noteIndex: number, notes: number[], audioContext: AudioContext, synth: SynthResource, outputSource: OutputSource): PlaySoundEffect => {
   return {
     effectType: "play-sound",
     noteIndex,
     notes,
     audioContext,
-    synth
+    synth,
+    outputSource
   }
-}
+};
 
 export function withSound(dispatch: (action: Action) => void): Services {
   return (effect: Effect) => {
@@ -29,8 +30,11 @@ export function withSound(dispatch: (action: Action) => void): Services {
       case "play-sound":
 
         playSound(effect.noteIndex, effect.notes, effect.audioContext, effect.synth);
+        if (effect.outputSource === "computer") {
+          playSound(effect.noteIndex, effect.notes, effect.audioContext, effect.synth);
+        }
 
-      break;
+        break;
     }
   }
 }

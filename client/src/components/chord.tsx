@@ -1,7 +1,8 @@
-import React, {SyntheticEvent} from "react";
+import * as React from 'react'
 import {ClassAndChildren} from "../core/reducers";
 import {ChordType} from "../reducers/recompute-chord-grid";
 import {SVGStar} from "./svgs";
+import {SyntheticEvent} from "react";
 
 interface ChordElementProps extends ClassAndChildren {
   chord: ChordType
