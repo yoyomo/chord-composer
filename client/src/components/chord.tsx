@@ -35,7 +35,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
       <div
         className={`${this.props.chord.variation === 0 ? "bg-gray light-gray" : "bg-light-gray dark-gray"}
             ${highlightColor}
-             w3 h3 dib tc v-mid pointer ma2 pt3 br3 relative`}
+             w3 h3 dib tc v-mid pointer ma2 pt3 br3 relative shadow-4`}
         // style={{backgroundColor: this.getColor()}}
         onMouseDown={this.onClick}
         onMouseUp={this.onClickEnd}
@@ -56,6 +56,9 @@ export class ChordElement extends React.Component<ChordElementProps> {
             <SVGStar/>
         </div>
         }
+        <div className="absolute bottom-0 right-5px o-70 f6">
+          o{this.props.chord.octave}
+        </div>
         {this.props.children}
       </div>
     );

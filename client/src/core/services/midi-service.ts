@@ -107,7 +107,11 @@ export function withMidiInput(dispatch: (action: Action) => void): Services {
         break;
 
       case "accept-external-input":
-        navigator.requestMIDIAccess().then(onMIDISuccess(effect.keyboardMap), onMIDIFailure);
+        if(navigator.requestMIDIAccess){
+          navigator.requestMIDIAccess().then(onMIDISuccess(effect.keyboardMap), onMIDIFailure);
+        } else {
+          console.error('No Midi Access is supported on this device');
+        }
         break;
 
       case "play-sound":

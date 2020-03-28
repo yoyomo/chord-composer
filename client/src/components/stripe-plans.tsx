@@ -49,6 +49,9 @@ export function StripePlans(dispatch: (action: Action) => void) {
               <div>
                 ・Saving draft chords
               </div>
+              <div>
+                ・Saving synthesizer parameters
+              </div>
 
               <div className={"ma2"}/>
               <div>
@@ -57,7 +60,7 @@ export function StripePlans(dispatch: (action: Action) => void) {
                   ・Create and Save songs
                 </div>
                 <div>
-                  ・Saving synthesizer parameters
+                  ・Create and Save custom chords
                 </div>
               </div>
             </div>
