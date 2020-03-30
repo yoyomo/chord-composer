@@ -5,7 +5,7 @@ import {PathPart} from "./reducers/router-reducer";
 import {SongResource} from "./resources/song-resource";
 import {StripePlanResource} from "./resources/stripe-resource";
 import {ResponseError} from "./reducers/login-reducer";
-import {KeyBoardMapType} from "./reducers/keyboard-reducer";
+import {KeyBoardMapType, KeyBoardPressType} from "./reducers/keyboard-reducer";
 import {SynthResource} from "./resources/synth-resource";
 import {OutputSource} from "./core/services/midi-service";
 
@@ -85,7 +85,8 @@ export const initialState = {
   inputs: {
     lyric: "",
     mapKeyboardTo: 'keys' as KeyBoardMapType,
-    outputSource: 'computer' as OutputSource,
+    outputSource: 'midi' as OutputSource,
+    keyboardPresser: 'hold' as KeyBoardPressType,
     ...loginPageInputs,
     ...accountSettingsInputs,
   },

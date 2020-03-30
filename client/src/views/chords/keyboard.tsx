@@ -3,8 +3,10 @@ import {State} from "../../state";
 import {Action} from "../../core/root-reducer";
 import {
   changeKeyboardMap,
+  changeKeyboardPresser,
   ChordMapperKeys,
   KeyBoardMapType,
+  KeyBoardPressType,
   toggleKeyboardKey
 } from "../../reducers/keyboard-reducer";
 import {USKeyboardMapperFirstRow, USKeyboardMapperSecondRow} from "../../core/services/external-input-service";
@@ -36,17 +38,21 @@ export function Keyboard(dispatch: (action: Action) => void) {
 
   let dispatcher = {
     toggleChordMapperKey: (keyIndex: number) => dispatch(toggleKeyboardKey(keyIndex)),
-    changeKeyBoardMap: (keyboardMap: KeyBoardMapType) => dispatch(changeKeyboardMap(keyboardMap))
+    changeKeyBoardMap: (keyboardMap: KeyBoardMapType) => dispatch(changeKeyboardMap(keyboardMap)),
+    changeKeyBoardPresser: (keyboardPresser: KeyBoardPressType) => dispatch(changeKeyboardPresser(keyboardPresser))
   };
 
   const keyboardMappers: KeyBoardMapType[] = ['none', 'keys', 'chords'];
   const outputSources: OutputSource[] = ['computer', 'midi'];
+  const keyboardPressers: KeyBoardPressType[] = ['hold', 'live'];
 
   return (state: State) => {
 
     return (
       <div className={"w-100 bg-light-gray dark-gray"}>
         <div>
+          <div>
+          Input:
           {keyboardMappers.map(keyboardMap => {
             const color = state.inputs.mapKeyboardTo === keyboardMap ? 'light-blue' : 'black';
             return (
@@ -57,8 +63,23 @@ export function Keyboard(dispatch: (action: Action) => void) {
             );
           })}
         </div>
+        <div className='fr'>
+          On press:
+          {keyboardPressers.map(keyboardPresser => {
+            const color = state.inputs.keyboardPresser === keyboardPresser ? 'light-blue' : 'black';
+            return (
+              <div className={`pointer dib pa1 ${color}`}
+                   onClick={() => dispatcher.changeKeyBoardPresser(keyboardPresser)}>
+                {keyboardPresser}
+              </div>
+            );
+          })}
+
+        </div>
+        </div>
 
         <div>
+          Output: 
           {outputSources.map(outputSource => {
             const color = state.inputs.outputSource === outputSource ? 'light-blue' : 'black';
             return (

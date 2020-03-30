@@ -1,6 +1,6 @@
 import { Effect, Services } from "./services";
 import { Action } from "../root-reducer";
-import {KeyBoardMapType, toggleKeyboardKey} from "../../reducers/keyboard-reducer";
+import {KeyBoardMapType, toggleKeyboardKey, KeyBoardPressType} from "../../reducers/keyboard-reducer";
 import {selectSavedChord} from "../../reducers/footer-reducer";
 
 export const USKeyboardMapperFirstRow =
@@ -24,12 +24,14 @@ export const cancelExternalInput = (): CancelExternalInputEffect => {
 
 export type AcceptExternalInputEffect = {
   effectType: 'accept-external-input'
-  keyboardMap: KeyBoardMapType
+  keyboardMap: KeyBoardMapType,
+  keyboardPresser: KeyBoardPressType
 }
-export const acceptExternalInput = (keyboardMap: KeyBoardMapType): AcceptExternalInputEffect => {
+export const acceptExternalInput = (keyboardMap: KeyBoardMapType, keyboardPresser: KeyBoardPressType): AcceptExternalInputEffect => {
   return {
     effectType: 'accept-external-input',
-    keyboardMap
+    keyboardMap,
+    keyboardPresser
   }
 };
 
@@ -44,17 +46,23 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
   let keydownEventListener: (e: KeyboardEvent) => void;
   let keyupEventListener: (e: KeyboardEvent) => void;
 
+  const getKeyIndex = (e: KeyboardEvent) => {
+    let keyIndex = KeyboardMapperFirstRow.indexOf(e.code);
+
+    if (keyIndex === -1) {
+      keyIndex = KeyboardMapperSecondRow.indexOf(e.code);
+    }
+
+    return keyIndex;
+  }
+
   const handleKeyDown = (e: KeyboardEvent, keyboardMap: KeyBoardMapType) => {
 
     if(pressedKeyCodes[e.code]) return;
 
     pressedKeyCodes[e.code] = true;
 
-    let keyIndex = KeyboardMapperFirstRow.indexOf(e.code);
-
-    if (keyIndex === -1) {
-      keyIndex = KeyboardMapperSecondRow.indexOf(e.code);
-    }
+    const keyIndex = getKeyIndex(e);
 
     if (keyIndex !== -1) {
       if(keyboardMap === "keys"){
@@ -66,8 +74,16 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
     }
   };
 
-  const handleKeyUp = (e: KeyboardEvent, keyboardMap: KeyBoardMapType) => {
+  const handleKeyUp = (e: KeyboardEvent, keyboardMap: KeyBoardMapType, keyboardPresser: KeyBoardPressType) => {
     pressedKeyCodes[e.code] = false;
+
+    if(keyboardPresser === 'live'){
+      const keyIndex = getKeyIndex(e);
+
+      if (keyIndex !== -1){
+        dispatch(toggleKeyboardKey(keyIndex, false))
+      }
+    }
   };
 
 
@@ -82,7 +98,7 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
         document.body.removeEventListener('keydown', keydownEventListener);
         document.body.removeEventListener('keyup', keyupEventListener);
         keydownEventListener = (e: KeyboardEvent) => handleKeyDown(e, effect.keyboardMap);
-        keyupEventListener = (e: KeyboardEvent) => handleKeyUp(e, effect.keyboardMap);
+        keyupEventListener = (e: KeyboardEvent) => handleKeyUp(e, effect.keyboardMap, effect.keyboardPresser);
         document.body.addEventListener('keydown', keydownEventListener);
         document.body.addEventListener('keyup', keyupEventListener);
         break;

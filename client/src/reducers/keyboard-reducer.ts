@@ -13,12 +13,14 @@ export const ChordMapperKeys = KEYS.concat(KEYS).concat(KEYS).concat(KEYS[0]);
 export type ToggleChordMapperKeyAction = {
   type: "toggle-chord-mapper-key"
   keyIndex: number
+  on: boolean | void
 }
 
-export const toggleKeyboardKey = (keyIndex: number): ToggleChordMapperKeyAction => {
+export const toggleKeyboardKey = (keyIndex: number, on: boolean | void): ToggleChordMapperKeyAction => {
   return {
     type: "toggle-chord-mapper-key",
-    keyIndex
+    keyIndex,
+    on
   };
 };
 
@@ -48,10 +50,25 @@ export const changeKeyboardMap = (keyboardMap: KeyBoardMapType): ChangeKeyboardM
   };
 };
 
+export type KeyBoardPressType = 'hold' | 'live';
+
+export type ChangeKeyboardPresserAction = {
+  type: "change-keyboard-presser"
+  keyboardPresser: KeyBoardPressType
+}
+
+export const changeKeyboardPresser = (keyboardPresser: KeyBoardPressType): ChangeKeyboardPresserAction => {
+  return {
+    type: "change-keyboard-presser",
+    keyboardPresser
+  }
+}
+
 export type ChordMapperActions =
   | ToggleChordMapperKeyAction
   | SelectChordAction
   | ChangeKeyboardMapAction
+  | ChangeKeyboardPresserAction
   ;
 
 export const mapChordToKeys = (state: State): State => {
@@ -150,13 +167,14 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
     case "toggle-chord-mapper-key": {
       state = { ...state };
       state.chordMapperKeys = state.chordMapperKeys.slice();
-      state.chordMapperKeys[action.keyIndex] = !state.chordMapperKeys[action.keyIndex];
+      state.chordMapperKeys[action.keyIndex] = action.on === undefined || action.on === null ? !state.chordMapperKeys[action.keyIndex] : action.on;
 
       state = mapKeysToChord(state);
 
-      let noteIndex = action.keyIndex + (state.synth.base_octave * KEYS.length);
-      effects = effects.concat(playSoundEffect(noteIndex, state.notes, state.audioContext, state.synth, state.inputs.outputSource));
-
+      if(state.chordMapperKeys[action.keyIndex]){
+        let noteIndex = action.keyIndex + (state.synth.base_octave * KEYS.length);
+        effects = effects.concat(playSoundEffect(noteIndex, state.notes, state.audioContext, state.synth, state.inputs.outputSource));
+      }
       break;
     }
 
@@ -174,8 +192,17 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
       if(action.keyboardMap === "none"){
         effects = effects.concat(cancelExternalInput());
       } else {
-        effects = effects.concat(acceptExternalInput(action.keyboardMap));
+        effects = effects.concat(acceptExternalInput(action.keyboardMap, state.inputs.keyboardPresser));
       }
+      break;
+    }
+
+    case "change-keyboard-presser": {
+      state = {...state};
+      state.inputs = {...state.inputs};
+      state.inputs.keyboardPresser = action.keyboardPresser;
+
+      effects = effects.concat(acceptExternalInput(state.inputs.mapKeyboardTo, action.keyboardPresser));
       break;
     }
 

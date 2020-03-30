@@ -36,7 +36,7 @@ export function routerReducer(state: State,
   let nextPathParts: PathPart[] = location.pathname.split("/").slice(1) as PathPart[];
   if (!nextPathParts[0]) nextPathParts[0] = "home";
 
-  effects = effects.concat(acceptExternalInput(state.inputs.mapKeyboardTo));
+  effects = effects.concat(acceptExternalInput(state.inputs.mapKeyboardTo, state.inputs.keyboardPresser));
 
   switch (nextPathParts[0]) {
 
