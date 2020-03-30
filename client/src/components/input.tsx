@@ -8,6 +8,8 @@ export interface InputProps extends ClassAndChildren{
   onChange: (e: EventInput) => void
   autoComplete?: string
   disabled?: boolean
+  onFocus: (e) => void
+  onBlur: (e) => void
 }
 
 export const Input = (props: InputProps) => {

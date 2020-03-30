@@ -12,6 +12,7 @@ import {
   resendConfirmationEmailRequestName,
   signIn
 } from "../../reducers/login-reducer";
+import {changeKeyboardMap, KeyBoardMapType} from '../../reducers/keyboard-reducer';
 
 export function SignIn(dispatch: (action: Action) => void) {
 
@@ -20,6 +21,7 @@ export function SignIn(dispatch: (action: Action) => void) {
     goSignUp: () => dispatch(goSignUp()),
     resendConfirmationEmail: () => dispatch(resendConfirmationEmail()),
     forgotPassword: () => dispatch(forgotPassword()),
+    changeKeyBoardMap: (keyboardMap: KeyBoardMapType) => dispatch(changeKeyboardMap(keyboardMap)),
   };
 
   return (state: State) => {
@@ -66,6 +68,8 @@ export function SignIn(dispatch: (action: Action) => void) {
           Email:
         </div>
         <Input type="email" value={state.inputs.email} autoComplete={"email"}
+            onFocus={() => dispatcher.changeKeyBoardMap("none")}
+            onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
                onChange={inputChangeDispatcher(dispatch, "email")}/>
       </div>
       <div className={"db ma2"}>
@@ -73,6 +77,8 @@ export function SignIn(dispatch: (action: Action) => void) {
           Password:
         </div>
         <Input type="password" value={state.inputs.password} autoComplete={"current-password"}
+            onFocus={() => dispatcher.changeKeyBoardMap("none")}
+            onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
                onChange={inputChangeDispatcher(dispatch, "password")}/>
       </div>
       <div className={"db ma2"}>

@@ -6,12 +6,14 @@ import {State} from "../../state";
 import {
   forgotPassword, resetPassword,
 } from "../../reducers/login-reducer";
+import {changeKeyboardMap, KeyBoardMapType} from '../../reducers/keyboard-reducer';
 
 export function ResetPassword(dispatch: (action: Action) => void) {
 
   const dispatcher = {
     forgotPassword: () => dispatch(forgotPassword()),
     resetPassword: () => dispatch(resetPassword()),
+    changeKeyBoardMap: (keyboardMap: KeyBoardMapType) => dispatch(changeKeyboardMap(keyboardMap)),
   };
 
   return (state: State) => {
@@ -41,6 +43,8 @@ export function ResetPassword(dispatch: (action: Action) => void) {
           For Email:
         </div>
         <Input type="email" disabled value={state.inputs.email} autoComplete={"email"}
+            onFocus={() => dispatcher.changeKeyBoardMap("none")}
+            onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
                onChange={inputChangeDispatcher(dispatch, "email")} className="bg-light-gray"/>
       </div>
       <div className={"db ma2"}>
@@ -48,6 +52,8 @@ export function ResetPassword(dispatch: (action: Action) => void) {
           New Password:
         </div>
         <Input type="password" value={state.inputs.newPassword}
+            onFocus={() => dispatcher.changeKeyBoardMap("none")}
+            onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
                onChange={inputChangeDispatcher(dispatch, "newPassword")}/>
       </div>
       <div className={"db ma2"}>
@@ -55,6 +61,8 @@ export function ResetPassword(dispatch: (action: Action) => void) {
           Confirm New Password:
         </div>
         <Input type="password" value={state.inputs.confirmNewPassword}
+            onFocus={() => dispatcher.changeKeyBoardMap("none")}
+            onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
                onChange={inputChangeDispatcher(dispatch, "confirmNewPassword")}/>
       </div>
       <div className={"db ma2"}>

@@ -20,6 +20,8 @@ import {
 } from "../../components/svgs";
 import { ClassAndChildren } from "../../core/reducers";
 import { SynthResource } from "../../resources/synth-resource";
+import {Input} from "../../components/input";
+import {changeKeyboardMap, KeyBoardMapType} from '../../reducers/keyboard-reducer';
 
 export interface KnobProps {
   value: number
@@ -66,6 +68,7 @@ export function SynthTools(dispatch: (action: Action) => void) {
     toggleSound: () => dispatch(toggleSound()),
     saveSynthTools: () => dispatch(saveSynthTools()),
     activateKnob: (knobKey: keyof SynthResource) => dispatch(activateKnob(knobKey)),
+    changeKeyBoardMap: (keyboardMap: KeyBoardMapType) => dispatch(changeKeyboardMap(keyboardMap)),
   };
 
   interface WaveTypeProps extends ClassAndChildren {
@@ -121,9 +124,11 @@ export function SynthTools(dispatch: (action: Action) => void) {
           </WaveType>
         </div>
 
-        <div className={"ma2 pa2 dark-gray"}>
-          <input type={"number"} className={"bg-transparent border-less w3 color-inherit tc pointer"}
+        <div className={"dark-gray"}>
+          <Input type={"number"} className={"bg-transparent border-less w3 color-inherit tc pointer"}
             value={state.synth.base_frequency}
+            onFocus={() => dispatcher.changeKeyBoardMap("none")}
+            onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
             onChange={(e) => dispatcher.changeBaseFrequency(parseInt(e.target.value))} />
           Hz
         </div>

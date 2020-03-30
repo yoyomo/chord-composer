@@ -5,11 +5,13 @@ import {Input} from "../../components/input";
 import {inputChangeDispatcher} from "../../reducers/input-reducer";
 import {addChordAndLyric} from "../../reducers/song-page-reducer";
 import {Page} from "../../components/page";
+import {changeKeyboardMap, KeyBoardMapType} from '../../reducers/keyboard-reducer';
 
 export function SongPage(dispatch: (action: Action) => void) {
 
   const dispatcher = {
     addChordAndLyric: () => dispatch(addChordAndLyric()),
+    changeKeyBoardMap: (keyboardMap: KeyBoardMapType) => dispatch(changeKeyboardMap(keyboardMap)),
   };
 
   return (state: State) => {
@@ -39,7 +41,10 @@ export function SongPage(dispatch: (action: Action) => void) {
                   </div>
                 </div>;
               })}
-              <Input value={state.inputs.lyric} onChange={inputChangeDispatcher(dispatch, "lyric")}/>
+              <Input value={state.inputs.lyric} onChange={inputChangeDispatcher(dispatch, "lyric")}
+                onFocus={() => dispatcher.changeKeyBoardMap("none")}
+                onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
+              />
               <div className={"bg-light-gray pa2 br2 w2 h2 tc pointer"} onClick={dispatcher.addChordAndLyric}>
                 +
               </div>

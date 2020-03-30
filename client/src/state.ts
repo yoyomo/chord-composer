@@ -102,6 +102,8 @@ export const initialState = {
     isResettingPassword: false
   },
 
+  keyboardMapPriorToInput: 'keys' as KeyBoardMapType,
+
   showStarChord: undefined as ChordType | void,
 
   success: {

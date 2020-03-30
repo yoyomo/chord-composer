@@ -186,6 +186,7 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
 
     case "change-keyboard-map": {
       state = {...state};
+      state.keyboardMapPriorToInput = state.inputs.mapKeyboardTo;
       state.inputs = {...state.inputs};
       state.inputs.mapKeyboardTo = action.keyboardMap;
 

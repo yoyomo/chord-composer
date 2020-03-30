@@ -15,6 +15,7 @@ import {stringifyRequestName} from "../../reducers/complete-request-reducer";
 import {SVGCheckMark} from "../../components/svgs";
 import {StripePlans} from "../../components/stripe-plans";
 import {StripeForm} from "../../components/stripe-form";
+import {changeKeyboardMap, KeyBoardMapType} from '../../reducers/keyboard-reducer';
 
 
 export function SignUpPage(dispatch: (action: Action) => void) {
@@ -22,6 +23,7 @@ export function SignUpPage(dispatch: (action: Action) => void) {
     signUp: (token_id: string) => dispatch(signUp(token_id)),
     error: (error: ResponseError) => dispatch(errorOnSignUp(error)),
     choosePlan: (stripePlanId: string) => dispatch(chooseStripePlan(stripePlanId)),
+    changeKeyBoardMap: (keyboardMap: KeyBoardMapType) => dispatch(changeKeyboardMap(keyboardMap)),
   };
 
   const StripePlansContent = StripePlans(dispatch);
@@ -36,13 +38,18 @@ export function SignUpPage(dispatch: (action: Action) => void) {
             <div>
               Email:
             </div>
-            <Input type="email" value={state.inputs.email} onChange={inputChangeDispatcher(dispatch, "email")}/>
+            <Input type="email" value={state.inputs.email} onChange={inputChangeDispatcher(dispatch, "email")}
+              onFocus={() => dispatcher.changeKeyBoardMap("none")}
+              onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
+            />
           </div>
           <div className={"db ma2"}>
             <div>
               Password:
             </div>
             <Input type="password" value={state.inputs.password}
+            onFocus={() => dispatcher.changeKeyBoardMap("none")}
+            onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
                    onChange={inputChangeDispatcher(dispatch, "password")}/>
           </div>
           <div className={"db ma2"}>
@@ -50,6 +57,8 @@ export function SignUpPage(dispatch: (action: Action) => void) {
               Confirm Password:
             </div>
             <Input type="password" value={state.inputs.confirmPassword}
+            onFocus={() => dispatcher.changeKeyBoardMap("none")}
+            onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
                    onChange={inputChangeDispatcher(dispatch, "confirmPassword")}/>
             {state.inputs.password && state.inputs.password === state.inputs.confirmPassword &&
             <SVGCheckMark className={"svg-green"}/>

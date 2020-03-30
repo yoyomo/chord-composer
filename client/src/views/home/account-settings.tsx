@@ -21,6 +21,7 @@ import {stringifyRequestName} from "../../reducers/complete-request-reducer";
 import {StripePlans} from "../../components/stripe-plans";
 import {StripeSubscription} from "../../components/stripe-subscription";
 import {StripeForm} from "../../components/stripe-form";
+import {changeKeyboardMap, KeyBoardMapType} from '../../reducers/keyboard-reducer';
 
 
 export function AccountSettings(dispatch: (action: Action) => void) {
@@ -31,6 +32,7 @@ export function AccountSettings(dispatch: (action: Action) => void) {
     cancelSubscription: () => dispatch(cancelSubscription()),
     changeSubscription: (token_id: string) => dispatch(changeSubscription(token_id)),
     error: (error: ResponseError) => dispatch(errorOnSignUp(error)),
+    changeKeyBoardMap: (keyboardMap: KeyBoardMapType) => dispatch(changeKeyboardMap(keyboardMap)),
   };
 
   const StripePlansContent = StripePlans(dispatch);
@@ -76,6 +78,8 @@ export function AccountSettings(dispatch: (action: Action) => void) {
                       Email:
                   </div>
                   <Input type="email" value={state.inputs.newEmail}
+                    onFocus={() => dispatcher.changeKeyBoardMap("none")}
+                    onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
                          onChange={inputChangeDispatcher(dispatch, "newEmail")}/>
                 {state.loadingRequests[stringifyRequestName([changeEmailRequestName])] ?
                   <div className={`dib ma2 br4 pa2 bg-white ba b--light-gray gray`}>
@@ -98,6 +102,8 @@ export function AccountSettings(dispatch: (action: Action) => void) {
                           Old Password:
                       </div>
                       <Input type="password" value={state.inputs.oldPassword}
+                        onFocus={() => dispatcher.changeKeyBoardMap("none")}
+                        onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
                              onChange={inputChangeDispatcher(dispatch, "oldPassword")}/>
                   </div>
                   <div className={"db ma2"}>
@@ -105,6 +111,8 @@ export function AccountSettings(dispatch: (action: Action) => void) {
                           New Password:
                       </div>
                       <Input type="password" value={state.inputs.newPassword}
+                        onFocus={() => dispatcher.changeKeyBoardMap("none")}
+                        onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
                              onChange={inputChangeDispatcher(dispatch, "newPassword")}/>
                   </div>
                   <div className={"db ma2"}>
@@ -112,6 +120,8 @@ export function AccountSettings(dispatch: (action: Action) => void) {
                           Confirm New Password:
                       </div>
                       <Input type="password" value={state.inputs.confirmNewPassword}
+                        onFocus={() => dispatcher.changeKeyBoardMap("none")}
+                        onBlur={()=> dispatcher.changeKeyBoardMap(state.keyboardMapPriorToInput)}
                              onChange={inputChangeDispatcher(dispatch, "confirmNewPassword")}/>
                   </div>
                 {state.loadingRequests[stringifyRequestName([changePasswordRequestName])] ?
