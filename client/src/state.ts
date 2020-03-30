@@ -49,7 +49,7 @@ export const initialState = {
 
   synth: {
     base_octave: 2,
-    vco_signal: "sine" as OscillatorType,
+    vco_signal: "sawtooth" as OscillatorType,
     sound_on: true,
     base_frequency: 440,
     cut_off_frequency: 350,
@@ -86,7 +86,7 @@ export const initialState = {
     lyric: "",
     mapKeyboardTo: 'keys' as KeyBoardMapType,
     outputSource: 'midi' as OutputSource,
-    keyboardPresser: 'hold' as KeyBoardPressType,
+    keyboardPresser: 'live' as KeyBoardPressType,
     ...loginPageInputs,
     ...accountSettingsInputs,
   },
