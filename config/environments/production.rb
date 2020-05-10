@@ -66,7 +66,7 @@ Rails.application.configure do
       password:       ENV['KORDPOSE_MAIL_PASSWORD'],
       domain:         ENV['KORDPOSE_MAIL_DOMAIN'],
       address:       'smtp.gmail.com',
-      port:          '465',
+      port:          465,
       authentication: :plain,
       enable_starttls_auto: true
   }
