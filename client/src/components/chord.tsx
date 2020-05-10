@@ -35,7 +35,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
       <div
         className={`${this.props.chord.variation === 0 ? "bg-gray light-gray" : "bg-light-gray dark-gray"}
             ${highlightColor}
-             w3 h3 dib tc v-mid pointer ma2 pt3 br3 relative shadow-4`}
+             w3 h3 dib tc v-mid pointer ma2 pt3 br3 relative shadow-4 no-select`}
         // style={{backgroundColor: this.getColor()}}
         onMouseDown={this.onClick}
         onMouseUp={this.onClickEnd}

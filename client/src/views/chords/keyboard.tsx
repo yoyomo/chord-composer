@@ -95,7 +95,7 @@ export function Keyboard(dispatch: (action: Action) => void) {
             );
           })}
         </div>
-        <div className={"overflow-x-auto overflow-y-hidden gpu pb1"}>
+        <div className={"overflow-x-auto overflow-y-hidden gpu pb1 no-select"}>
           <div className={"db nowrap"}>
             {ChordMapperKeys.map((blackKey, i) => {
 

@@ -76,8 +76,8 @@ class User < ApplicationRecord
   end
 
   def create_or_update_customer_subscription
-    customer = Stripe::Customer.retrieve(self.stripe_customer_id)
-    subscription = Stripe::Subscription.retrieve(self.stripe_subscription_id)
+    customer = self.stripe_customer_id && Stripe::Customer.retrieve(self.stripe_customer_id)
+    subscription = self.stripe_subscription_id && Stripe::Subscription.retrieve(self.stripe_subscription_id)
 
     if customer
       self.update_stripe_customer
@@ -96,7 +96,7 @@ class User < ApplicationRecord
 
   def stripe_subscription
     init_stripe unless Stripe.api_key
-    Stripe::Subscription.retrieve(self.stripe_subscription_id)
+    self.stripe_subscription_id && Stripe::Subscription.retrieve(self.stripe_subscription_id)
   end
 
   def cancel_stripe_subscription
