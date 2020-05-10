@@ -28,7 +28,8 @@ class UserMailer < ApplicationMailer
   end
 
   def set_url
-    @url  = "http://localhost:3002?email=#{@user.email}"
+    host = ENV['CLIENT_URL'] || 'http://localhost:3002'
+    @url  = "#{host}?email=#{@user.email}"
   end
 
   def append_url_confirmation
