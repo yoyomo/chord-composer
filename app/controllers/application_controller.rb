@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::API
   def fallback_index_html
-    render :file => "/public/index.html"
+    redirect_to 'public/index.html'
   end
 end
