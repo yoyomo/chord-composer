@@ -38,4 +38,7 @@
 !client/src/setupProxy.js
 /vendor/**/*
 
+public
+client/build
+
 kordpose.env
