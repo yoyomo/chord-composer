@@ -42,7 +42,7 @@ export function Header(dispatch: (action: Action) => void) {
           {showUserModal &&
           <div className={"ma3 pa3 ba br3 w5 b--light-gray shadow-1 absolute bg-white nl6"}>
             {state.toggles.showTemporaryUserModal && <div>
-              {state.errors.server.length > 0 &&
+              {state.errors.server && state.errors.server.length > 0 &&
               state.errors.server.map(error => {
                 return <div key={"server-error-" + error.message}
                             className="red">
