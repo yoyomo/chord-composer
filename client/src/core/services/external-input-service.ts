@@ -1,7 +1,7 @@
 import { Effect, Services } from "./services";
 import { Action } from "../root-reducer";
-import {KeyBoardMapType, toggleKeyboardKey, KeyBoardPressType} from "../../reducers/keyboard-reducer";
-import {selectSavedChord} from "../../reducers/footer-reducer";
+import { KeyBoardMapType, toggleKeyboardKey, KeyBoardPressType } from "../../reducers/keyboard-reducer";
+import { selectSavedChord } from "../../reducers/footer-reducer";
 
 export const USKeyboardMapperFirstRow =
   ['q', '2', 'w', 'e', '4', 'r', '5', 't', 'y', '7', 'u', '8', 'i', '9', 'o', 'p', '-', '[', '=', ']', '\\'];
@@ -41,7 +41,7 @@ export type ExternalInputEffects =
 
 export function withExternalInput(dispatch: (action: Action) => void): Services {
 
-  let pressedKeyCodes: {[k: string]: boolean} = {};
+  let pressedKeyCodes: { [k: string]: boolean } = {};
 
   let keydownEventListener: (e: KeyboardEvent) => void;
   let keyupEventListener: (e: KeyboardEvent) => void;
@@ -56,19 +56,23 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
     return keyIndex;
   }
 
+  const isKeyIndexValid = (keyIndex: number, e: KeyboardEvent) => {
+    return keyIndex !== -1 && !e.metaKey
+  }
+
   const handleKeyDown = (e: KeyboardEvent, keyboardMap: KeyBoardMapType) => {
 
-    if(pressedKeyCodes[e.code]) return;
+    if (pressedKeyCodes[e.code]) return;
 
     pressedKeyCodes[e.code] = true;
 
     const keyIndex = getKeyIndex(e);
 
-    if (keyIndex !== -1) {
-      if(keyboardMap === "keys"){
+    if (isKeyIndexValid(keyIndex,e)) {
+      if (keyboardMap === "keys") {
         dispatch(toggleKeyboardKey(keyIndex));
       }
-      else if(keyboardMap === "chords") {
+      else if (keyboardMap === "chords") {
         dispatch(selectSavedChord(keyIndex))
       }
     }
@@ -77,10 +81,10 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
   const handleKeyUp = (e: KeyboardEvent, keyboardMap: KeyBoardMapType, keyboardPresser: KeyBoardPressType) => {
     pressedKeyCodes[e.code] = false;
 
-    if(keyboardPresser === 'live'){
-      const keyIndex = getKeyIndex(e);
+    const keyIndex = getKeyIndex(e);
 
-      if (keyIndex !== -1){
+    if (isKeyIndexValid(keyIndex,e)) {
+      if (keyboardPresser === 'live') {
         dispatch(toggleKeyboardKey(keyIndex, false))
       }
     }
@@ -88,7 +92,7 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
 
 
   return (effect: Effect) => {
-    switch(effect.effectType){
+    switch (effect.effectType) {
       case "cancel-external-input":
         document.body.removeEventListener('keydown', keydownEventListener);
         document.body.removeEventListener('keyup', keyupEventListener);

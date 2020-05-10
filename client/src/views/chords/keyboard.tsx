@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {State} from "../../state";
-import {Action} from "../../core/root-reducer";
+import { State } from "../../state";
+import { Action } from "../../core/root-reducer";
 import {
   changeKeyboardMap,
   changeKeyboardPresser,
@@ -10,12 +10,12 @@ import {
   toggleKeyboardKey,
   clearKeyboard
 } from "../../reducers/keyboard-reducer";
-import {USKeyboardMapperFirstRow, USKeyboardMapperSecondRow} from "../../core/services/external-input-service";
-import {OutputSource} from "../../core/services/midi-service";
-import {inputChangeDispatcher} from "../../reducers/input-reducer";
+import { USKeyboardMapperFirstRow, USKeyboardMapperSecondRow } from "../../core/services/external-input-service";
+import { OutputSource } from "../../core/services/midi-service";
+import { inputChangeDispatcher } from "../../reducers/input-reducer";
 
 export const SelectedKeyIndicator = () => {
-  return <div className={"bg-light-red w2 h2 pa2 br-100"}/>
+  return <div className={"bg-light-red w2 h2 pa2 br-100"} />
 };
 
 interface ComputerKeyboardKeyProps {
@@ -28,7 +28,7 @@ export const ComputerKeyboardKey = (props: ComputerKeyboardKeyProps) => {
   const letter = secondRowKey + ' ' + firstRowKey;
   return letter.trim() &&
     <div>
-      <div className="absolute bg-light-blue h0_125rem top-0 left-0 w-100"/>
+      <div className="absolute bg-light-blue h0_125rem top-0 left-0 w-100" />
       <div className="absolute bg-light-blue pa1 black top-0 right-0 br2 br--bottom br--left">
         {letter.toUpperCase()}
       </div>
@@ -54,46 +54,52 @@ export function Keyboard(dispatch: (action: Action) => void) {
       <div className={"w-100 bg-light-gray dark-gray"}>
         <div>
           <div>
-          Input:
+            Input:
           {keyboardMappers.map(keyboardMap => {
             const color = state.inputs.mapKeyboardTo === keyboardMap ? 'light-blue' : 'black';
             return (
-              <div className={`pointer dib pa1 ${color}`}
-                   onClick={() => dispatcher.changeKeyBoardMap(keyboardMap)}>
+              <div
+                key={'keyboard-mapper-' + keyboardMap}
+                className={`pointer dib pa1 ${color}`}
+                onClick={() => dispatcher.changeKeyBoardMap(keyboardMap)}>
                 {keyboardMap}
               </div>
             );
           })}
-        </div>
-        <div className='fr'>
-          On press:
+          </div>
+          <div className='fr'>
+            On press:
           {keyboardPressers.map(keyboardPresser => {
             const color = state.inputs.keyboardPresser === keyboardPresser ? 'light-blue' : 'black';
             return (
-              <div className={`pointer dib pa1 ${color}`}
-                   onClick={() => dispatcher.changeKeyBoardPresser(keyboardPresser)}>
+              <div
+                key={'keyboard-presser-' + keyboardPresser}
+                className={`pointer dib pa1 ${color}`}
+                onClick={() => dispatcher.changeKeyBoardPresser(keyboardPresser)}>
                 {keyboardPresser}
               </div>
             );
           })}
-        <div className='pointer dib pa1' onClick={dispatcher.clearKeyboard}>
-          clear
+            <div className='pointer dib pa1' onClick={dispatcher.clearKeyboard}>
+              clear
         </div>
 
-        </div>
+          </div>
         </div>
 
         <div>
-          Output: 
+          Output:
           {outputSources.map(outputSource => {
-            const color = state.inputs.outputSource === outputSource ? 'light-blue' : 'black';
-            return (
-              <div className={`pointer dib pa1 ${color}`}
-                   onClick={inputChangeDispatcher(dispatch,"outputSource", outputSource)}>
-                {outputSource}
-              </div>
-            );
-          })}
+          const color = state.inputs.outputSource === outputSource ? 'light-blue' : 'black';
+          return (
+            <div
+              key={'output-sourcers-' + outputSource}
+              className={`pointer dib pa1 ${color}`}
+              onClick={inputChangeDispatcher(dispatch, "outputSource", outputSource)}>
+              {outputSource}
+            </div>
+          );
+        })}
         </div>
         <div className={"overflow-x-auto overflow-y-hidden gpu pb1 no-select"}>
           <div className={"db nowrap"}>
@@ -110,11 +116,11 @@ export function Keyboard(dispatch: (action: Action) => void) {
 
               return blackKey.includes('#') &&
                 <div key={"black-key-" + i}
-                     className={`bg-gray light-gray tc ${width} h3 dib v-mid pointer pa3 br b--white relative`}
-                     onClick={() => dispatcher.toggleChordMapperKey(i)}>
+                  className={`bg-gray light-gray tc ${width} h3 dib v-mid pointer pa3 br b--white relative`}
+                  onClick={() => dispatcher.toggleChordMapperKey(i)}>
                   {blackKey}
-                  {state.inputs.mapKeyboardTo === 'keys' && <ComputerKeyboardKey index={i}/>}
-                  {state.chordMapperKeys[i] && <SelectedKeyIndicator/>}
+                  {state.inputs.mapKeyboardTo === 'keys' && <ComputerKeyboardKey index={i} />}
+                  {state.chordMapperKeys[i] && <SelectedKeyIndicator />}
                 </div>
             })}
           </div>
@@ -123,11 +129,11 @@ export function Keyboard(dispatch: (action: Action) => void) {
             {ChordMapperKeys.map((whiteKey, i) => {
               return !whiteKey.includes('#') &&
                 <div key={"white-key-" + i}
-                     className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 bl b--black relative"}
-                     onClick={() => dispatcher.toggleChordMapperKey(i)}>
+                  className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 bl b--black relative"}
+                  onClick={() => dispatcher.toggleChordMapperKey(i)}>
                   {whiteKey}
-                  {state.inputs.mapKeyboardTo === 'keys' && <ComputerKeyboardKey index={i}/>}
-                  {state.chordMapperKeys[i] && <SelectedKeyIndicator/>}
+                  {state.inputs.mapKeyboardTo === 'keys' && <ComputerKeyboardKey index={i} />}
+                  {state.chordMapperKeys[i] && <SelectedKeyIndicator />}
                 </div>
             })}
 
