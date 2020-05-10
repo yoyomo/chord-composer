@@ -1,6 +1,6 @@
 import {Effect, Services} from "./services";
 import {Action} from "../root-reducer";
-import {ChordMapperKeys, KeyBoardMapType, toggleKeyboardKey} from "../../reducers/keyboard-reducer";
+import {ChordMapperKeys, KeyBoardMapType, toggleKeyboardKey, KeyBoardPressType} from "../../reducers/keyboard-reducer";
 import {selectSavedChord} from "../../reducers/footer-reducer";
 
 export const MIDI_NOTE_DELTA = 21;
@@ -60,7 +60,7 @@ export function withMidiInput(dispatch: (action: Action) => void): Services {
     midiOutputs = [];
   };
 
-  const onMIDISuccess = (keyboardMap: KeyBoardMapType) => (m: WebMidi.MIDIAccess) => {
+  const onMIDISuccess = (keyboardMap: KeyBoardMapType, keyboardPresser: KeyBoardPressType) => (m: WebMidi.MIDIAccess) => {
     clearMidiEvents();
 
     midi = m;
@@ -76,7 +76,7 @@ export function withMidiInput(dispatch: (action: Action) => void): Services {
     }
 
     for (let i = 0; i < midiInputs.length; i++) {
-      midiInputs[i].onmidimessage = onMIDIEvent(keyboardMap);
+      midiInputs[i].onmidimessage = onMIDIEvent(keyboardMap, keyboardPresser);
     }
   };
 
@@ -84,19 +84,21 @@ export function withMidiInput(dispatch: (action: Action) => void): Services {
     console.log("onMIDIFailure()呼ばれただと？:" + msg);
   }
 
-  const onMIDIEvent = (keyboardMap: KeyBoardMapType) => (e: WebMidi.MIDIMessageEvent) => {
+  const onMIDIEvent = (keyboardMap: KeyBoardMapType, keyboardPresser: KeyBoardPressType) => (e: WebMidi.MIDIMessageEvent) => {
     const command = e.data[0];
     const midiNote = e.data[1];
     const vel = e.data[2];
+    const {keyIndex} = parseMidiNote(midiNote);
 
     if (vel !== 0 && command === on) {
-      const {keyIndex} = parseMidiNote(midiNote);
       if (keyboardMap === "keys") {
         dispatch(toggleKeyboardKey(keyIndex));
       } else if (keyboardMap === "chords") {
         dispatch(selectSavedChord(keyIndex));
         dispatch(stopMidiNoteAction(midiNote));
       }
+    } else if(keyboardPresser === 'live'){
+      dispatch(toggleKeyboardKey(keyIndex, false));
     }
   };
 
@@ -108,7 +110,7 @@ export function withMidiInput(dispatch: (action: Action) => void): Services {
 
       case "accept-external-input":
         if(navigator.requestMIDIAccess){
-          navigator.requestMIDIAccess().then(onMIDISuccess(effect.keyboardMap), onMIDIFailure);
+          navigator.requestMIDIAccess().then(onMIDISuccess(effect.keyboardMap, effect.keyboardPresser), onMIDIFailure);
         } else {
           console.error('No Midi Access is supported on this device');
         }

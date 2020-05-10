@@ -30,12 +30,10 @@
 /api/*.p12
 /api/*.key
 /api/*.mobileprovision
-/client/.idea/*
-/client/.idea/**/*
-/client/.idea/workspace.xml
-/client/.idea/misc.xml
-.idea
-/api/.idea/*
+
+**/.idea
+**/.DS_Store
+
 **/*.js
 !client/src/setupProxy.js
 /api/vendor/**/*

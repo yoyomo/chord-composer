@@ -64,11 +64,22 @@ export const changeKeyboardPresser = (keyboardPresser: KeyBoardPressType): Chang
   }
 }
 
+export type ClearKeyboardAction = {
+  type: 'clear-keyboard'
+}
+
+export const clearKeyboard = (): ClearKeyboardAction => {
+  return {
+    type: 'clear-keyboard'
+  }
+}
+
 export type ChordMapperActions =
   | ToggleChordMapperKeyAction
   | SelectChordAction
   | ChangeKeyboardMapAction
   | ChangeKeyboardPresserAction
+  | ClearKeyboardAction
   ;
 
 export const mapChordToKeys = (state: State): State => {
@@ -215,6 +226,12 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
       }
       break;
     }
+
+    case 'clear-keyboard':
+      state = {...state};
+      state.chordMapperKeys = state.chordMapperKeys.slice();
+      state.chordMapperKeys = [];
+      break;
 
   }
 

@@ -7,7 +7,8 @@ import {
   ChordMapperKeys,
   KeyBoardMapType,
   KeyBoardPressType,
-  toggleKeyboardKey
+  toggleKeyboardKey,
+  clearKeyboard
 } from "../../reducers/keyboard-reducer";
 import {USKeyboardMapperFirstRow, USKeyboardMapperSecondRow} from "../../core/services/external-input-service";
 import {OutputSource} from "../../core/services/midi-service";
@@ -39,7 +40,8 @@ export function Keyboard(dispatch: (action: Action) => void) {
   let dispatcher = {
     toggleChordMapperKey: (keyIndex: number) => dispatch(toggleKeyboardKey(keyIndex)),
     changeKeyBoardMap: (keyboardMap: KeyBoardMapType) => dispatch(changeKeyboardMap(keyboardMap)),
-    changeKeyBoardPresser: (keyboardPresser: KeyBoardPressType) => dispatch(changeKeyboardPresser(keyboardPresser))
+    changeKeyBoardPresser: (keyboardPresser: KeyBoardPressType) => dispatch(changeKeyboardPresser(keyboardPresser)),
+    clearKeyboard: () => dispatch(clearKeyboard()),
   };
 
   const keyboardMappers: KeyBoardMapType[] = ['none', 'keys', 'chords'];
@@ -74,6 +76,9 @@ export function Keyboard(dispatch: (action: Action) => void) {
               </div>
             );
           })}
+        <div className='pointer dib pa1' onClick={dispatcher.clearKeyboard}>
+          clear
+        </div>
 
         </div>
         </div>
