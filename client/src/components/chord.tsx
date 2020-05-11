@@ -1,8 +1,14 @@
 import * as React from 'react'
-import {ClassAndChildren} from "../core/reducers";
-import {ChordType} from "../reducers/recompute-chord-grid";
-import {SVGStar} from "./svgs";
-import {SyntheticEvent} from "react";
+import { ClassAndChildren } from "../core/reducers";
+import { ChordType } from "../reducers/recompute-chord-grid";
+import { SVGStar } from "./svgs";
+import { SyntheticEvent } from "react";
+
+export const Star = ({isStarred, ...domProps}) => (
+  <div className={`absolute top-0 left-0 ${isStarred ? 'fill-gold' : 'stroke-gold fill-none'}`} {...domProps}>
+    <SVGStar />
+  </div>
+)
 
 interface ChordElementProps extends ClassAndChildren {
   chord: ChordType
@@ -12,7 +18,6 @@ interface ChordElementProps extends ClassAndChildren {
   isSelected: boolean
   isSuggested: boolean
   onStar: () => void
-  onHover: (show: boolean) => void
   showStar: boolean
   isStarred: boolean
 }
@@ -39,22 +44,16 @@ export class ChordElement extends React.Component<ChordElementProps> {
         onMouseUp={this.onClickEnd}
         onTouchStart={this.onClick}
         onTouchEnd={this.onClickEnd}
-        onMouseEnter={()=>this.props.onHover(true)}
-        onMouseLeave={()=>this.props.onHover(false)}
       >
         <div className="">
           {this.props.chord.baseKey + this.props.chord.symbol}
         </div>
         {this.props.chord.variation > 0 &&
-        <div>
-          {this.props.chord.variation}
-        </div>
+          <div>
+            {this.props.chord.variation}
+          </div>
         }
-        {this.props.showStar &&
-        <div className={`absolute top-0 left-0 ${this.props.isStarred ? 'fill-gold' : 'stroke-gold fill-none'}`} onClick={this.props.onStar}>
-            <SVGStar/>
-        </div>
-        }
+        {this.props.showStar && <Star isStarred={this.props.isStarred} onClick={this.props.onStar}/>}
         <div className="absolute bottom-0 right-5px o-70 f6">
           o{this.props.chord.octave}
         </div>

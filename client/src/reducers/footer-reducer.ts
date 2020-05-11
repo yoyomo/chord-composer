@@ -20,20 +20,6 @@ export const toggleDraftChord = (chord: ChordType): ToggleDraftChordAction => {
   };
 };
 
-export type ShowStarAction = {
-  type: "show-star"
-  chord: ChordType
-  show: boolean
-}
-
-export const showStar = (chord: ChordType, show: boolean): ShowStarAction => {
-  return {
-    type: "show-star",
-    chord,
-    show
-  };
-};
-
 
 export type SelectSavedChordAction = {
   type: "select-saved-chord"
@@ -49,7 +35,6 @@ export const selectSavedChord = (savedChordIndex: number): SelectSavedChordActio
 
 export type FooterActions =
   | ToggleDraftChordAction
-  | ShowStarAction
   | SelectSavedChordAction;
 
 export const reduceFooter = (state: State, action: Action): ReductionWithEffect<State> => {
@@ -78,11 +63,6 @@ export const reduceFooter = (state: State, action: Action): ReductionWithEffect<
       effects = effects.concat(updateFavoriteChords(state));
       break;
     }
-
-    case "show-star":
-      state = {...state};
-      state.showStarChord = action.show ? action.chord : undefined;
-      break;
 
     case "select-saved-chord": {
       ({state, effects} = selectChord(state, effects, state.draftChords[action.savedChordIndex]));

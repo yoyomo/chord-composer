@@ -2,7 +2,7 @@ import React from "react";
 import {State} from "../../state";
 import {
   toggleDraftChord,
-  selectSavedChord, showStar,
+  selectSavedChord,
 } from "../../reducers/footer-reducer";
 import {ChordElement} from "../../components/chord";
 import {chordIdentifier, ChordType} from "../../reducers/recompute-chord-grid";
@@ -14,7 +14,6 @@ export function Footer(dispatch: (action: Action) => void) {
   let dispatcher = {
     onSelectSavedChord: (savedChordIndex: number) => dispatch(selectSavedChord(savedChordIndex)),
     toggleDraftChord: (chord: ChordType) => dispatch(toggleDraftChord(chord)),
-    showStar: (chord: ChordType, show: boolean) => dispatch(showStar(chord, show)),
   };
 
   return (state: State) => {
@@ -30,8 +29,7 @@ export function Footer(dispatch: (action: Action) => void) {
                                  isSelected={!!state.selectedGridChord && chordIdentifier(state.selectedGridChord) === chordIdentifier(savedChord)}
                                  isSuggested={state.suggestedGridChords.filter(c => chordIdentifier(c) === chordIdentifier(savedChord)).length > 0}
                                  onStar={() => dispatcher.toggleDraftChord(savedChord)}
-                                 onHover={(show) => dispatcher.showStar(savedChord, show)}
-                                 showStar={!!state.showStarChord && chordIdentifier(state.showStarChord) === chordIdentifier(savedChord)}
+                                 showStar={!!state.toggles.showStars}
                                  isStarred={state.draftChords.filter(c => chordIdentifier(c) === chordIdentifier(savedChord)).length > 0}
             >
               {state.inputs.mapKeyboardTo === 'chords' && <ComputerKeyboardKey index={s} />}

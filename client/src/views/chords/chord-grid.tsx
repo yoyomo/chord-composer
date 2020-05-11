@@ -4,14 +4,13 @@ import { State } from "../../state";
 import { chordIdentifier, ChordType } from "../../reducers/recompute-chord-grid";
 import { Action } from "../../core/root-reducer";
 import { selectChordAction } from "../../reducers/keyboard-reducer";
-import { showStar, toggleDraftChord } from "../../reducers/footer-reducer";
+import { toggleDraftChord } from "../../reducers/footer-reducer";
 
 
 export function ChordGrid(dispatch: (action: Action) => void) {
 
   let dispatcher = {
     toggleDraftChord: (chord: ChordType) => dispatch(toggleDraftChord(chord)),
-    showStar: (chord: ChordType, show: boolean) => dispatch(showStar(chord, show)),
     selectChord: (chord: ChordType) => dispatch(selectChordAction(chord)),
   };
 
@@ -35,8 +34,7 @@ export function ChordGrid(dispatch: (action: Action) => void) {
                       isSuggested={state.suggestedGridChords.filter(c => chordIdentifier(c) === chordIdentifier(variation)).length > 0}
                       onSelect={() => dispatcher.selectChord(variation)}
                       onStar={() => dispatcher.toggleDraftChord(variation)}
-                      onHover={(show) => dispatcher.showStar(variation, show)}
-                      showStar={!!state.showStarChord && chordIdentifier(state.showStarChord) === chordIdentifier(variation)}
+                      showStar={!!state.toggles.showStars}
                       isStarred={state.draftChords.filter(c => chordIdentifier(c) === chordIdentifier(variation)).length > 0}
                     />
                   ))}

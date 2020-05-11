@@ -99,12 +99,11 @@ export const initialState = {
     changePassword: false,
     changeAccessToken: false,
     changeSubscription: false,
-    isResettingPassword: false
+    isResettingPassword: false,
+    showStars: true,
   },
 
   keyboardMapPriorToInput: 'keys' as KeyBoardMapType,
-
-  showStarChord: undefined as ChordType | void,
 
   success: {
     signIn: "",
