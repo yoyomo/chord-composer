@@ -120,7 +120,7 @@ export const nextVariation = (pitchClass: number[]): number[] => {
 };
 
 export const chordMapperKeysToKeys = (chordMapperKeys: boolean[]): number[] => {
-  return [... new Set(
+  return [...new Set(
     chordMapperKeys.map((on, mapKeyIndex) => {
       return on ? (mapKeyIndex) % KEYS.length : -1;
     }).filter(k => k >= 0)

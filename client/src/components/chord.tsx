@@ -9,8 +9,6 @@ interface ChordElementProps extends ClassAndChildren {
   notes: number[]
   audioContext: AudioContext
   onSelect: () => void
-  waveType: OscillatorType
-  soundOn: boolean
   isSelected: boolean
   isSuggested: boolean
   onStar: () => void
@@ -40,6 +38,7 @@ export class ChordElement extends React.Component<ChordElementProps> {
         onMouseDown={this.onClick}
         onMouseUp={this.onClickEnd}
         onTouchStart={this.onClick}
+        onTouchEnd={this.onClickEnd}
         onMouseEnter={()=>this.props.onHover(true)}
         onMouseLeave={()=>this.props.onHover(false)}
       >
