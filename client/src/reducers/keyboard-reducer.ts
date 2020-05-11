@@ -5,8 +5,8 @@ import { ChordType, KEYS } from "./recompute-chord-grid";
 import { MAXIMUM_OCTAVE, MINIMUM_OCTAVE } from "./synth-tools-reducer";
 import { Effect } from "../core/services/services";
 import { playSoundEffect } from "../core/services/sound-service";
-import {acceptExternalInput, cancelExternalInput} from "../core/services/external-input-service";
-import {parseMidiNote, stopMidiNoteEffect} from "../core/services/midi-service";
+import { acceptExternalInput, cancelExternalInput } from "../core/services/external-input-service";
+import { parseMidiNote, stopMidiNoteEffect } from "../core/services/midi-service";
 
 export const ChordMapperKeys = KEYS.concat(KEYS).concat(KEYS).concat(KEYS[0]);
 
@@ -120,9 +120,11 @@ export const nextVariation = (pitchClass: number[]): number[] => {
 };
 
 export const chordMapperKeysToKeys = (chordMapperKeys: boolean[]): number[] => {
-  return chordMapperKeys.map((on, mapKeyIndex) => {
-    return on ? (mapKeyIndex) % KEYS.length : -1;
-  }).filter(k => k >= 0)
+  return [... new Set(
+    chordMapperKeys.map((on, mapKeyIndex) => {
+      return on ? (mapKeyIndex) % KEYS.length : -1;
+    }).filter(k => k >= 0)
+  )]
 };
 
 export const keysToPitchClass = (keyIndexes: number[]): number[] => {
@@ -182,7 +184,7 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
 
       state = mapKeysToChord(state);
 
-      if(state.chordMapperKeys[action.keyIndex]){
+      if (state.chordMapperKeys[action.keyIndex]) {
         let noteIndex = action.keyIndex + (state.synth.base_octave * KEYS.length);
         effects = effects.concat(playSoundEffect(noteIndex, state.notes, state.audioContext, state.synth, state.inputs.outputSource));
       }
@@ -190,18 +192,18 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
     }
 
     case "select-chord": {
-      ({state, effects} = selectChord(state, effects, action.chord));
+      ({ state, effects } = selectChord(state, effects, action.chord));
 
       break;
     }
 
     case "change-keyboard-map": {
-      state = {...state};
+      state = { ...state };
       state.keyboardMapPriorToInput = state.inputs.mapKeyboardTo;
-      state.inputs = {...state.inputs};
+      state.inputs = { ...state.inputs };
       state.inputs.mapKeyboardTo = action.keyboardMap;
 
-      if(action.keyboardMap === "none"){
+      if (action.keyboardMap === "none") {
         effects = effects.concat(cancelExternalInput());
       } else {
         effects = effects.concat(acceptExternalInput(action.keyboardMap, state.inputs.keyboardPresser));
@@ -210,25 +212,25 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
     }
 
     case "change-keyboard-presser": {
-      state = {...state};
-      state.inputs = {...state.inputs};
+      state = { ...state };
+      state.inputs = { ...state.inputs };
       state.inputs.keyboardPresser = action.keyboardPresser;
 
       effects = effects.concat(acceptExternalInput(state.inputs.mapKeyboardTo, action.keyboardPresser));
       break;
     }
 
-    case "stop-midi-note":{
-      const {pianoNote, keyIndex} = parseMidiNote(action.midiNote);
+    case "stop-midi-note": {
+      const { pianoNote, keyIndex } = parseMidiNote(action.midiNote);
       const draftChord = state.draftChords[keyIndex];
-      if(draftChord && draftChord.notes.indexOf(pianoNote) === -1){
+      if (draftChord && draftChord.notes.indexOf(pianoNote) === -1) {
         effects = effects.concat(stopMidiNoteEffect(action.midiNote));
       }
       break;
     }
 
     case 'clear-keyboard':
-      state = {...state};
+      state = { ...state };
       state.chordMapperKeys = state.chordMapperKeys.slice();
       state.chordMapperKeys = [];
       break;
@@ -238,18 +240,18 @@ export const reduceChordMapper = (state: State, action: Action): ReductionWithEf
   return { state, effects };
 };
 
-export const selectChord = (state:State,effects: Effect[], chord: ChordType | void) => {
+export const selectChord = (state: State, effects: Effect[], chord: ChordType | void) => {
   state = { ...state };
   state.selectedGridChord = chord;
 
   state = mapChordToKeys(state);
   state = mapKeysToChord(state);
 
-  if(!state.selectedGridChord) return {state,effects};
+  if (!state.selectedGridChord) return { state, effects };
 
   effects = effects.concat(state.selectedGridChord.notes.map(noteIndex => {
     return playSoundEffect(noteIndex, state.notes, state.audioContext, state.synth, state.inputs.outputSource)
   }));
 
-  return {state, effects}
+  return { state, effects }
 };

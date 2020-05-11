@@ -38,7 +38,15 @@ export const ComputerKeyboardKey = (props: ComputerKeyboardKeyProps) => {
 export function Keyboard(dispatch: (action: Action) => void) {
 
   let dispatcher = {
-    toggleChordMapperKey: (keyIndex: number) => dispatch(toggleKeyboardKey(keyIndex)),
+    toggleChordMapperKey: (keyIndex: number, keyboardPresser: KeyBoardPressType, on: boolean) => {
+      if(keyboardPresser === 'live'){
+        dispatch(toggleKeyboardKey(keyIndex, on))
+      } else {
+        if(on) {
+          dispatch(toggleKeyboardKey(keyIndex))
+        }
+      }
+    },
     changeKeyBoardMap: (keyboardMap: KeyBoardMapType) => dispatch(changeKeyboardMap(keyboardMap)),
     changeKeyBoardPresser: (keyboardPresser: KeyBoardPressType) => dispatch(changeKeyboardPresser(keyboardPresser)),
     clearKeyboard: () => dispatch(clearKeyboard()),
@@ -117,7 +125,10 @@ export function Keyboard(dispatch: (action: Action) => void) {
               return blackKey.includes('#') &&
                 <div key={"black-key-" + i}
                   className={`bg-gray light-gray tc ${width} h3 dib v-mid pointer pa3 br b--white relative`}
-                  onClick={() => dispatcher.toggleChordMapperKey(i)}>
+                  onMouseDown={() => dispatcher.toggleChordMapperKey(i, state.inputs.keyboardPresser, true)}
+                  onTouchStart={() => dispatcher.toggleChordMapperKey(i, state.inputs.keyboardPresser, true)}
+                  onMouseUp={() => dispatcher.toggleChordMapperKey(i, state.inputs.keyboardPresser, false)}
+                  onTouchEnd={() => dispatcher.toggleChordMapperKey(i, state.inputs.keyboardPresser, false)}>
                   {blackKey}
                   {state.inputs.mapKeyboardTo === 'keys' && <ComputerKeyboardKey index={i} />}
                   {state.chordMapperKeys[i] && <SelectedKeyIndicator />}
@@ -130,7 +141,10 @@ export function Keyboard(dispatch: (action: Action) => void) {
               return !whiteKey.includes('#') &&
                 <div key={"white-key-" + i}
                   className={"bg-white dark-gray w3 h3 dib tc v-mid pointer pa3 bl b--black relative"}
-                  onClick={() => dispatcher.toggleChordMapperKey(i)}>
+                  onMouseDown={() => dispatcher.toggleChordMapperKey(i, state.inputs.keyboardPresser, true)}
+                  onTouchStart={() => dispatcher.toggleChordMapperKey(i, state.inputs.keyboardPresser, true)}
+                  onMouseUp={() => dispatcher.toggleChordMapperKey(i, state.inputs.keyboardPresser, false)}
+                  onTouchEnd={() => dispatcher.toggleChordMapperKey(i, state.inputs.keyboardPresser, false)}>
                   {whiteKey}
                   {state.inputs.mapKeyboardTo === 'keys' && <ComputerKeyboardKey index={i} />}
                   {state.chordMapperKeys[i] && <SelectedKeyIndicator />}

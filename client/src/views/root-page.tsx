@@ -11,7 +11,7 @@ export function RootPage(dispatch: (action: Action) => void) {
   const SignUpContent = SignUpPage(dispatch);
   return (state: State) => {
     return (
-        <div className={"h-100"}>
+        <div className={"h-100 disable-dbl-tap-zoom"}>
           {function() {
             switch(state.pathParts[0]) {
               case "sign-up":
