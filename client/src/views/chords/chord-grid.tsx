@@ -18,6 +18,25 @@ export function ChordGrid(dispatch: (action: Action) => void) {
     return (
       <div className={"overflow-hidden h-100"}>
         <div className={"overflow-auto h-100"}>
+          <div className={`absolute left-25 top-25 z-1 flex flex-row o-70 ${state.suggestedGridChords.length > 0 ? 'fadein' : 'fadeout'}`}>
+            {state.suggestedGridChords.map(suggestedChord => (
+              suggestedChord.octave === state.synth.base_octave &&
+              <ChordElement
+                key={"chord-variation-" + chordIdentifier(suggestedChord)}
+                isFlashing
+                chord={suggestedChord}
+                notes={state.notes}
+                audioContext={state.audioContext}
+                isSelected={!!state.selectedGridChord && chordIdentifier(state.selectedGridChord) === chordIdentifier(suggestedChord)}
+                isSuggested={state.suggestedGridChords.filter(c => chordIdentifier(c) === chordIdentifier(suggestedChord)).length > 0}
+                onSelect={() => dispatcher.selectChord(suggestedChord)}
+                onStar={() => dispatcher.toggleDraftChord(suggestedChord)}
+                showStar={!!state.toggles.showStars}
+                isStarred={state.draftChords.filter(c => chordIdentifier(c) === chordIdentifier(suggestedChord)).length > 0}
+              />
+            ))}
+          </div>
+
           {state.selectedKeyIndex != null &&
             state.chordGrid.map((chord, chordIndex) => {
               if (chord.variation !== 0) return null;

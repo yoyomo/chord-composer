@@ -20,6 +20,7 @@ interface ChordElementProps extends ClassAndChildren {
   onStar: () => void
   showStar: boolean
   isStarred: boolean
+  isFlashing?: boolean
 }
 
 export class ChordElement extends React.Component<ChordElementProps> {
@@ -36,9 +37,9 @@ export class ChordElement extends React.Component<ChordElementProps> {
 
     return (
       <div
-        className={`${this.props.chord.variation === 0 ? "bg-gray light-gray" : "bg-light-gray dark-gray"}
-            ${highlightColor}
-             w3 h3 dib tc v-mid pointer ma2 pt3 br3 relative shadow-4 no-select`}
+        className={`${this.props.chord.variation === 0 ? "bg-gray light-gray" : "bg-light-gray dark-gray"}`+
+          ` ${highlightColor}`+
+          ` ${this.props.isFlashing ? 'flex flex-column w4 h4 justify-center items-center f2 di' : 'w3 h3 pt3'} dib tc v-mid pointer ma2  br3 relative shadow-4 no-select`}
         // style={{backgroundColor: this.getColor()}}
         onMouseDown={this.onClick}
         onMouseUp={this.onClickEnd}

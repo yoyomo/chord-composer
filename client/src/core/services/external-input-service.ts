@@ -1,6 +1,6 @@
 import { Effect, Services } from "./services";
 import { Action } from "../root-reducer";
-import { KeyBoardMapType, toggleKeyboardKey, KeyBoardPressType } from "../../reducers/keyboard-reducer";
+import { KeyBoardMapType, toggleKeyboardKey, KeyBoardPressType, changeKeyboardPresser, changeKeyboardMap } from "../../reducers/keyboard-reducer";
 import { selectSavedChord } from "../../reducers/footer-reducer";
 
 export const USKeyboardMapperFirstRow =
@@ -68,12 +68,25 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
 
     const keyIndex = getKeyIndex(e);
 
-    if (isKeyIndexValid(keyIndex,e)) {
+    if (isKeyIndexValid(keyIndex, e)) {
       if (keyboardMap === "keys") {
         dispatch(toggleKeyboardKey(keyIndex));
       }
       else if (keyboardMap === "chords") {
         dispatch(selectSavedChord(keyIndex))
+      }
+    } else {
+      if (e.code === "CapsLock" && e.getModifierState('CapsLock')) {
+        dispatch(changeKeyboardPresser("hold"))
+      } else if(e.metaKey) {
+        if(e.code === "KeyK") {
+          dispatch(changeKeyboardMap('keys'));
+        } else if(e.code === "KeyC"){
+          dispatch(changeKeyboardMap('chords'));
+        } else if(e.code === "KeyN"){
+          dispatch(changeKeyboardMap('none'));
+        }
+
       }
     }
   };
@@ -83,9 +96,13 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
 
     const keyIndex = getKeyIndex(e);
 
-    if (isKeyIndexValid(keyIndex,e)) {
-      if (keyboardPresser === 'live') {
+    if (isKeyIndexValid(keyIndex, e)) {
+      if (keyboardMap === "keys" && keyboardPresser === 'live') {
         dispatch(toggleKeyboardKey(keyIndex, false))
+      }
+    } else {
+      if (e.code === "CapsLock" && !e.getModifierState('CapsLock')) {
+        dispatch(changeKeyboardPresser("live"))
       }
     }
   };
