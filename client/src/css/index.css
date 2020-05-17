@@ -1,15 +1,15 @@
-@import url(~tachyons);
-@import url(_borders.css);
-@import url(_margins.css);
-@import url(_heights.css);
-@import url(_widths.css);
-@import url(_overflows.css);
-@import url(_colors.css);
-@import url(_shadows.css);
-@import url(_animations.css);
-@import url(_svgs.css);
-@import url(_word-break.css);
-@import url(_coordinates.css);
+@import url(tachyons);
+@import url(./_borders.css);
+@import url(./_margins.css);
+@import url(./_heights.css);
+@import url(./_widths.css);
+@import url(./_overflows.css);
+@import url(./_colors.css);
+@import url(./_shadows.css);
+@import url(./_animations.css);
+@import url(./_svgs.css);
+@import url(./_word-break.css);
+@import url(./_coordinates.css);
 
 body {
   margin: 0;

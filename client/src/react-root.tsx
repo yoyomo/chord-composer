@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {initialState, State} from "./state";
 import {RootPage} from "./views/root-page";
 import {ClassAndChildren} from "./core/reducers";
