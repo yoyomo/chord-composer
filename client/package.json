@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "node ./dev-server.js",
-    "build": "parcel build ./src/index.html --no-scope-hoist",
+    "build": "parcel build ./src/index.html --public-url ./",
     "typecheck": "tsc --noEmit",
     "typewatch": "tsc --noEmit --watch"
   },
@@ -16,7 +16,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-stripe-elements": "^4.0.2",
-    "parcel": "^2.0.0-alpha.3.2",
+    "parcel-bundler": "^1.12.4",
     "babel-preset-nano-react-app": "^0.1.0",
     "@babel/preset-typescript": "^7.9.0",
     "tachyons": "^4.11.1"
@@ -30,7 +30,6 @@
     "@types/react-dom": "16.8.4",
     "@types/react-stripe-elements": "^1.3.5",
     "@types/webmidi": "^2.0.3",
-    "parcel-bundler": "^1.12.4",
     "typescript": "3.4.5"
   },
   "babel": {
