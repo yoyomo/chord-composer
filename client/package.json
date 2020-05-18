@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "node ./dev-server.js",
-    "build": "parcel build ./src/index.html",
+    "build": "parcel build ./src/index.html --no-scope-hoist",
     "typecheck": "tsc --noEmit",
     "typewatch": "tsc --noEmit --watch"
   },
