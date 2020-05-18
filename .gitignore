@@ -39,6 +39,8 @@
 /vendor/**/*
 
 public
-client/build
+client/dist
+client/.parcel-cache
+client/.cache
 
 kordpose.env

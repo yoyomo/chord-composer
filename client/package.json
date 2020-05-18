@@ -3,17 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "10.7.0"
+    "node": "14.1.0"
+  },
+  "scripts": {
+    "start": "node ./dev-server.js",
+    "build": "parcel build ./src/index.html",
+    "typecheck": "tsc --noEmit",
+    "typewatch": "tsc --noEmit --watch"
   },
   "dependencies": {
     "history": "^4.10.1",
-    "http-proxy-middleware": "^0.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-stripe-elements": "^4.0.2",
     "tachyons": "^4.11.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.9.6",
     "@babel/preset-typescript": "^7.9.0",
     "@types/history": "^4.7.3",
     "@types/jest": "24.0.13",
@@ -24,13 +30,8 @@
     "@types/webmidi": "^2.0.3",
     "babel-preset-nano-react-app": "^0.1.0",
     "parcel": "^2.0.0-alpha.3.2",
+    "parcel-bundler": "^1.12.4",
     "typescript": "3.4.5"
-  },
-  "scripts": {
-    "start": "parcel ./src/index.html",
-    "build": "parcel build ./src/index.html",
-    "typecheck": "tsc --noEmit",
-    "typewatch": "tsc --noEmit --watch"
   },
   "babel": {
     "presets": [
