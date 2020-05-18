@@ -57,7 +57,7 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
   }
 
   const isKeyIndexValid = (keyIndex: number, e: KeyboardEvent) => {
-    return keyIndex !== -1 && !e.metaKey
+    return keyIndex !== -1 && !e.metaKey && !e.ctrlKey
   }
 
   const handleKeyDown = (e: KeyboardEvent, keyboardMap: KeyBoardMapType) => {
@@ -78,13 +78,11 @@ export function withExternalInput(dispatch: (action: Action) => void): Services 
     } else {
       if (e.code === "CapsLock" && e.getModifierState('CapsLock')) {
         dispatch(changeKeyboardPresser("hold"))
-      } else if(e.metaKey) {
-        if(e.code === "KeyK") {
+      } else if (e.ctrlKey) {
+        if (e.code === "KeyK") {
           dispatch(changeKeyboardMap('keys'));
-        } else if(e.code === "KeyC"){
+        } else if (e.code === "KeyC") {
           dispatch(changeKeyboardMap('chords'));
-        } else if(e.code === "KeyN"){
-          dispatch(changeKeyboardMap('none'));
         }
 
       }
